@@ -1,10 +1,15 @@
 sdk-version: 2.9.4
 name: projectdeux
+version: 0.1.0
 source: daml
-version: 0.0.1
 dependencies:
-  - daml-prim
-  - daml-stdlib
-  - daml-script
-sandbox-options:
-  - --wall-clock-time
+- daml-prim
+- daml-stdlib
+- daml-script
+start-navigator: false
+codegen:
+  js:
+    output-directory: ui/daml.js
+    npm-scope: daml.js
+# Remove this line when running against a ledger without user management.
+init-script: Setup:setup
