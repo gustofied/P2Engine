@@ -1,8 +1,14 @@
-// Copyright (c) 2022 Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
-// SPDX-License-Identifier: Apache-2.0
-
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./components/App";
+import { MantineProvider } from "@mantine/core";
+import { BrowserRouter } from "react-router-dom";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(
+  <MantineProvider withNormalizeCSS withGlobalStyles>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </MantineProvider>,
+  document.getElementById("root")
+);
