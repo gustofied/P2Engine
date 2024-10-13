@@ -1,0 +1,90 @@
+/* HeaderSimple.module.css */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: var(--mantine-color-body);
+  border-bottom: 1px solid var(--mantine-color-gray-3);
+  z-index: 10;
+}
+
+.inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 56px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.links {
+  display: flex;
+  gap: 10px;
+}
+
+.link {
+  position: relative;
+  display: block;
+  padding: 8px 12px;
+  border-radius: var(--mantine-radius-sm);
+  text-decoration: none;
+  color: var(--mantine-color-gray-7);
+  font-size: var(--mantine-font-size-sm);
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.link:hover {
+  background-color: var(--mantine-color-gray-0);
+}
+
+.link[data-active] {
+  background-color: var(--mantine-color-blue-filled);
+  color: var(--mantine-color-white);
+}
+
+.burger {
+  display: none;
+}
+
+.drawerHeader {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid var(--mantine-color-gray-3);
+}
+
+.closeButton {
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--mantine-color-gray-7);
+}
+
+.drawerContent {
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+}
+
+.drawerContent .link {
+  font-size: 24px;
+  padding: 16px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .links {
+    display: none;
+  }
+
+  .burger {
+    display: block;
+  }
+}

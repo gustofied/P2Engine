@@ -1,11 +1,13 @@
+// index.tsx
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./components/App";
+import App from "./pages/App";
 import { MantineProvider } from "@mantine/core";
 import { BrowserRouter } from "react-router-dom";
+import { theme } from "./theme";
 
 ReactDOM.render(
-  <MantineProvider withNormalizeCSS withGlobalStyles>
+  <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
     <BrowserRouter>
       <App />
     </BrowserRouter>
