@@ -1,83 +1,55 @@
-// Copyright (c) 2022 Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
-// SPDX-License-Identifier: Apache-2.0
+import React, { useState, useEffect } from "react";
+import DamlLedger from "@daml/react";
+import { useParty, useLedger } from "@daml/react";
+import { TestTemplate } from "@daml.js/projectdeux/lib/Test";
+import { Party } from "@daml/types";
 
-import React from "react";
-import LoginScreen from "./LoginScreen";
-import MainScreen from "./MainScreen";
-import { createLedgerContext } from "@daml/react";
-import DamlHub, {
-  damlHubLogout,
-  isRunningOnHub,
-  usePublicParty,
-  usePublicToken,
-} from "@daml/hub-react";
-import Credentials from "../Credentials";
-import { authConfig } from "../config";
-
-// Context for the party of the user.
-export const userContext = createLedgerContext();
-// Context for the public party used to query user aliases.
-// On Daml hub, this is a separate context. Locally, we have a single
-// token that has actAs claims for the user’s party and readAs claims for
-// the public party so we reuse the user context.
-export const publicContext = isRunningOnHub()
-  ? createLedgerContext()
-  : userContext;
-
-/**
- * React component for the entry point into the application.
- */
-// APP_BEGIN
-const App: React.FC = () => {
-  const [credentials, setCredentials] = React.useState<
-    Credentials | undefined
-  >();
-  if (credentials) {
-    const PublicPartyLedger: React.FC = ({ children }) => {
-      const publicToken = usePublicToken();
-      const publicParty = usePublicParty();
-      if (publicToken && publicParty) {
-        return (
-          <publicContext.DamlLedger
-            token={publicToken.token}
-            party={publicParty}>
-            {children}
-          </publicContext.DamlLedger>
-        );
-      } else {
-        return <h1>Loading ...</h1>;
-      }
-    };
-    const Wrap: React.FC = ({ children }) =>
-      isRunningOnHub() ? (
-        <DamlHub token={credentials.token}>
-          <PublicPartyLedger>{children}</PublicPartyLedger>
-        </DamlHub>
-      ) : (
-        <div>{children}</div>
-      );
-    return (
-      <Wrap>
-        <userContext.DamlLedger
-          token={credentials.token}
-          party={credentials.party}
-          user={credentials.user}>
-          <MainScreen
-            getPublicParty={credentials.getPublicParty}
-            onLogout={() => {
-              if (authConfig.provider === "daml-hub") {
-                damlHubLogout();
-              }
-              setCredentials(undefined);
-            }}
-          />
-        </userContext.DamlLedger>
-      </Wrap>
-    );
-  } else {
-    return <LoginScreen onLogin={setCredentials} />;
-  }
+// Get the party id from setup or login (replace 'Alice' with the full party identifier)
+const fetchPartyIdentifier = async (): Promise<Party> => {
+  return "Alice::12202ed475a768f08e2253eccd8a78b9e78cddec352438f28c51d7cca35e15809422"; // Replace with actual party identifier from DAML Navigator or setup
 };
-// APP_END
+
+const App: React.FC = () => {
+  const [party, setParty] = useState<Party | null>(null);
+  const token: string =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2RhbWwuY29tL2xlZGdlci1hcGkiOnsibGVkZ2VySWQiOiJzYW5kYm94IiwiYXBwbGljYXRpb25JZCI6Im15LWFwcCIsImFjdEFzIjpbIkFsaWNlOjoxMjIwMmVkNDc1YTc2OGYwOGUyMjUzZWNjZDhhNzhiOWU3OGNkZGVjMzUyNDM4ZjI4YzUxZDdjY2EzNWUxNTgwOTQyMiJdfSwiaWF0IjoxNzI4ODEyMjI1fQ.dxvReCYF91zmS9VVT9stm09kmrhPvbsumxLkeYA2cBI";
+
+  useEffect(() => {
+    // Fetch the correct party identifier
+    fetchPartyIdentifier().then(setParty);
+  }, []);
+
+  if (!party) {
+    return <div>Loading...</div>; // Render loading while waiting for party
+  }
+
+  return (
+    <DamlLedger token={token} party={party}>
+      <Main />
+    </DamlLedger>
+  );
+};
+
+const Main: React.FC = () => {
+  const party = useParty();
+  const ledger = useLedger();
+
+  const createTestContract = async () => {
+    try {
+      await ledger.create(TestTemplate, { owner: party });
+      alert("Test contract created successfully!");
+    } catch (error) {
+      console.error(error);
+      alert(`Error creating test contract: ${error}`);
+    }
+  };
+
+  return (
+    <div>
+      <h1>Connected to DAML Ledger as {party}</h1>
+      <button onClick={createTestContract}>Create Test Contract</button>
+    </div>
+  );
+};
 
 export default App;
