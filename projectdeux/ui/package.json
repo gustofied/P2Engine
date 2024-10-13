@@ -10,6 +10,7 @@
     "@daml/types": "2.9.4",
     "@mantine/core": "^5.10.5",
     "@mantine/hooks": "^5.10.5",
+    "@tabler/icons-react": "^3.19.0",
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^9.0.2",
     "jwt-simple": "^0.5.6",
