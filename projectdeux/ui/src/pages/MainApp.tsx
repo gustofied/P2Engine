@@ -3,20 +3,19 @@ import DamlLedger from "@daml/react";
 import { useParty, useLedger } from "@daml/react";
 import { TestTemplate } from "@daml.js/projectdeux/lib/Test";
 import { Party } from "@daml/types";
-import { Button, Container, Title, Text } from "@mantine/core";
+import { Button, Container, Text } from "@mantine/core";
 import { Link } from "react-router-dom";
 
 const MainApp: React.FC = () => {
   const [party, setParty] = useState<Party | null>(null);
 
   // Hardcoded token
-  const token: string =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2RhbWwuY29tL2xlZGdlci1hcGkiOnsibGVkZ2VySWQiOiJzYW5kYm94IiwiYXBwbGljYXRpb25JZCI6Im15LWFwcCIsImFjdEFzIjpbIkFsaWNlOjoxMjIwMmVkNDc1YTc2OGYwOGUyMjUzZWNjZDhhNzhiOWU3OGNkZGVjMzUyNDM4ZjI4YzUxZDdjY2EzNWUxNTgwOTQyMiJdfSwiaWF0IjoxNzI4ODEyMjI1fQ.dxvReCYF91zmS9VVT9stm09kmrhPvbsumxLkeYA2cBI";
+  const token: string = "your-token-here";
 
   useEffect(() => {
     const fetchPartyIdentifier = async (): Promise<Party> => {
       // Hardcoded party identifier
-      return "Alice::12202ed475a768f08e2253eccd8a78b9e78cddec352438f28c51d7cca35e15809422";
+      return "Alice::some-hash";
     };
 
     fetchPartyIdentifier().then(setParty);
@@ -24,7 +23,7 @@ const MainApp: React.FC = () => {
 
   if (!party) {
     return (
-      <Container>
+      <Container size="lg">
         <Text>Loading...</Text>
       </Container>
     );
@@ -54,12 +53,23 @@ const Main: React.FC = () => {
   };
 
   return (
-    <Container>
-      <p mt="xl">Connected to DAML Ledger as {party}</p>
-      <Button onClick={createTestContract} mt="md" variant="filled">
+    <Container size="lg" py="xl">
+      <Text mt="xl">Connected to DAML Ledger as {party}</Text>
+      <Button
+        onClick={createTestContract}
+        mt="md"
+        variant="filled"
+        color="darkGray"
+      >
         Create Test Contract
       </Button>
-      <Button component={Link} to="/" mt="md" variant="outline">
+      <Button
+        component={Link}
+        to="/"
+        mt="md"
+        variant="outline"
+        color="darkGray"
+      >
         Back to Home
       </Button>
     </Container>

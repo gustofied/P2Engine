@@ -1,19 +1,18 @@
-// HomePage.tsx
 import React from "react";
 import { Link } from "react-router-dom";
 import {
-  Button,
   Container,
   Title,
   Text,
   Image,
   Grid,
   Divider,
+  Button,
 } from "@mantine/core";
 
 const HomePage: React.FC = () => {
   return (
-    <Container size="md" py="xl">
+    <Container size="lg" py="xl">
       <Grid gutter="lg" align="center">
         <Grid.Col xs={12} md={6}>
           <Image
@@ -21,6 +20,7 @@ const HomePage: React.FC = () => {
             alt="Architectural Design"
             radius="md"
             withPlaceholder
+            style={{ width: "100%", height: "auto" }}
           />
         </Grid.Col>
         <Grid.Col xs={12} md={6}>
@@ -38,13 +38,7 @@ const HomePage: React.FC = () => {
               to="/app"
               size="md"
               mt="xl"
-              sx={{
-                backgroundColor: "#363946",
-                color: "#fff", // Text color to be white
-                "&:hover": {
-                  backgroundColor: "#4b4f5e", // Slightly lighter gray on hover
-                },
-              }}
+              color="darkGray"
             >
               Go to Market
             </Button>

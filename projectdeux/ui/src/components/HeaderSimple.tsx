@@ -4,9 +4,9 @@ import {
   Container,
   Group,
   Burger,
-  Drawer,
-  ScrollArea,
-  useMantineTheme,
+  Paper,
+  Transition,
+  Image,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Link, useLocation } from "react-router-dom";
@@ -18,10 +18,8 @@ const links = [
 ];
 
 export function HeaderSimple() {
-  const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
-    useDisclosure(false);
+  const [opened, { toggle }] = useDisclosure(false);
   const location = useLocation();
-  const theme = useMantineTheme();
 
   const items = links.map((link) => {
     const isActive = location.pathname === link.link;
@@ -31,7 +29,9 @@ export function HeaderSimple() {
         to={link.link}
         className={classes.link}
         data-active={isActive || undefined}
-        onClick={closeDrawer} // Close drawer on link click
+        onClick={() => {
+          if (opened) toggle();
+        }}
       >
         {link.label}
       </Link>
@@ -40,40 +40,32 @@ export function HeaderSimple() {
 
   return (
     <header className={classes.header}>
-      <Container className={classes.inner}>
+      <Container size="lg" className={classes.inner}>
         <Link to="/" className={classes.logo}>
-          <img src="/logo.png" alt="Logo" height="30" />
+          <Image src="/logo.png" alt="Logo" height={30} />
         </Link>
-        <Group spacing={5} className={classes.links}>
-          {items}
-        </Group>
+        <Group className={classes.linksDesktop}>{items}</Group>
         <Burger
-          opened={drawerOpened}
-          onClick={toggleDrawer}
-          className={classes.burger}
+          opened={opened}
+          onClick={toggle}
+          className={classes.burgerIcon}
           size="sm"
-          aria-label="Toggle navigation"
         />
       </Container>
 
-      <Drawer
-        opened={drawerOpened}
-        onClose={closeDrawer}
-        padding="md"
-        size="100%"
-        className={classes.drawer}
-        withCloseButton={false}
-        zIndex={1000}
+      {/* Mobile menu */}
+      <Transition
+        mounted={opened}
+        transition="slide-down"
+        duration={200}
+        timingFunction="ease"
       >
-        <div className={classes.drawerHeader}>
-          <button className={classes.closeButton} onClick={closeDrawer}>
-            &times;
-          </button>
-        </div>
-        <ScrollArea style={{ height: "calc(100vh - 60px)" }}>
-          <Container className={classes.drawerContent}>{items}</Container>
-        </ScrollArea>
-      </Drawer>
+        {(styles) => (
+          <Paper className={classes.mobileMenu} style={styles}>
+            {items}
+          </Paper>
+        )}
+      </Transition>
     </header>
   );
 }
