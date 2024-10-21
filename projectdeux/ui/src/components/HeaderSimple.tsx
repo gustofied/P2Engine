@@ -6,7 +6,7 @@ import {
   Burger,
   Drawer,
   ScrollArea,
-  ActionIcon,
+  useMantineTheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Link, useLocation } from "react-router-dom";
@@ -21,28 +21,28 @@ export function HeaderSimple() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const location = useLocation();
+  const theme = useMantineTheme();
 
-  const items = links.map((link) => (
-    <Link
-      key={link.label}
-      to={link.link}
-      className={classes.link}
-      data-active={location.pathname === link.link || undefined}
-      onClick={closeDrawer} // Close drawer on link click
-    >
-      {link.label}
-    </Link>
-  ));
+  const items = links.map((link) => {
+    const isActive = location.pathname === link.link;
+    return (
+      <Link
+        key={link.label}
+        to={link.link}
+        className={classes.link}
+        data-active={isActive || undefined}
+        onClick={closeDrawer} // Close drawer on link click
+      >
+        {link.label}
+      </Link>
+    );
+  });
 
   return (
     <header className={classes.header}>
       <Container className={classes.inner}>
         <Link to="/" className={classes.logo}>
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9kuhSNFoFRpbOdB_b54Hh02g9mhHMr3mTJg&s"
-            alt="Logo"
-            height="30"
-          />
+          <img src="/logo.png" alt="Logo" height="30" />
         </Link>
         <Group spacing={5} className={classes.links}>
           {items}
@@ -63,10 +63,11 @@ export function HeaderSimple() {
         size="100%"
         className={classes.drawer}
         withCloseButton={false}
+        zIndex={1000}
       >
         <div className={classes.drawerHeader}>
           <button className={classes.closeButton} onClick={closeDrawer}>
-            &times; {/* Unicode for the "X" symbol */}
+            &times;
           </button>
         </div>
         <ScrollArea style={{ height: "calc(100vh - 60px)" }}>
