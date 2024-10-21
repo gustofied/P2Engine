@@ -1,8 +1,7 @@
 // pages/NotFoundPage.tsx
 import React from "react";
 import { Link } from "react-router-dom";
-import { Container, Title, Text } from "@mantine/core";
-import StyledButton from "../components/StyledButton";
+import { Container, Title, Text, Button } from "@mantine/core";
 
 const NotFoundPage: React.FC = () => {
   return (
@@ -13,8 +12,8 @@ const NotFoundPage: React.FC = () => {
       <Text size="md" color="dimmed" mt="sm">
         The page you're looking for doesn't exist.
       </Text>
-      <Link to="/" style={{ textDecoration: "none" }}>
-        <StyledButton mt="xl">Go to Home</StyledButton>
+      <Link to="/">
+        <Button mt="xl">Go to Home</Button>
       </Link>
     </Container>
   );
