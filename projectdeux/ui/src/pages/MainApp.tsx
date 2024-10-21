@@ -55,9 +55,7 @@ const Main: React.FC = () => {
 
   return (
     <Container>
-      <Title order={2} mt="xl">
-        Connected to DAML Ledger as {party}
-      </Title>
+      <p mt="xl">Connected to DAML Ledger as {party}</p>
       <Button onClick={createTestContract} mt="md" variant="filled">
         Create Test Contract
       </Button>

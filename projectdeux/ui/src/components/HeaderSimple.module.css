@@ -21,25 +21,28 @@
   text-decoration: none;
 }
 
-.links {
-  display: flex;
-  gap: 10px;
-}
-
+/* HeaderSimple.module.css */
 .link {
+  /* existing styles */
   position: relative;
   display: block;
   padding: 8px 12px;
   border-radius: var(--mantine-radius-sm);
   text-decoration: none;
   color: var(--mantine-color-gray-7);
+  font-family: "Instrument Serif", serif;
   font-size: var(--mantine-font-size-sm);
   font-weight: 500;
   transition: background-color 0.2s ease;
 }
 
 .link:hover {
-  background-color: var(--mantine-color-gray-0);
+  background-color: var(--mantine-color-brand-1);
+}
+
+.link[data-active="true"] {
+  background-color: var(--mantine-color-brand-6);
+  color: var(--mantine-color-white);
 }
 
 .link[data-active] {
