@@ -3,7 +3,16 @@ import DamlLedger from "@daml/react";
 import { useParty, useLedger } from "@daml/react";
 import { TestTemplate } from "@daml.js/projectdeux/lib/Test";
 import { Party } from "@daml/types";
-import { Button, Container, Text } from "@mantine/core";
+import {
+  Button,
+  Container,
+  Text,
+  Header,
+  Group,
+  Loader,
+  Title,
+  Space,
+} from "@mantine/core";
 import { Link } from "react-router-dom";
 
 const MainApp: React.FC = () => {
@@ -15,7 +24,7 @@ const MainApp: React.FC = () => {
   useEffect(() => {
     const fetchPartyIdentifier = async (): Promise<Party> => {
       // Hardcoded party identifier
-      return "Alice::some-hash";
+      return "Alice::some-hashhashvhashhashhashhashhash";
     };
 
     fetchPartyIdentifier().then(setParty);
@@ -23,16 +32,21 @@ const MainApp: React.FC = () => {
 
   if (!party) {
     return (
-      <Container size="lg">
-        <Text>Loading...</Text>
+      <Container size="lg" style={{ textAlign: "center", marginTop: "10%" }}>
+        <Loader size="lg" variant="bars" />
+        <Text mt="md" size="md" color="dimmed">
+          Connecting to DAML Ledger...
+        </Text>
       </Container>
     );
   }
 
   return (
-    <DamlLedger token={token} party={party}>
-      <Main />
-    </DamlLedger>
+    <>
+      <DamlLedger token={token} party={party}>
+        <Main />
+      </DamlLedger>
+    </>
   );
 };
 
@@ -53,25 +67,23 @@ const Main: React.FC = () => {
   };
 
   return (
-    <Container size="lg" py="xl">
-      <Text mt="xl">Connected to DAML Ledger as {party}</Text>
-      <Button
-        onClick={createTestContract}
-        mt="md"
-        variant="filled"
-        color="darkGray"
-      >
-        Create Test Contract
-      </Button>
-      <Button
-        component={Link}
-        to="/"
-        mt="md"
-        variant="outline"
-        color="darkGray"
-      >
-        Back to Home
-      </Button>
+    <Container size="md" py="xl" style={{ textAlign: "center" }}>
+      <Title order={2} mt="xl">
+        Welcome, {party}!
+      </Title>
+      <Text mt="md" size="md" color="dimmed">
+        You are connected to the DAML Ledger as <strong>{party}</strong>. Use
+        the button below to create a test contract.
+      </Text>
+      <Space h="lg" />
+      <Group position="center" spacing="md">
+        <Button onClick={createTestContract} mt="md" color="teal">
+          Create Test Contract
+        </Button>
+        <Button component={Link} to="/" mt="md" variant="outline" color="gray">
+          Back to Home
+        </Button>
+      </Group>
     </Container>
   );
 };
