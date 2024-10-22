@@ -1,3 +1,4 @@
+// pages/MainApp.tsx
 import React, { useState, useEffect } from "react";
 import DamlLedger from "@daml/react";
 import { useParty, useLedger } from "@daml/react";
@@ -7,11 +8,10 @@ import {
   Button,
   Container,
   Text,
-  Header,
   Group,
   Loader,
   Title,
-  Space,
+  Paper,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
 
@@ -67,23 +67,39 @@ const Main: React.FC = () => {
   };
 
   return (
-    <Container size="md" py="xl" style={{ textAlign: "center" }}>
-      <Title order={2} mt="xl">
-        Welcome, {party}!
-      </Title>
-      <Text mt="md" size="md" color="dimmed">
-        You are connected to the DAML Ledger as <strong>{party}</strong>. Use
-        the button below to create a test contract.
-      </Text>
-      <Space h="lg" />
-      <Group position="center" spacing="md">
-        <Button onClick={createTestContract} mt="md" color="teal">
-          Create Test Contract
-        </Button>
-        <Button component={Link} to="/" mt="md" variant="outline" color="gray">
-          Back to Home
-        </Button>
-      </Group>
+    <Container size="lg" py="xl" style={{ textAlign: "center" }}>
+      <Paper
+        shadow="sm"
+        p="md"
+        style={{
+          height: "80vh", // Adjusted height
+          width: "120%", // Width set to 120%
+          marginLeft: "-10%", // Negative margin to center
+          marginRight: "-10%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          backgroundColor: "transparent", // Transparent background
+          border: "1px solid #ccc", // Border around the window
+          borderRadius: "8px", // Rounded corners
+        }}
+      >
+        <div>
+          <Title order={2} mt="xl">
+            Welcome, {party}!
+          </Title>
+          <Text mt="md" size="md" color="dimmed">
+            You are connected to the DAML Ledger as <strong>{party}</strong>.
+            Use the buttons below to interact with the ledger.
+          </Text>
+        </div>
+        <Group position="center" spacing="md" mt="xl">
+          <Button onClick={createTestContract}>Create Test Contract</Button>
+          <Button component={Link} to="/">
+            Back to Home
+          </Button>
+        </Group>
+      </Paper>
     </Container>
   );
 };

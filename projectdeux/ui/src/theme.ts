@@ -1,4 +1,4 @@
-export const theme = {
+export const theme: MantineThemeOverride = {
   fontFamily: "Roboto, sans-serif",
 
   headings: {
@@ -7,15 +7,10 @@ export const theme = {
 
   breakpoints: {
     xxs: 320,
-
     xs: 480,
-
     sm: 768,
-
     md: 1024,
-
     lg: 1280,
-
     xl: 1440,
   },
 
@@ -34,16 +29,16 @@ export const theme = {
     ],
 
     darkGray: [
-      "#f5f5f5",
-      "#e0e0e0",
-      "#cccccc",
-      "#b3b3b3",
-      "#999999",
-      "#808080",
-      "#666666",
-      "#4d4d4d",
-      "#333333",
-      "#1a1a1a",
+      "#363946", // lightest gray
+      "#363946", // very light gray
+      "#363946", // light gray
+      "#363946", // medium-light gray
+      "#363946", // medium gray
+      "#363946", // dark gray (your desired mid-tone)
+      "#666666", // slightly lighter dark gray
+      "#363946", // darker gray
+      "#363946", // very dark gray
+      "#363946", // darkest gray
     ],
   },
 
@@ -57,9 +52,18 @@ export const theme = {
 
   components: {
     Button: {
-      styles: () => ({
+      styles: (theme: { colors: { darkGray: any[] } }) => ({
         root: {
-          borderRadius: "8px",
+          backgroundColor: theme.colors.darkGray[0], // Set default state color to #363946
+          "&:hover": {
+            backgroundColor: theme.colors.darkGray[0], // Set hover state color to #363946
+          },
+          "&:active": {
+            backgroundColor: theme.colors.darkGray[0], // Set active state color to #363946
+          },
+          "&:disabled": {
+            backgroundColor: theme.colors.darkGray[2], // Optional: Set disabled state if needed
+          },
         },
       }),
     },

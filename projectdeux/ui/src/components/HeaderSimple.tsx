@@ -1,4 +1,3 @@
-// HeaderSimple.tsx
 import React from "react";
 import {
   Container,
@@ -15,6 +14,7 @@ import classes from "./HeaderSimple.module.css";
 const links = [
   { link: "/", label: "HOME" },
   { link: "/app", label: "APP" },
+  { link: "/about", label: "ABOUT" }, // Add the ABOUT link
 ];
 
 export function HeaderSimple() {
