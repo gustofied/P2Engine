@@ -74,6 +74,11 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  pointer-events: auto; /* Ensure pointer events work when visible */
+}
+
+.mobileMenu-hidden {
+  pointer-events: none; /* Disable pointer events when hidden */
 }
 
 @media (min-width: 768px) {

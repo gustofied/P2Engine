@@ -14,7 +14,7 @@ import classes from "./HeaderSimple.module.css";
 const links = [
   { link: "/", label: "HOME" },
   { link: "/app", label: "APP" },
-  { link: "/about", label: "ABOUT" }, // Add the ABOUT link
+  { link: "/about", label: "ABOUT" },
 ];
 
 export function HeaderSimple() {
@@ -61,7 +61,13 @@ export function HeaderSimple() {
         timingFunction="ease"
       >
         {(styles) => (
-          <Paper className={classes.mobileMenu} style={styles}>
+          <Paper
+            className={classes.mobileMenu}
+            style={{
+              ...styles,
+              pointerEvents: opened ? "auto" : "none", // Ensure it doesn't block clicks when closed
+            }}
+          >
             {items}
           </Paper>
         )}
