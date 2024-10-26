@@ -1,0 +1,21 @@
+module Lab1 where
+
+import Daml.Script
+
+quadFunction: Int -> Int -> Int -> Int
+quadFunction x y z = 3*(x^2)+ 2*y + z
+
+doubleMe: Int -> Int
+doubleMe x = 2*x
+
+doubleUs : Int -> Int -> Int
+doubleUs x y = doubleMe x + doubleMe y
+
+
+testQuadFunction: Script ()
+testQuadFunction = script do
+    debug $ doubleMe 3
+    debug $ doubleUs 3 4
+    debug $ 3 `doubleUs`` 4
+    debug $ quadFunction 1 2 3
+    debug $ (\x y z -> 3*(x^2) + 2*y + z) 1 2 3

@@ -1,0 +1,11 @@
+module Lab2 where
+
+import Daml.Script
+
+
+test1: Script()
+test1 = script do
+    let 
+        name: Int
+        name = 2
+    debug $ name
