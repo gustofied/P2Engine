@@ -1,237 +1,131 @@
-// pages/About.tsx
 import React, { useState } from "react";
-import {
-  Container,
-  Title,
-  Text,
-  Image,
-  Grid,
-  Divider,
-  Paper,
-  Button,
-  Group,
-  ThemeIcon,
-  Card,
-  Avatar,
-} from "@mantine/core";
-import {
-  FaRocket,
-  FaCheck,
-  FaUsers,
-  FaArrowRight,
-  FaRegStar,
-} from "react-icons/fa";
+import { Container, Title, Stack } from "@mantine/core";
+import ReactFlow, {
+  Background,
+  addEdge,
+  Edge,
+  Connection,
+  Node,
+} from "react-flow-renderer";
+import "react-flow-renderer/dist/style.css";
 
-const testimonials = [
-  "This platform has completely transformed my investment journey. I feel more confident and secure in every trade. Thank you for building something so impactful! - Emily L.",
-  "The user experience is fantastic, and the support team is always there to help. I’ve recommended this platform to many of my friends. - Michael B.",
-  "Secure, efficient, and innovative. This platform is exactly what I was looking for to diversify my investments. - Sarah T.",
-];
+// Define `Elements` as a union type of `Node` and `Edge` arrays
+type Elements = (Node | Edge)[];
 
 const About: React.FC = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const initialElements: Elements = [
+    {
+      id: "1",
+      type: "input",
+      data: { label: "Welcome to React Flow!" },
+      position: { x: 250, y: 0 },
+    } as Node,
+    {
+      id: "2",
+      data: { label: "This is a default node" },
+      position: { x: 100, y: 100 },
+    } as Node,
+    {
+      id: "3",
+      data: { label: "Custom style node" },
+      position: { x: 400, y: 100 },
+      style: {
+        background: "#D6D5E6",
+        color: "#333",
+        border: "1px solid #222138",
+        width: 180,
+      },
+    } as Node,
+    {
+      id: "4",
+      data: { label: "Another default node" },
+      position: { x: 250, y: 200 },
+    } as Node,
+    {
+      id: "5",
+      data: { label: "Node ID: 5" },
+      position: { x: 250, y: 325 },
+    } as Node,
+    {
+      id: "6",
+      type: "output",
+      data: { label: "Output node" },
+      position: { x: 100, y: 480 },
+    } as Node,
+    {
+      id: "7",
+      type: "output",
+      data: { label: "Another output node" },
+      position: { x: 400, y: 450 },
+    } as Node,
+    { id: "e1-2", source: "1", target: "2", label: "Edge label" } as Edge,
+    { id: "e1-3", source: "1", target: "3" } as Edge,
+    {
+      id: "e3-4",
+      source: "3",
+      target: "4",
+      animated: true,
+      label: "Animated edge",
+    } as Edge,
+    {
+      id: "e4-5",
+      source: "4",
+      target: "5",
+      arrowHeadType: "arrowclosed",
+      label: "Edge with arrow",
+    } as Edge,
+    {
+      id: "e5-6",
+      source: "5",
+      target: "6",
+      type: "smoothstep",
+      label: "Smooth step edge",
+    } as Edge,
+    {
+      id: "e5-7",
+      source: "5",
+      target: "7",
+      type: "step",
+      style: { stroke: "#f6ab6c" },
+      label: "Step edge",
+      animated: true,
+      labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+    } as Edge,
+  ];
 
-  const handleNext = () => {
-    setActiveIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
-  };
+  const [nodes, setNodes] = useState<Node[]>(
+    initialElements.filter((el) => "position" in el) as Node[]
+  );
+  const [edges, setEdges] = useState<Edge[]>(
+    initialElements.filter((el) => "source" in el) as Edge[]
+  );
 
-  const handlePrev = () => {
-    setActiveIndex(
-      (prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length
-    );
-  };
+  const onConnect = (params: Edge | Connection) =>
+    setEdges((eds) => addEdge(params, eds));
 
   return (
     <Container size="lg" py="xl">
-      <Title order={1} align="center" mb="md">
-        About Us
-      </Title>
-      <Divider mb="xl" />
-
-      {/* Our Story Section */}
-      <Title order={2} align="center" mt="xl" mb="md">
-        Our Story
-      </Title>
-      <Text size="md" color="dimmed" align="center" px="xl" mb="xl">
-        Founded in 2020, our platform was born out of a vision to bridge the gap
-        between traditional finance and the rapidly evolving world of
-        blockchain. What started as a small team with a big idea has grown into
-        a trusted and innovative platform, transforming the financial landscape.
-        We’re dedicated to providing secure, transparent, and efficient
-        solutions for investors around the globe.
-      </Text>
-
-      <Divider my="xl" />
-
-      {/* Our Vision Section */}
-      <Title order={2} align="center" mt="xl" mb="md">
-        Our Vision
-      </Title>
-      <Text size="md" color="dimmed" align="center" px="xl" mb="xl">
-        Our vision is to empower individuals and businesses with accessible,
-        trustworthy, and efficient tools that redefine financial freedom and
-        opportunity. We envision a world where every financial interaction is
-        seamless, secure, and rewarding.
-      </Text>
-
-      <Divider my="xl" />
-
-      {/* Image Section */}
-      <Grid gutter="lg" align="center" mb="xl">
-        <Grid.Col xs={12} md={6}>
-          <Image
-            src="https://images.unsplash.com/photo-1534126511673-b6899657816a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60"
-            alt="About Image"
-            radius="md"
-            withPlaceholder
-            style={{ width: "100%", height: "auto" }}
-          />
-        </Grid.Col>
-
-        {/* Right Column: Text */}
-        <Grid.Col xs={12} md={6}>
-          <Text size="md" color="dimmed" align="center" px="md">
-            We are a cutting-edge platform that bridges traditional financial
-            assets with blockchain technology. Our mission is to revolutionize
-            financial systems, providing innovative ways for individuals and
-            institutions to invest and trade securely and efficiently.
-          </Text>
-          <Text size="md" color="dimmed" align="center" mt="md" px="md">
-            By combining robust technological expertise with a deep
-            understanding of financial markets, we aim to empower users with a
-            seamless, secure, and dynamic investment experience.
-          </Text>
-        </Grid.Col>
-      </Grid>
-
-      <Divider my="xl" />
-
-      {/* Values Section */}
-      <Title order={2} align="center" mt="xl" mb="lg">
-        Our Values
-      </Title>
-      <Grid gutter="lg" align="center">
-        {/* Innovation Card */}
-        <Grid.Col xs={12} md={4}>
-          <Paper withBorder shadow="md" p="md" radius="md">
-            <Group align="center" position="center">
-              <ThemeIcon color="blue" radius="xl" size="xl">
-                <FaRocket size={30} />
-              </ThemeIcon>
-            </Group>
-            <Text align="center" weight={700} size="lg" mt="md">
-              Innovation
-            </Text>
-            <Text size="sm" color="dimmed" align="center" mt="sm">
-              We strive to stay at the forefront of technology, continually
-              innovating to provide the best solutions for modern finance.
-            </Text>
-          </Paper>
-        </Grid.Col>
-
-        {/* Integrity Card */}
-        <Grid.Col xs={12} md={4}>
-          <Paper withBorder shadow="md" p="md" radius="md">
-            <Group align="center" position="center">
-              <ThemeIcon color="green" radius="xl" size="xl">
-                <FaCheck size={30} />
-              </ThemeIcon>
-            </Group>
-            <Text align="center" weight={700} size="lg" mt="md">
-              Integrity
-            </Text>
-            <Text size="sm" color="dimmed" align="center" mt="sm">
-              We prioritize transparency and honesty, ensuring that every
-              decision and solution serves the best interest of our clients.
-            </Text>
-          </Paper>
-        </Grid.Col>
-
-        {/* Community Card */}
-        <Grid.Col xs={12} md={4}>
-          <Paper withBorder shadow="md" p="md" radius="md">
-            <Group align="center" position="center">
-              <ThemeIcon color="purple" radius="xl" size="xl">
-                <FaUsers size={30} />
-              </ThemeIcon>
-            </Group>
-            <Text align="center" weight={700} size="lg" mt="md">
-              Community
-            </Text>
-            <Text size="sm" color="dimmed" align="center" mt="sm">
-              Our platform is built for people, and we believe in creating a
-              supportive and inclusive financial community.
-            </Text>
-          </Paper>
-        </Grid.Col>
-      </Grid>
-
-      <Divider my="xl" />
-
-      {/* Impact Section */}
-      <Title order={2} align="center" mt="xl" mb="md">
-        Our Impact
-      </Title>
-      <Text size="sm" color="dimmed" align="center" mb="xl">
-        <ul>
-          <li>Over 1 million trades executed</li>
-          <li>Trusted by 10,000+ users worldwide</li>
-          <li>Achieved 99.9% uptime and secure transactions</li>
-        </ul>
-      </Text>
-
-      <Divider my="xl" />
-
-      {/* Testimonials Section */}
-      <Title order={2} align="center" mt="xl" mb="lg">
-        What Our Users Say
-      </Title>
-      <Group position="center" mb="md">
-        <Button variant="outline" onClick={handlePrev}>
-          Previous
-        </Button>
-        <Button variant="outline" onClick={handleNext}>
-          Next
-        </Button>
-      </Group>
-      <Paper shadow="md" p="md" radius="md" withBorder>
-        <Text size="sm" color="dimmed" align="center">
-          {testimonials[activeIndex]}
-        </Text>
-      </Paper>
-
-      <Divider my="xl" />
-
-      {/* Customer Support Section */}
-      <Title order={2} align="center" mt="xl" mb="md">
-        Dedicated Customer Support
-      </Title>
-      <Text size="md" color="dimmed" align="center" px="xl" mb="lg">
-        Our team is here to help every step of the way. We are committed to
-        providing reliable, round-the-clock support to answer questions and
-        resolve issues quickly and efficiently.
-      </Text>
-
-      <Divider my="xl" />
-
-      {/* Call to Action */}
-      <Title order={2} align="center" mt="xl" mb="lg">
-        Get in Touch
-      </Title>
-      <Text size="md" color="dimmed" align="center" px="xl" mb="lg">
-        Want to learn more about our platform, get involved, or collaborate with
-        us? Reach out, and let’s build the future of finance together.
-      </Text>
-
-      <Group position="center">
-        <Button
-          rightIcon={<FaArrowRight />}
-          variant="gradient"
-          gradient={{ from: "indigo", to: "cyan" }}
-        >
-          Contact Us
-        </Button>
-      </Group>
+      <style>
+        {`
+          .react-flow__attribution {
+            display: none;
+          }
+        `}
+      </style>
+      <Stack align="center" spacing="xl" py="xl">
+        <Title order={2}>Trading Workflow</Title>
+        <Container size="md" style={{ width: "100%", height: 500 }}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onConnect={onConnect}
+            deleteKeyCode="Delete" // Use "Delete" key to delete elements
+            fitView
+          >
+            <Background color="#aaa" gap={16} />
+          </ReactFlow>
+        </Container>
+      </Stack>
     </Container>
   );
 };
