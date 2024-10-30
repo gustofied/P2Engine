@@ -1,4 +1,6 @@
 // craco.config.js
+const path = require("path");
+
 module.exports = {
   webpack: {
     configure: (webpackConfig) => {
@@ -14,7 +16,14 @@ module.exports = {
 
         if (jsRule) {
           // Exclude all node_modules except react-flow-renderer
-          jsRule.exclude = /node_modules[\\/](?!react-flow-renderer)/;
+          jsRule.exclude = /node_modules\/(?!react-flow-renderer)/;
+
+          // Include react-flow-renderer's ES module path
+          const reactFlowPath = path.resolve(
+            __dirname,
+            "node_modules/react-flow-renderer"
+          );
+          jsRule.include = [jsRule.include, reactFlowPath];
         }
       }
       return webpackConfig;

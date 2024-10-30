@@ -17,6 +17,7 @@
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-flow-renderer": "^10.3.9",
+    "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4"
   },
   "scripts": {
@@ -50,8 +51,9 @@
     "@craco/craco": "^6.4.3",
     "@types/dotenv": "^8.2.0",
     "@types/jwt-simple": "^0.5.33",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
+    "@types/react": "^17.0.83",
+    "@types/react-dom": "^17.0.25",
+    "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
     "http-proxy-middleware": "^1.0.4",
     "patch-package": "^8.0.0",

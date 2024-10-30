@@ -1,3 +1,5 @@
+import { MantineThemeOverride, MantineTheme } from "@mantine/core";
+
 export const theme: MantineThemeOverride = {
   fontFamily: "Roboto, sans-serif",
 
@@ -6,7 +8,6 @@ export const theme: MantineThemeOverride = {
   },
 
   breakpoints: {
-    xxs: 320,
     xs: 480,
     sm: 768,
     md: 1024,
@@ -52,17 +53,17 @@ export const theme: MantineThemeOverride = {
 
   components: {
     Button: {
-      styles: (theme: { colors: { darkGray: any[] } }) => ({
+      styles: (theme: MantineTheme) => ({
         root: {
           backgroundColor: theme.colors.darkGray[0], // Set default state color to #363946
           "&:hover": {
-            backgroundColor: theme.colors.darkGray[0], // Set hover state color to #363946
+            backgroundColor: theme.colors.darkGray[1], // Adjust hover state color as needed
           },
           "&:active": {
-            backgroundColor: theme.colors.darkGray[0], // Set active state color to #363946
+            backgroundColor: theme.colors.darkGray[2], // Adjust active state color as needed
           },
           "&:disabled": {
-            backgroundColor: theme.colors.darkGray[2], // Optional: Set disabled state if needed
+            backgroundColor: theme.colors.darkGray[3], // Optional: Set disabled state if needed
           },
         },
       }),
