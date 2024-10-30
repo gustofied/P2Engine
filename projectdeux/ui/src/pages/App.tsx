@@ -1,5 +1,6 @@
 // App.tsx
 import React from "react";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import HomePage from "./HomePage";
 import MainApp from "./MainApp";

@@ -8,8 +8,17 @@ import ReactFlow, {
   Connection,
 } from "react-flow-renderer";
 
-// CSS to hide the React Flow watermark
 import "../index.css"; // Assuming the CSS file is named styles.css
+
+// TypeScript interface for FlowCard props
+interface FlowCardProps {
+  title: string;
+  description: string;
+  flow: {
+    nodes: Node[];
+    edges: Edge[];
+  };
+}
 
 // Biological System Flow (Square Nodes)
 const createBioSystemFlow = () => ({
@@ -126,8 +135,8 @@ const createTokenizedWorkflowFlow = () => ({
 });
 
 // FlowCard component with square alignment and no zoom or movement
-const FlowCard = ({ title, description, flow }) => {
-  const [nodes, setNodes] = useState<Node[]>(flow.nodes);
+const FlowCard: React.FC<FlowCardProps> = ({ title, description, flow }) => {
+  const [nodes] = useState<Node[]>(flow.nodes);
   const [edges, setEdges] = useState<Edge[]>(flow.edges);
 
   const onConnect = (params: Edge | Connection) =>
@@ -136,7 +145,6 @@ const FlowCard = ({ title, description, flow }) => {
   return (
     <Card
       shadow="lg"
-      padding="lg"
       radius="xl"
       withBorder
       style={{
@@ -248,7 +256,6 @@ const About = () => {
 
         <Card
           shadow="lg"
-          padding="lg"
           radius="md"
           withBorder
           style={{
