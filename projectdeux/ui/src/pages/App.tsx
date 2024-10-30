@@ -1,6 +1,6 @@
 // App.tsx
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import HomePage from "./HomePage";
 import MainApp from "./MainApp";
 import About from "./About"; // Import the About component
