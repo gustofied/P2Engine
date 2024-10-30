@@ -1,6 +1,6 @@
 // App.tsx
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import HomePage from "./HomePage";
 import MainApp from "./MainApp";
 import About from "./About"; // Import the About component
@@ -12,14 +12,12 @@ const App: React.FC = () => {
     <>
       <HeaderSimple />
       <div style={{ paddingTop: "56px" }}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/app" element={<MainApp />} />
-          <Route path="/about" element={<About />} />{" "}
-          {/* Add the About route */}
-          <Route path="*" element={<NotFoundPage />} />{" "}
-          {/* Handle unmatched routes */}
-        </Routes>
+        <Switch>
+          <Route exact path="/" component={HomePage} />
+          <Route path="/app" component={MainApp} />
+          <Route path="/about" component={About} /> {/* About route */}
+          <Route component={NotFoundPage} /> {/* Handle unmatched routes */}
+        </Switch>
       </div>
     </>
   );
