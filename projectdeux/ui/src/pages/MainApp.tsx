@@ -1,105 +1,103 @@
 // pages/MainApp.tsx
 
 import React, { useState, useEffect } from "react";
-import DamlLedger from "@daml/react";
-import { useParty, useLedger } from "@daml/react";
-import { TestTemplate } from "@daml.js/projectdeux/lib/Test";
-import { Party } from "@daml/types";
 import {
-  Button,
   Container,
   Text,
-  Group,
   Loader,
+  Image,
   Title,
   Paper,
+  Box,
 } from "@mantine/core";
-import { Link } from "react-router-dom";
 
 const MainApp: React.FC = () => {
-  const [party, setParty] = useState<Party | null>(null);
-
-  // Hardcoded token
-  const token: string = "your-token-here";
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPartyIdentifier = async (): Promise<Party> => {
-      // Hardcoded party identifier
-      return "Alice::some-hashhashvhashhashhashhashhash";
-    };
-
-    fetchPartyIdentifier().then(setParty);
+    // Simulate loading process for a brief moment
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
   }, []);
 
-  if (!party) {
+  if (loading) {
     return (
       <Container size="lg" style={{ textAlign: "center", marginTop: "10%" }}>
         <Loader size="lg" variant="bars" />
         <Text mt="md" size="md" color="dimmed">
-          Connecting to DAML Ledger...
+          Connecting to Testnet...
         </Text>
       </Container>
     );
   }
 
   return (
-    <>
-      <DamlLedger token={token} party={party}>
-        <Main />
-      </DamlLedger>
-    </>
-  );
-};
-
-export default MainApp;
-
-const Main: React.FC = () => {
-  const party = useParty();
-  const ledger = useLedger();
-
-  const createTestContract = async () => {
-    try {
-      await ledger.create(TestTemplate, { owner: party });
-      alert("Test contract created successfully!");
-    } catch (error) {
-      console.error("Error creating test contract:", error);
-      alert(`Error creating test contract: ${error}`);
-    }
-  };
-
-  return (
-    <Container size="lg" py="xl" style={{ textAlign: "center" }}>
+    <Container
+      size="lg"
+      py="xl"
+      style={{ display: "flex", justifyContent: "center" }}
+    >
       <Paper
-        shadow="sm"
-        p="md"
+        shadow="md"
+        p="xl"
         style={{
-          minHeight: "60vh",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
+          width: "120%",
+          minHeight: "70vh",
+          textAlign: "center",
           backgroundColor: "#ffffff",
           border: "1px solid #e0e0e0",
           borderRadius: "8px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
         }}
       >
-        <div>
-          <Title order={2} mt="xl">
-            Welcome, {party}!
-          </Title>
-          <Text mt="md" size="md" color="dimmed">
-            You are connected to the DAML Ledger as <strong>{party}</strong>.
-            Use the buttons below to interact with the ledger.
-          </Text>
+        <Title order={1} mb="lg">
+          Testnet in Development
+        </Title>
+        <Text size="md" color="dimmed" mb="xl">
+          Built on DAML, deployed on the Canton Network. Stay tuned, we’re going
+          live on testnet soon!
+        </Text>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Box style={{ width: "auto", paddingRight: "4px" }}>
+            <a
+              href="https://www.digitalasset.com/developers"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="https://store-images.s-microsoft.com/image/apps.34431.e186ae4b-0bb8-4c56-b62f-73adbc782b49.e173908c-9376-445d-9cf2-5582e82b5b55.6897edf1-de16-4d72-959e-035ebb037727"
+                alt="DAML Logo"
+                height={75}
+                fit="contain"
+              />
+            </a>
+          </Box>
+          <Box style={{ width: "auto", paddingLeft: "4px" }}>
+            <a
+              href="https://www.canton.network/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="https://pbs.twimg.com/profile_images/1654160655975342080/Eev_0MNs_400x400.png"
+                alt="Canton Network Logo"
+                height={75}
+                fit="contain"
+              />
+            </a>
+          </Box>
         </div>
-        <Group position="center" spacing="md" mt="xl">
-          <Button onClick={createTestContract} variant="filled" color="brand">
-            Create Test Contract
-          </Button>
-          <Button component={Link} to="/" variant="outline" color="brand">
-            Back to Home
-          </Button>
-        </Group>
       </Paper>
     </Container>
   );
 };
+
+export default MainApp;
