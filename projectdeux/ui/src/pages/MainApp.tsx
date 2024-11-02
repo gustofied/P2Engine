@@ -1,4 +1,5 @@
 // pages/MainApp.tsx
+
 import React, { useState, useEffect } from "react";
 import DamlLedger from "@daml/react";
 import { useParty, useLedger } from "@daml/react";
@@ -72,16 +73,13 @@ const Main: React.FC = () => {
         shadow="sm"
         p="md"
         style={{
-          height: "80vh", // Adjusted height
-          width: "120%", // Width set to 120%
-          marginLeft: "-10%", // Negative margin to center
-          marginRight: "-10%",
+          minHeight: "60vh",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
-          backgroundColor: "transparent", // Transparent background
-          border: "1px solid #ccc", // Border around the window
-          borderRadius: "8px", // Rounded corners
+          justifyContent: "center",
+          backgroundColor: "#ffffff",
+          border: "1px solid #e0e0e0",
+          borderRadius: "8px",
         }}
       >
         <div>
@@ -94,8 +92,10 @@ const Main: React.FC = () => {
           </Text>
         </div>
         <Group position="center" spacing="md" mt="xl">
-          <Button onClick={createTestContract}>Create Test Contract</Button>
-          <Button component={Link} to="/">
+          <Button onClick={createTestContract} variant="filled" color="brand">
+            Create Test Contract
+          </Button>
+          <Button component={Link} to="/" variant="outline" color="brand">
             Back to Home
           </Button>
         </Group>

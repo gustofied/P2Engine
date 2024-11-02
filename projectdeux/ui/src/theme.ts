@@ -1,10 +1,13 @@
+// theme.ts
+
 import { MantineThemeOverride, MantineTheme } from "@mantine/core";
 
 export const theme: MantineThemeOverride = {
   fontFamily: "Roboto, sans-serif",
 
   headings: {
-    fontFamily: "Instrument Serif, serif",
+    fontFamily: "Instrument Serif, serif", // Reverted to original font
+    fontWeight: 700,
   },
 
   breakpoints: {
@@ -16,38 +19,26 @@ export const theme: MantineThemeOverride = {
   },
 
   colors: {
-    lightPink: [
-      "#ffe4e6",
-      "#ffccd5",
-      "#ffb3c2",
-      "#ff99af",
-      "#ff809c",
-      "#ff6689",
-      "#ff4d76",
-      "#ff3363",
-      "#ff1a50",
-      "#ff003d",
-    ],
-
     darkGray: [
-      "#363946", // lightest gray
-      "#363946", // very light gray
-      "#363946", // light gray
-      "#363946", // medium-light gray
-      "#363946", // medium gray
-      "#363946", // dark gray (your desired mid-tone)
-      "#666666", // slightly lighter dark gray
-      "#363946", // darker gray
-      "#363946", // very dark gray
-      "#363946", // darkest gray
+      "#f0f0f4", // index 0
+      "#d9d9e1", // index 1
+      "#c2c2cf", // index 2
+      "#ababbd", // index 3
+      "#9494aa", // index 4
+      "#7d7d98", // index 5
+      "#363946", // index 6, set to #363946
+      "#2f313e", // index 7
+      "#282a36", // index 8
+      "#21222c", // index 9
     ],
   },
 
   primaryColor: "darkGray",
+  primaryShade: 6,
 
   globalStyles: () => ({
     body: {
-      backgroundColor: "#f0f0f0",
+      backgroundColor: "#ffffff",
     },
   }),
 
@@ -55,18 +46,29 @@ export const theme: MantineThemeOverride = {
     Button: {
       styles: (theme: MantineTheme) => ({
         root: {
-          backgroundColor: theme.colors.darkGray[0], // Set default state color to #363946
+          backgroundColor: theme.colors.darkGray[6],
+          color: "#ffffff",
+          borderRadius: theme.radius.md,
+          fontWeight: 500,
           "&:hover": {
-            backgroundColor: theme.colors.darkGray[1], // Adjust hover state color as needed
-          },
-          "&:active": {
-            backgroundColor: theme.colors.darkGray[2], // Adjust active state color as needed
-          },
-          "&:disabled": {
-            backgroundColor: theme.colors.darkGray[3], // Optional: Set disabled state if needed
+            backgroundColor: theme.fn.darken(theme.colors.darkGray[6], 0.1),
           },
         },
       }),
+    },
+    Title: {
+      styles: {
+        root: {
+          color: "#2C3E50",
+        },
+      },
+    },
+    Text: {
+      styles: {
+        root: {
+          color: "#4A4A4A",
+        },
+      },
     },
   },
 };

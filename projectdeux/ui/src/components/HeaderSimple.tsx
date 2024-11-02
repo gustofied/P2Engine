@@ -1,3 +1,5 @@
+// components/HeaderSimple.tsx
+
 import React from "react";
 import {
   Container,
@@ -27,8 +29,7 @@ export function HeaderSimple() {
       <Link
         key={link.label}
         to={link.link}
-        className={classes.link}
-        data-active={isActive || undefined}
+        className={`${classes.link} ${isActive ? classes.activeLink : ""}`}
         onClick={() => {
           if (opened) toggle();
         }}
@@ -42,9 +43,11 @@ export function HeaderSimple() {
     <header className={classes.header}>
       <Container size="lg" className={classes.inner}>
         <Link to="/" className={classes.logo}>
-          <Image src="/logo.png" alt="Logo" height={30} />
+          <Image src="/logo.png" alt="Logo" height={40} />
         </Link>
-        <Group className={classes.linksDesktop}>{items}</Group>
+        <Group className={classes.linksDesktop} spacing={30}>
+          {items}
+        </Group>
         <Burger
           opened={opened}
           onClick={toggle}
@@ -54,24 +57,23 @@ export function HeaderSimple() {
       </Container>
 
       {/* Mobile menu */}
-      <Transition
-        mounted={opened}
-        transition="slide-down"
-        duration={200}
-        timingFunction="ease"
-      >
-        {(styles) => (
-          <Paper
-            className={classes.mobileMenu}
-            style={{
-              ...styles,
-              pointerEvents: opened ? "auto" : "none", // Ensure it doesn't block clicks when closed
-            }}
-          >
-            {items}
-          </Paper>
-        )}
-      </Transition>
+      {opened && (
+        <Transition
+          mounted={opened}
+          transition="slide-down"
+          duration={200}
+          timingFunction="ease"
+        >
+          {(styles) => (
+            <Paper
+              className={classes.mobileMenu}
+              style={{ ...styles, zIndex: 999 }}
+            >
+              {items}
+            </Paper>
+          )}
+        </Transition>
+      )}
     </header>
   );
 }

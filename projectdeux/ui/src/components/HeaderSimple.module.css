@@ -1,8 +1,10 @@
+/* components/HeaderSimple.module.css */
+
 .header {
   position: fixed;
   top: 0;
   width: 100%;
-  background-color: var(--mantine-color-body);
+  background-color: var(--mantine-color-white);
   border-bottom: 1px solid var(--mantine-color-gray-3);
   z-index: 1000;
 }
@@ -11,21 +13,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 56px;
-  width: 100%;
+  height: 70px;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  width: 50px; /* Set an explicit width for the logo */
+  width: 120px;
 }
 
 .logo img {
-  width: 100%; /* Let the image fill the container width */
-  height: auto; /* Maintain the aspect ratio */
-  max-height: 56px; /* Ensure it fits in the header */
-  object-fit: contain; /* Keep the aspect ratio intact */
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 .linksDesktop {
@@ -40,20 +40,21 @@
   padding: 8px 12px;
   border-radius: var(--mantine-radius-sm);
   text-decoration: none;
-  color: var(--mantine-color-gray-7);
-  font-family: "Instrument Serif", serif;
-  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-darkGray-6);
+  font-family: "Instrument Serif", serif; /* Correct font */
+  font-size: var(--mantine-font-size-md);
   font-weight: 500;
-  transition: background-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    border-bottom 0.2s ease;
 }
 
 .link:hover {
-  background-color: var(--mantine-color-brand-1);
+  color: var(--mantine-color-darkGray-8);
 }
 
-.link[data-active="true"] {
-  background-color: var(--mantine-color-brand-6);
-  color: var(--mantine-color-white);
+.activeLink {
+  color: var(--mantine-color-darkGray-8);
 }
 
 .burgerIcon {
@@ -62,23 +63,15 @@
 }
 
 .mobileMenu {
-  position: fixed;
-  top: 0;
+  position: absolute;
+  top: 70px;
   left: 0;
-  background-color: #f0f0f0;
+  background-color: var(--mantine-color-white);
   width: 100%;
-  height: 100vh;
   padding: 16px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  pointer-events: auto; /* Ensure pointer events work when visible */
-}
-
-.mobileMenu-hidden {
-  pointer-events: none; /* Disable pointer events when hidden */
+  z-index: 999; /* Ensure it appears above other elements */
 }
 
 @media (min-width: 768px) {
