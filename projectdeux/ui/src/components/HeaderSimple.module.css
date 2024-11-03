@@ -64,6 +64,12 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow */
 }
 
+.mobileMenuHidden {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
 @media (min-width: 768px) {
   .linksDesktop {
     display: flex;

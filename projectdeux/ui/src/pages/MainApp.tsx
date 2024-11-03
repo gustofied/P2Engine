@@ -53,11 +53,11 @@ const MainApp: React.FC = () => {
         }}
       >
         <Title order={1} mb="lg">
-          Testnet in Development
+          Testnet Under Development{" "}
         </Title>
         <Text size="md" color="dimmed" mb="xl">
-          Built on DAML, deployed on the Canton Network. Stay tuned, we’re going
-          live on testnet soon!
+          Built with DAML, deployed on the Canton Network. Stay tuned, we’re
+          going live on testnet soon!
         </Text>
         <div
           style={{

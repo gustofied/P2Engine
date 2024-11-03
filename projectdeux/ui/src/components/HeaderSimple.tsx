@@ -63,7 +63,10 @@ export function HeaderSimple() {
         timingFunction="ease"
       >
         {(styles) => (
-          <Paper className={classes.mobileMenu} style={styles}>
+          <Paper
+            className={`${classes.mobileMenu} ${!opened ? classes.mobileMenuHidden : ""}`}
+            style={styles}
+          >
             {items}
           </Paper>
         )}
