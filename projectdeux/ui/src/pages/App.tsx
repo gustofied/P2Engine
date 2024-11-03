@@ -1,10 +1,10 @@
 // App.tsx
+
 import React from "react";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import HomePage from "./HomePage";
 import MainApp from "./MainApp";
-import About from "./About"; // Import the About component
+import About from "./About";
 import NotFoundPage from "./NotFoundPage";
 import { HeaderSimple } from "../components/HeaderSimple";
 
@@ -12,12 +12,14 @@ const App: React.FC = () => {
   return (
     <>
       <HeaderSimple />
-      <div style={{ paddingTop: "56px" }}>
+      <div style={{ paddingTop: "70px" }}>
+        {" "}
+        {/* Adjusted paddingTop to match header height */}
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/app" component={MainApp} />
-          <Route path="/about" component={About} /> {/* About route */}
-          <Route component={NotFoundPage} /> {/* Handle unmatched routes */}
+          <Route path="/about" component={About} />
+          <Route component={NotFoundPage} />
         </Switch>
       </div>
     </>

@@ -3,37 +3,29 @@
 import { MantineThemeOverride, MantineTheme } from "@mantine/core";
 
 export const theme: MantineThemeOverride = {
-  fontFamily: "Roboto, sans-serif",
+  fontFamily: "Inter, sans-serif",
 
   headings: {
-    fontFamily: "Instrument Serif, serif", // Reverted to original font
+    fontFamily: "Montserrat, sans-serif",
     fontWeight: 700,
   },
 
-  breakpoints: {
-    xs: 480,
-    sm: 768,
-    md: 1024,
-    lg: 1280,
-    xl: 1440,
-  },
-
   colors: {
-    darkGray: [
-      "#f0f0f4", // index 0
-      "#d9d9e1", // index 1
-      "#c2c2cf", // index 2
-      "#ababbd", // index 3
-      "#9494aa", // index 4
-      "#7d7d98", // index 5
-      "#363946", // index 6, set to #363946
-      "#2f313e", // index 7
-      "#282a36", // index 8
-      "#21222c", // index 9
+    brand: [
+      "#f0f4f8", // Lightest
+      "#d9e2ec",
+      "#bcccdc",
+      "#9fb3c8",
+      "#829ab1",
+      "#627d98",
+      "#486581", // Primary color (index 6)
+      "#334e68",
+      "#243b53",
+      "#102a43", // Darkest
     ],
   },
 
-  primaryColor: "darkGray",
+  primaryColor: "brand",
   primaryShade: 6,
 
   globalStyles: () => ({
@@ -46,12 +38,12 @@ export const theme: MantineThemeOverride = {
     Button: {
       styles: (theme: MantineTheme) => ({
         root: {
-          backgroundColor: theme.colors.darkGray[6],
+          backgroundColor: theme.colors.brand[6],
           color: "#ffffff",
           borderRadius: theme.radius.md,
-          fontWeight: 500,
+          fontWeight: 600,
           "&:hover": {
-            backgroundColor: theme.fn.darken(theme.colors.darkGray[6], 0.1),
+            backgroundColor: theme.colors.brand[7],
           },
         },
       }),
@@ -59,14 +51,14 @@ export const theme: MantineThemeOverride = {
     Title: {
       styles: {
         root: {
-          color: "#2C3E50",
+          color: "#102a43", // Darkest shade from brand colors
         },
       },
     },
     Text: {
       styles: {
         root: {
-          color: "#4A4A4A",
+          color: "#334e68", // Mid-dark shade from brand colors
         },
       },
     },

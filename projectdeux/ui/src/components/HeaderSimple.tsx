@@ -56,24 +56,18 @@ export function HeaderSimple() {
         />
       </Container>
 
-      {/* Mobile menu */}
-      {opened && (
-        <Transition
-          mounted={opened}
-          transition="slide-down"
-          duration={200}
-          timingFunction="ease"
-        >
-          {(styles) => (
-            <Paper
-              className={classes.mobileMenu}
-              style={{ ...styles, zIndex: 999 }}
-            >
-              {items}
-            </Paper>
-          )}
-        </Transition>
-      )}
+      <Transition
+        mounted={opened}
+        transition="slide-down"
+        duration={200}
+        timingFunction="ease"
+      >
+        {(styles) => (
+          <Paper className={classes.mobileMenu} style={styles}>
+            {items}
+          </Paper>
+        )}
+      </Transition>
     </header>
   );
 }
