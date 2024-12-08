@@ -1,0 +1,17 @@
+{
+  "allocate_party": [
+    "Allocate a new party",
+    "Create a new party",
+    "Make a new party"
+  ],
+  "list_parties": [
+    "List parties",
+    "Show known parties",
+    "What parties do we have"
+  ],
+  "list_packages": [
+    "List packages",
+    "Show known packages",
+    "What packages are available"
+  ]
+}
