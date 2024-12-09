@@ -1,3 +1,7 @@
 ## Adam Dybwad Sioud
 
-## may need export NODE_OPTIONS=--openssl-legacy-provider
+## To run frontend you need to set export NODE_OPTIONS=--openssl-legacy-provider in terminal in ui directory
+
+## Run daml ledger, Daml Start
+
+## Run main.py else in poc folder
