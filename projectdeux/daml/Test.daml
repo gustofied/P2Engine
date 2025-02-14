@@ -1,7 +1,0 @@
-module Test where
-
-template TestTemplate
-    with
-        owner: Party
-    where
-        signatory owner
