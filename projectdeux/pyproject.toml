@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "projectdeux"
+version = "0.1.0"
+description = "A master thesis project, just a master thesis project, or"
+authors = ["Adam S"]
+license = "MIT"
+readme = "README.md"
+
+# Update this to point to `single_agent`
+packages = [{ include = "single_agents", from = "src" },
+    { include = "integrations", from = "src" },
+     { include = "custom_logging", from = "src" },
+          { include = "multi_agent_systems", from = "src" },
+                    { include = "visualization", from = "src" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+litellm = "^1.61.13"
+python-dotenv = "^1.0.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+flake8 = "^7.1.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
