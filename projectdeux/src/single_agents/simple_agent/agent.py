@@ -1,27 +1,23 @@
-from dotenv import load_dotenv
-load_dotenv()  # Load environment variables from the .env file.
-
-# Optionally, you could enable litellm's built-in debugging if needed.
-# But to rely solely on file logging, we keep it disabled.
-# import litellm
-# litellm._turn_on_debug()
-
-from integrations.llm.llm_client import LLMClient
-from custom_logging.litellm_logger import my_custom_logging_fn
-from single_agents.base_agent import BaseAgent  # Assume an abstract BaseAgent is defined
+from typing import Optional, List, Any
+from single_agents.base_agent import BaseAgent
 
 class SimpleAgent(BaseAgent):
-    def __init__(self, agent_id: str = "SimpleAgent", model: str = "gpt-3.5-turbo", api_key: str = None):
-        self.agent_id = agent_id
-        # Pass our custom logger to the LLMClient.
-        self.llm = LLMClient(model=model, api_key=api_key, logger_fn=my_custom_logging_fn)
+    def __init__(
+        self,
+        name: str = "SimpleAgent",
+        model: str = "gpt-3.5-turbo",
+        api_key: Optional[str] = None,
+        tools: Optional[List[Any]] = None
+    ):
+        # Pass everything up to BaseAgent, including model choice
+        super().__init__(name=name, model=model, api_key=api_key, tools=tools)
 
     def interact(self, user_input: str) -> str:
-        # Prepare metadata including the agent's identity.
-        metadata = {"agent_id": self.agent_id}
+        metadata = {"agent_name": self.name, "agent_id": self.id}
         response = self.llm.query(user_input, metadata=metadata)
-        return f"SimpleAgent: {response}"
+        return f"{self.name}: {response}"
 
 if __name__ == "__main__":
-    agent = SimpleAgent()  # API key loaded from OPENAI_APY_KEY in .env.
+    # Local test. If no API key is given, we look for OPENAI_API_KEY in .env or your environment.
+    agent = SimpleAgent()
     print(agent.interact("Tell me a joke."))

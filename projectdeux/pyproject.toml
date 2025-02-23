@@ -7,11 +7,13 @@ license = "MIT"
 readme = "README.md"
 
 # Update this to point to `single_agent`
-packages = [{ include = "single_agents", from = "src" },
+packages = [
+    { include = "single_agents", from = "src" },
     { include = "integrations", from = "src" },
-     { include = "custom_logging", from = "src" },
-          { include = "multi_agent_systems", from = "src" },
-                    { include = "visualization", from = "src" },
+    { include = "custom_logging", from = "src" },
+    { include = "multi_agent_systems", from = "src" },
+    { include = "visualization", from = "src" },
+    { include = "entities", from = "src" },
 ]
 
 [tool.poetry.dependencies]

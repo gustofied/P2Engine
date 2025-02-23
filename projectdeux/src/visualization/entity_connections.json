@@ -1,0 +1,27 @@
+{
+  "entities": [
+    {
+      "id": "e9a3177b-8407-48f7-a60b-d9b51cb55220",
+      "name": "SimpleAgent",
+      "entity_type": "agent",
+      "connections": [
+        "ea8257dd-1e00-42f2-8ec0-aa093be914f5",
+        "f3055eb3-2f11-4d19-8898-633deb417ee4"
+      ]
+    },
+    {
+      "id": "ea8257dd-1e00-42f2-8ec0-aa093be914f5",
+      "name": "ChaosAgent",
+      "entity_type": "agent",
+      "connections": [
+        "f3055eb3-2f11-4d19-8898-633deb417ee4"
+      ]
+    },
+    {
+      "id": "f3055eb3-2f11-4d19-8898-633deb417ee4",
+      "name": "Tool1",
+      "entity_type": "tool",
+      "connections": []
+    }
+  ]
+}
