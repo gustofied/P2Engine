@@ -2,8 +2,9 @@ import time
 import logging
 from dotenv import load_dotenv
 from typing import List
-from custom_logging.litellm_logger import my_custom_logging_fn
-from custom_logging.simple_logger import log_message, flush_simple_logs
+from entities.entity_manager import EntityManager
+from entities.component_manager import ComponentManager
+from custom_logging.central_logger import central_logger
 
 load_dotenv()
 
@@ -13,39 +14,41 @@ from single_agents.chaos_agent.agent import ChaosAgent
 from single_agents.critic_agent.agent import CriticAgent
 
 class GoalOrientedSystem:
-    def __init__(self, initial_agents: List[BaseAgent]):
+    def __init__(self, initial_agents: List[BaseAgent], entity_manager: EntityManager, component_manager: ComponentManager):
         self.agents = initial_agents
+        self.entity_manager = entity_manager
+        self.component_manager = component_manager
         self.conversation_history = []
         self.critic = CriticAgent(
-            name="Supervisor", 
-            model="gpt-4",
+            entity_manager=entity_manager,
+            component_manager=component_manager,
+            name="Supervisor",
+            model="gpt-4"
         )
         self.logger = logging.getLogger(__name__)
         self.goal = None
 
     def _log_system_event(self, message: str):
-        """Log system-level events to both logging systems"""
-        log_message("System", "System", message)
+        """Log system-level events to CentralLogger"""
+        central_logger.log_interaction("System", "System", message)
         self.logger.info(message)
 
-    def run_scenario(self, question: str) -> str:
+    def run_scenario(self, problem: str, question: str) -> str:
+        """Run the scenario with a problem and goal"""
         self.goal = f"Comprehensively answer: {question}"
-        self._log_system_event(f"Starting scenario with goal: {self.goal}")
-        
-        # Initial response phase
+        central_logger.log_system_start("GoalOrientedSystem", self.entity_manager.entities, problem, self.goal)
+        self._log_system_event(f"Starting system with goal: {self.goal}")
+
         initial_answers = self._get_initial_answers(question)
-        
-        # Analysis and expansion phase
         self._expand_agents_based_on_critique(initial_answers)
-        
-        # Collaborative refinement phase
         refined_answers = self._refine_answers(initial_answers)
-        
-        # Final synthesis
         final_answer = self._final_synthesis(refined_answers)
-        
-        # Explicitly flush logs at end of scenario
-        flush_simple_logs()
+
+        # Evaluate the result (simple heuristic for now: length of answer)
+        evaluation = {"answer_length": len(final_answer), "success": len(final_answer) > 50}
+        central_logger.log_system_end(final_answer, evaluation)
+        central_logger.flush_logs()
+
         return final_answer
 
     def _get_initial_answers(self, question: str) -> dict:
@@ -54,7 +57,6 @@ class GoalOrientedSystem:
         for agent in self.agents:
             response = agent.interact(question)
             answers[agent.name] = response
-            log_message(agent.name, "System", response)
             self._record_interaction(agent.name, "initial", response)
             time.sleep(1)
         return answers
@@ -64,18 +66,18 @@ class GoalOrientedSystem:
         critique = self.critic.interact(
             f"Current answers: {answers}\nWhat type of new agents do we need to improve this?"
         )
-        log_message("Critic", "System", critique)
         self._record_interaction("Critic", "analysis", critique)
         
-        # Spawn new agents based on critique
         if "analytical" in critique.lower():
             new_agent = SimpleAgent(
-                name="Analyst", 
+                entity_manager=self.entity_manager,
+                component_manager=self.component_manager,
+                name="Analyst",
                 model="gpt-4",
                 system_prompt="Provide structured analysis with pros/cons lists"
             )
             self.agents.append(new_agent)
-            log_message("System", "New Agent", f"Spawned {new_agent.name}")
+            central_logger.log_interaction("System", "New Agent", f"Spawned {new_agent.name}")
 
     def _refine_answers(self, initial_answers: dict) -> dict:
         self._log_system_event("=== Refinement Phase ===")
@@ -86,7 +88,6 @@ class GoalOrientedSystem:
                 context = f"Question: {self.goal}\nExisting Answers: {initial_answers}"
                 response = agent.interact(context)
                 refined[agent.name] = response
-                log_message(agent.name, "System", response)
                 self._record_interaction(agent.name, "refinement", response)
                 time.sleep(1)
         
@@ -103,7 +104,6 @@ class GoalOrientedSystem:
         - Maintain key insights from each perspective
         """
         final_answer = self.critic.interact(synthesis_prompt)
-        log_message("Critic", "Final Answer", final_answer)
         self._record_interaction("Critic", "synthesis", final_answer)
         return final_answer
 
@@ -116,25 +116,35 @@ class GoalOrientedSystem:
             "timestamp": time.time()
         }
         self.conversation_history.append(entry)
+        central_logger.log_interaction(agent, "System", f"{stage}: {content}")
 
 def run_enhanced_scenario():
-    # Configure logging
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s',
         handlers=[logging.StreamHandler()]
     )
 
-    # Initialize core agents
+    entity_manager = EntityManager()
+    component_manager = ComponentManager()
     initial_agents = [
-        SimpleAgent(name="LogicBot"),
-        ChaosAgent(name="ChaosMind")
+        SimpleAgent(
+            entity_manager=entity_manager,
+            component_manager=component_manager,
+            name="LogicBot"
+        ),
+        ChaosAgent(
+            entity_manager=entity_manager,
+            component_manager=component_manager,
+            name="ChaosMind"
+        )
     ]
 
-    system = GoalOrientedSystem(initial_agents)
-    question = "What is thr best city in Norway?"
+    system = GoalOrientedSystem(initial_agents, entity_manager, component_manager)
+    problem = "Determine the optimal city in Norway for tourism"
+    question = "What is the best city in Norway?"
     
-    result = system.run_scenario(question)
+    result = system.run_scenario(problem, question)
     
     print("\n=== FINAL ANSWER ===")
     print(result)
