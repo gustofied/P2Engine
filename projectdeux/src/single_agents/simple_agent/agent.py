@@ -1,16 +1,23 @@
 from typing import Optional, List, Any
+from entities.entity_manager import EntityManager
+from entities.component_manager import ComponentManager
 from single_agents.base_agent import BaseAgent
+from custom_logging.central_logger import central_logger
 
 class SimpleAgent(BaseAgent):
     def __init__(
         self,
+        entity_manager: EntityManager,
+        component_manager: ComponentManager,
         name: str = "SimpleAgent",
         model: str = "gpt-3.5-turbo",
         api_key: Optional[str] = None,
-        tools: Optional[List[Any]] = None,
+        tools: Optional[List[str]] = None,
         system_prompt: str = "You are a helpful and concise assistant"
     ):
         super().__init__(
+            entity_manager=entity_manager,
+            component_manager=component_manager,
             name=name,
             model=model,
             api_key=api_key,
@@ -18,7 +25,6 @@ class SimpleAgent(BaseAgent):
             system_prompt=system_prompt
         )
 
-    # single_agents/simple_agent/agent.py
     def interact(self, user_input: str) -> str:
         messages = self._format_messages(user_input)
         metadata = {
@@ -26,20 +32,12 @@ class SimpleAgent(BaseAgent):
             "agent_id": self.id,
             "system_prompt": self.system_prompt
         }
-        
         try:
-            # Now correctly using messages parameter
-            response = self.llm.query(
-                messages=messages,
-                metadata=metadata
-            )
+            response = self.llm.query(messages=messages, metadata=metadata)
+            central_logger.log_interaction(self.name, "User", f"User input: {user_input}")
+            central_logger.log_interaction(self.name, "System", f"Response: {response}")
             return response
         except Exception as e:
-            return f"Error generating response: {str(e)}"
-
-if __name__ == "__main__":
-    # Test with custom system prompt
-    agent = SimpleAgent(
-        system_prompt="You are a joke expert. Always respond with funny jokes."
-    )
-    print(agent.interact("Tell me a programming joke."))
+            error_msg = f"Error generating response: {str(e)}"
+            central_logger.log_interaction(self.name, "System", error_msg)
+            return error_msg

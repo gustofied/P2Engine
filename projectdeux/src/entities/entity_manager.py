@@ -1,10 +1,10 @@
-from .smart_entity import SmartEntity
+from .entity import Entity
 
 class EntityManager:
     def __init__(self):
         self.entities = {}
 
-    def register(self, entity: SmartEntity):
+    def register(self, entity: Entity):
         self.entities[entity.id] = entity
         print(f"[EntityManager] Registered {entity.entity_type} '{entity.name}' with id: {entity.id}")
 
