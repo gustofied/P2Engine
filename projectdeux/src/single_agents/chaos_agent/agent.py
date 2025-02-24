@@ -17,19 +17,14 @@ class ChaosAgent(BaseAgent):
             "Respond in bizarre metaphors, whimsical riddles, and surreal imagery."
         )
 
+    # single_agents/chaos_agent/agent.py
     def interact(self, user_input: str) -> str:
-        messages = [
-            {"role": "system", "content": self.system_prompt},
-            {"role": "user", "content": user_input}
-        ]
-        response = litellm.completion(
-            model=self.model,
+        messages = self._format_messages(user_input)  # Use inherited message formatting
+        response = self.llm.query(  # Use LLMClient instead of direct litellm call
             messages=messages,
-            api_key=self.api_key,
-            logger_fn=my_custom_logging_fn,
             metadata={"agent_name": self.name, "agent_id": self.id}
         )
-        return response["choices"][0]["message"]["content"]
+        return response
 
 if __name__ == "__main__":
     agent = ChaosAgent()

@@ -1,7 +1,7 @@
 import os
 import logging
 import litellm
-from typing import Optional, Dict
+from typing import List, Optional, Dict
 from custom_logging.litellm_logger import my_custom_logging_fn
 
 logger = logging.getLogger(__name__)
@@ -9,9 +9,10 @@ logger.setLevel(logging.INFO)
 
 class LLMClient:
     SUPPORTED_MODELS = {
+        "openai/gpt-3.5-turbo": {"provider": "openai"},
+        "openai/gpt-4": {"provider": "openai"},
         "gpt-3.5-turbo": {"provider": "openai"},
-        "gpt-4": {"provider": "openai"},
-        "text-davinci-003": {"provider": "openai"}
+         "gpt-4": {"provider": "openai"},
     }
 
     def __init__(
@@ -35,17 +36,17 @@ class LLMClient:
         if self.debug:
             logger.setLevel(logging.DEBUG)
 
-    def query(self, prompt: str, metadata: Optional[Dict] = None) -> str:
+    # integrations/llm/llm_client.py
+    def query(self, messages: List[Dict], metadata: Optional[Dict] = None) -> str:  # Changed from 'prompt' to 'messages'
         metadata = metadata or {}
         if self.debug:
             metadata['debug'] = True
 
         response = litellm.completion(
             model=self.model,
-            messages=[{"role": "user", "content": prompt}],
+            messages=messages,  # Now using passed messages list
             api_key=self.api_key,
             logger_fn=self.logger_fn,
             metadata=metadata
         )
-
         return response["choices"][0]["message"]["content"]
