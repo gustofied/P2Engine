@@ -1,4 +1,6 @@
-from .entity import Entity
+import json
+import importlib
+from entities.entity import Entity
 
 class Component:
     def __init__(self, name):
@@ -22,15 +24,35 @@ class MemoryComponent(Component):
     def add_to_history(self, message):
         self.history.append(message)
 
+# New LLM component to encapsulate the LLM client.
+class LLMComponent(Component):
+    def __init__(self, client):
+        super().__init__("llm")
+        self.client = client
+
 class ComponentManager:
-    def __init__(self):
+    def __init__(self, config_path: str = None):
+        # Default component types, including the new LLM component.
         self.component_types = {
             "tool": ToolComponent,
             "connection": ConnectionComponent,
-            "memory": MemoryComponent  # New component type
+            "memory": MemoryComponent,
+            "llm": LLMComponent
         }
+        # Load additional components from config file if provided.
+        if config_path:
+            try:
+                with open(config_path, "r") as f:
+                    config = json.load(f)
+                for name, class_path in config.get("components", {}).items():
+                    module_name, class_name = class_path.rsplit(".", 1)
+                    module = importlib.import_module(module_name)
+                    component_class = getattr(module, class_name)
+                    self.component_types[name] = component_class
+            except Exception as e:
+                print(f"Failed to load component config from {config_path}: {e}")
 
-    def create_component(self, component_type, **kwargs):
+    def create_component(self, component_type: str, **kwargs):
         component_class = self.component_types.get(component_type)
         if component_class:
             return component_class(**kwargs)

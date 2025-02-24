@@ -9,9 +9,9 @@ from custom_logging.central_logger import central_logger
 load_dotenv()
 
 from single_agents.base_agent import BaseAgent
-from single_agents.simple_agent.agent import SimpleAgent
-from single_agents.chaos_agent.agent import ChaosAgent
-from single_agents.critic_agent.agent import CriticAgent
+from single_agents.simple_agent import SimpleAgent
+from single_agents.chaos_agent import ChaosAgent
+from single_agents.critic_agent import CriticAgent
 
 class GoalOrientedSystem:
     def __init__(self, initial_agents: List[BaseAgent], entity_manager: EntityManager, component_manager: ComponentManager):
@@ -44,9 +44,11 @@ class GoalOrientedSystem:
         refined_answers = self._refine_answers(initial_answers)
         final_answer = self._final_synthesis(refined_answers)
 
-        # Evaluate the result (simple heuristic for now: length of answer)
+        # Evaluate the result (simple heuristic: length of answer)
         evaluation = {"answer_length": len(final_answer), "success": len(final_answer) > 50}
-        central_logger.log_system_end(final_answer, evaluation)
+        # Calculate reward: +10 for success, -5 for failure
+        reward = 10 if evaluation["success"] else -5
+        central_logger.log_system_end(final_answer, evaluation, reward)
         central_logger.flush_logs()
 
         return final_answer
@@ -131,7 +133,8 @@ def run_enhanced_scenario():
         SimpleAgent(
             entity_manager=entity_manager,
             component_manager=component_manager,
-            name="LogicBot"
+            name="LogicBot",
+            tools=["calculator"]  # Ensure tool is added
         ),
         ChaosAgent(
             entity_manager=entity_manager,
@@ -142,7 +145,7 @@ def run_enhanced_scenario():
 
     system = GoalOrientedSystem(initial_agents, entity_manager, component_manager)
     problem = "Determine the optimal city in Norway for tourism"
-    question = "What is the best city in Norway?"
+    question = "What is the best city in Norway? Calculate 2 + 2 to confirm logic."
     
     result = system.run_scenario(problem, question)
     

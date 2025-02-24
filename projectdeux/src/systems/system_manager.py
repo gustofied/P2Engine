@@ -1,4 +1,4 @@
-from entities.smart_entity import Entity
+from entities.entity import Entity
 from custom_logging.central_logger import CentralLogger
 
 class System:
