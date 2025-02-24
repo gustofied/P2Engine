@@ -26,6 +26,12 @@ class SimpleAgent(BaseAgent):
         )
 
     def interact(self, user_input: str) -> str:
+        # Try using a tool first
+        tool_response = self.use_tool(user_input)
+        if tool_response:
+            return tool_response
+
+        # Fallback to LLM if no tool applies
         messages = self._format_messages(user_input)
         metadata = {
             "agent_name": self.name,
