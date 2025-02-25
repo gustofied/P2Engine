@@ -3,6 +3,10 @@ import logging
 import litellm
 from typing import List, Optional, Dict
 from custom_logging.litellm_logger import my_custom_logging_fn
+from dotenv import load_dotenv
+
+# Load environment variables from a .env file if present
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
