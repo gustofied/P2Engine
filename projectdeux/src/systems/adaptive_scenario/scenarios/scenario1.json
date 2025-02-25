@@ -1,0 +1,24 @@
+{
+  "agents": [
+    {
+      "name": "SimpleAgent",
+      "model": "gpt-3.5-turbo",
+      "system_prompt": "You are a helpful assistant",
+      "tools": ["calculator"]
+    },
+    {
+      "name": "ChaosAgent",
+      "model": "gpt-3.5-turbo",
+      "system_prompt": "You are a chaotic assistant",
+      "tools": []
+    }
+  ],
+  "rounds": 3,
+  "question": "How can teams leverage both analytical reasoning and creative spontaneity to solve complex problems?",
+  "spawn_condition": "diversify",
+  "new_agent_config": {
+    "name": "AdditionalAgent",
+    "model": "gpt-4",
+    "tools": []
+  }
+}

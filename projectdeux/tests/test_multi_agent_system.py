@@ -5,7 +5,7 @@ from systems.goal_scenario import GoalOrientedSystem
 from entities.entity_manager import EntityManager
 from entities.component_manager import ComponentManager
 from custom_logging.central_logger import central_logger
-from single_agents.simple_agent.agent import SimpleAgent    
+from agents.simple_agent.agent import SimpleAgent    
 
 def test_dynamic_component_loading():
     # Test loading default components

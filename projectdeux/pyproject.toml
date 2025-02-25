@@ -8,8 +8,7 @@ readme = "README.md"
 
 # Update this to point to `single_agent`
 packages = [
-    { include = "single_agents", from = "src" },
-    { include = "single_agents/simple_agent", from = "src" },
+    { include = "agents", from = "src" },
     { include = "integrations", from = "src" },
     { include = "custom_logging", from = "src" },
     { include = "systems", from = "src" },
