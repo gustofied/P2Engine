@@ -1,61 +1,69 @@
+# systems/scenario_loader.py
 import json
 import importlib
-import re
 from entities.entity_manager import EntityManager
 from entities.component_manager import ComponentManager
-from single_agents.agents import agent_types
+from agents.factory import AgentFactory  # Updated import
 
-def camel_to_snake(name: str) -> str:
-    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+def to_camel_case(snake_str: str) -> str:
+    """Convert snake_case to CamelCase."""
+    parts = snake_str.split('_')
+    return ''.join(part.capitalize() for part in parts)
 
-class ScenarioLoader:
-    def __init__(self, config_path):
-        with open(config_path, 'r') as f:
-            self.config = json.load(f)
-        self.entity_manager = EntityManager()
-        self.component_manager = ComponentManager()
-        self._validate_config()
+def load_system(system_name: str, config_path: str):
+    print(f"Loading system: {system_name} from config: {config_path}")
+    try:
+        system_module = importlib.import_module(f"systems.{system_name}.{system_name}")
+        class_name = f"{to_camel_case(system_name)}System"
+        system_class = getattr(system_module, class_name)
+        print(f"Loaded system class: {system_class.__name__}")
+    except ImportError as e:
+        print(f"Error importing module 'systems.{system_name}.{system_name}': {e}")
+        raise
+    except AttributeError as e:
+        print(f"Error: Class '{class_name}' not found in module: {e}")
+        raise
 
-    def _validate_config(self):
-        required_fields = ["scenario", "system_type", "agents"]
-        for field in required_fields:
-            if field not in self.config:
-                raise ValueError(f"Missing required field: {field}")
-        for agent_config in self.config["agents"]:
-            if agent_config["type"] not in agent_types:
-                raise ValueError(f"Unknown agent type: {agent_config['type']}")
+    try:
+        with open(config_path, "r") as f:
+            config = json.load(f)
+        print(f"Loaded config: {config}")
+    except FileNotFoundError as e:
+        print(f"Error: Config file '{config_path}' not found: {e}")
+        raise
+    except json.JSONDecodeError as e:
+        print(f"Error: Invalid JSON in '{config_path}': {e}")
+        raise
 
-    def load_scenario(self):
-        scenario_name = self.config["scenario"]
-        system_type = self.config["system_type"]
-        goal = self.config.get("goal", "No goal specified")
-        run_params = self.config.get("run_params", {})
-        problem = self.config.get("problem", "No problem specified")
+    entity_manager = EntityManager()
+    component_manager = ComponentManager()
+    print("Initialized entity and component managers")
 
-        # Create agents
-        agents = []
-        for agent_config in self.config["agents"]:
-            agent_type = agent_config["type"]
-            agent_name = agent_config["name"]
-            tools = agent_config.get("tools", [])
-            model = agent_config.get("model", "gpt-3.5-turbo")
-            api_key = agent_config.get("api_key")
-            agent_class = agent_types[agent_type]
-            agent = agent_class(
-                entity_manager=self.entity_manager,
-                component_manager=self.component_manager,
-                name=agent_name,
-                model=model,
-                api_key=api_key,
-                tools=tools
+    agents = []
+    for agent_config in config.get("agents", []):
+        try:
+            agent = AgentFactory.create_agent(
+                entity_manager=entity_manager,
+                component_manager=component_manager,
+                config=agent_config
             )
             agents.append(agent)
+            print(f"Loaded agent: {agent_config['name']}")
+        except Exception as e:
+            print(f"Error creating agent from config {agent_config}: {e}")
+            raise
 
-        # Convert system_type from CamelCase to snake_case
-        module_name = camel_to_snake(system_type)
-        system_module = importlib.import_module(f"systems.{module_name}")
-        system_class = getattr(system_module, system_type)
-        system = system_class(agents, self.entity_manager, self.component_manager)
+    try:
+        system = system_class(agents, entity_manager, component_manager, config)
+        print(f"System '{system_name}' initialized successfully")
+        return system
+    except Exception as e:
+        print(f"Error initializing system '{class_name}': {e}")
+        raise
 
-        return system, goal, problem, run_params
+if __name__ == "__main__":
+    try:
+        system = load_system("adaptive_scenario", "src/systems/adaptive_scenario/scenarios/scenario1.json")
+        print(f"Test load successful: {system}")
+    except Exception as e:
+        print(f"Test failed: {e}")

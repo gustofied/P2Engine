@@ -1,0 +1,7 @@
+{
+  "name": "SimpleAgent",
+  "model": "gpt-3.5-turbo",
+  "system_prompt": "You are a helpful and concise assistant",
+  "tools": ["calculator"],
+  "behaviors": {}
+}

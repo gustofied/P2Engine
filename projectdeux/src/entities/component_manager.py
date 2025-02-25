@@ -24,22 +24,19 @@ class MemoryComponent(Component):
     def add_to_history(self, message):
         self.history.append(message)
 
-# New LLM component to encapsulate the LLM client.
-class LLMComponent(Component):
+class Model(Component):  
     def __init__(self, client):
-        super().__init__("llm")
+        super().__init__("model") 
         self.client = client
 
 class ComponentManager:
     def __init__(self, config_path: str = None):
-        # Default component types, including the new LLM component.
         self.component_types = {
             "tool": ToolComponent,
             "connection": ConnectionComponent,
             "memory": MemoryComponent,
-            "llm": LLMComponent
+            "model": Model  
         }
-        # Load additional components from config file if provided.
         if config_path:
             try:
                 with open(config_path, "r") as f:

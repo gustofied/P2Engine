@@ -1,8 +1,14 @@
-# File: multi_agent_system/main.py
+# main.py
+from systems.scenario_loader import load_system
 
-from src.systems.configurable_system import ConfigurableSystem
+# Load the system with the configuration
+system = load_system("adaptive_scenario", "src/systems/adaptive_scenario/scenarios/scenario1.json")
 
-if __name__ == "__main__":
-    config_path = "configs/customer_support.json"
-    system = ConfigurableSystem(config_path)
-    system.run()
+# Run the system with a problem and question
+result = system.run(
+    problem="Team problem-solving",
+    question="How can teams leverage both analytical reasoning and creative spontaneity to solve complex problems?"
+)
+
+# Print the result
+print(f"Final result: {result}")

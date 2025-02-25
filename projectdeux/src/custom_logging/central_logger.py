@@ -17,13 +17,12 @@ class CentralLogger:
         self.interaction_logs = []
         self.current_system_start_time = None
 
-    def log_system_start(self, system_name: str, entities: dict, problem: str, goal: str) -> None:
+    def log_system_start(self, system_name: str, entities: dict, problem: str, goal: str, expected_result: str = None) -> None:
         self.current_system_start_time = datetime.datetime.now()
         entity_data = {
             entity.id: {
                 "type": entity.entity_type,
                 "name": entity.name,
-                # Use vars() to capture the component state.
                 "components": {k: vars(v) for k, v in entity.components.items()}
             } for entity in entities.values()
         }
@@ -33,14 +32,15 @@ class CentralLogger:
             "entities": entity_data,
             "problem": problem,
             "goal": goal,
+            "expected_result": expected_result,  # New field
             "interactions": [],
             "time_spent": None,
-            "result": None,
+            "result": None,  # Will store actual result
             "evaluation": None,
             "reward": None
         }
         self.scenario_logs.append(system_log)
-        logger.info(f"System '{system_name}' started with goal: {goal}")
+        logger.info(f"System '{system_name}' started with goal: {goal}, Expected Result: {expected_result or 'Not specified'}")
 
     def log_interaction(self, sender: str, receiver: str, message: str) -> None:
         interaction = {
@@ -65,7 +65,7 @@ class CentralLogger:
         end_time = datetime.datetime.now()
         time_spent = (end_time - self.current_system_start_time).total_seconds()
         self.scenario_logs[-1]["time_spent"] = time_spent
-        self.scenario_logs[-1]["result"] = result
+        self.scenario_logs[-1]["result"] = result  # Actual result logged here
         self.scenario_logs[-1]["evaluation"] = evaluation
         self.scenario_logs[-1]["reward"] = reward
         logger.info(f"System ended. Time spent: {time_spent}s, Result: {result}, Reward: {reward}")
@@ -73,7 +73,6 @@ class CentralLogger:
     def flush_logs(self) -> None:
         log_dir = "logs"
         os.makedirs(log_dir, exist_ok=True)
-        # Use the custom serializer to handle non-serializable objects.
         scenario_serializable = make_json_serializable(self.scenario_logs)
         system_file = os.path.join(log_dir, f"system_log_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
         with open(system_file, "w") as f:
