@@ -9,13 +9,13 @@ class BaseSystem:
         self.entity_manager = entity_manager
         self.component_manager = component_manager
         self.logger = central_logger
-        self.default_goal = "Solve a problem effectively"  # Default goal at system level
+        self.goal = "Solve a problem effectively"  # Default goal at system level
+        self.expected_result = None  # Default expected result
 
-    def log_start(self, problem: str, goal: str = None, expected_result: str = None):
+    def log_start(self, problem: str):
         system_name = self.__class__.__name__
-        goal = goal or self.default_goal  # Use provided goal or fallback to default
-        self.logger.log_system_start(system_name, self.entity_manager.entities, problem, goal, expected_result)
-        print(f"System '{system_name}' started with goal: {goal}")
+        self.logger.log_system_start(system_name, self.entity_manager.entities, problem, self.goal, self.expected_result)
+        print(f"System '{system_name}' started with goal: {self.goal}")
 
     def log_end(self, result: str, evaluation: dict, reward: int):
         self.logger.log_system_end(result, evaluation, reward)

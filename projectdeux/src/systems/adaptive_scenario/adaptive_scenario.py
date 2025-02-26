@@ -11,7 +11,7 @@ class AdaptiveScenarioSystem(BaseSystem):
         # Define configuration for the critic agent
         critic_config = {
             "name": "Supervisor",
-            "model": "gpt-4",
+            "model": "github/gpt-4o",
             "system_prompt": "You are a critic analyzing the conversation. Provide feedback to improve the agents' responses."
         }
         # Create the critic agent using AgentFactory
@@ -24,7 +24,7 @@ class AdaptiveScenarioSystem(BaseSystem):
 
     def run(self, problem: str, question: str):
         rounds = self.config.get("rounds", 3)  # Default to 3 rounds if not specified
-        self.log_start(problem, f"Adaptively answer: {question}")
+        self.log_start(problem)
 
         # Initial round: agents provide their responses
         responses = {}
