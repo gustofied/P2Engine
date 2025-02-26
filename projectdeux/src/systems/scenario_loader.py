@@ -55,7 +55,10 @@ def load_system(system_name: str, config_path: str):
 
     try:
         system = system_class(agents, entity_manager, component_manager, config)
-        print(f"System '{system_name}' initialized successfully")
+        # Extract goal and expected_result from the configuration
+        system.goal = config.get("goal", "Solve a problem effectively")
+        system.expected_result = config.get("expected_result", None)
+        print(f"System '{system_name}' initialized successfully with goal: {system.goal}")
         return system
     except Exception as e:
         print(f"Error initializing system '{class_name}': {e}")

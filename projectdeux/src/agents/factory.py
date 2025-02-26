@@ -25,7 +25,7 @@ class AgentFactory:
             BaseAgent: An instance of BaseAgent configured with the provided settings.
         """
         name = config.get("name", "UnnamedAgent")
-        model = config.get("model", "gpt-3.5-turbo")
+        model = config.get("model", "github/gpt-4o")
         system_prompt = config.get("system_prompt", "You are a helpful assistant")
         tools = config.get("tools", [])
         behaviors = config.get("behaviors", {})

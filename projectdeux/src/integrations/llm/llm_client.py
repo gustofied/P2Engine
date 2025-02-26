@@ -16,11 +16,12 @@ class LLMClient:
         "openai/gpt-4": {"provider": "openai"},
         "gpt-3.5-turbo": {"provider": "openai"},
         "gpt-4": {"provider": "openai"},
+        "github/gpt-4o": {"provider": "github"},
     }
 
     def __init__(
         self,
-        model: str = "gpt-3.5-turbo",
+        model: str = "github/gpt-4o",
         api_key: Optional[str] = None,
         logger_fn=my_custom_logging_fn,
         debug: bool = False
@@ -28,7 +29,14 @@ class LLMClient:
         if model not in self.SUPPORTED_MODELS:
             raise ValueError(f"Model {model} is not supported.")
         self.model = model
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+
+        # Choose the API key based on the provider for the model.
+        provider = self.SUPPORTED_MODELS[model]["provider"]
+        if provider == "github":
+            self.api_key = api_key or os.getenv("GITHUB_API_KEY")
+        else:
+            self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+            
         if not self.api_key:
             raise ValueError("API key is missing.")
         self.logger_fn = logger_fn

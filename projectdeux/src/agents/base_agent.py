@@ -13,7 +13,7 @@ class BaseAgent(Entity):
         entity_manager: EntityManager,
         component_manager: ComponentManager,
         name: str,
-        model: str = "gpt-3.5-turbo",
+        model: str = "github/gpt-4o",
         api_key: Optional[str] = None,
         tools: Optional[List[str]] = None,
         system_prompt: str = "You are a helpful assistant",
