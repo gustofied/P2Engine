@@ -3,6 +3,7 @@ import json
 import datetime
 import atexit
 import logging
+from typing import Optional, Dict
 from custom_logging.litellm_logger import my_custom_logging_fn, make_json_serializable
 
 logger = logging.getLogger("CentralLogger")
@@ -32,22 +33,23 @@ class CentralLogger:
             "entities": entity_data,
             "problem": problem,
             "goal": goal,
-            "expected_result": expected_result,  # New field
+            "expected_result": expected_result,
             "interactions": [],
             "time_spent": None,
-            "result": None,  # Will store actual result
+            "result": None,
             "evaluation": None,
             "reward": None
         }
         self.scenario_logs.append(system_log)
         logger.info(f"System '{system_name}' started with goal: {goal}, Expected Result: {expected_result or 'Not specified'}")
 
-    def log_interaction(self, sender: str, receiver: str, message: str) -> None:
+    def log_interaction(self, sender: str, receiver: str, message: str, metadata: Optional[Dict] = None) -> None:
         interaction = {
             "from": sender,
             "to": receiver,
             "message": message,
-            "timestamp": datetime.datetime.now().isoformat()
+            "timestamp": datetime.datetime.now().isoformat(),
+            "metadata": metadata if metadata else {}
         }
         self.interaction_logs.append(interaction)
         if self.scenario_logs:
@@ -65,7 +67,7 @@ class CentralLogger:
         end_time = datetime.datetime.now()
         time_spent = (end_time - self.current_system_start_time).total_seconds()
         self.scenario_logs[-1]["time_spent"] = time_spent
-        self.scenario_logs[-1]["result"] = result  # Actual result logged here
+        self.scenario_logs[-1]["result"] = result
         self.scenario_logs[-1]["evaluation"] = evaluation
         self.scenario_logs[-1]["reward"] = reward
         logger.info(f"System ended. Time spent: {time_spent}s, Result: {result}, Reward: {reward}")

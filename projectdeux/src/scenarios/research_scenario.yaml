@@ -1,0 +1,29 @@
+scenarios:
+  - name: "AI in Healthcare Research"
+    system_type: "research_system"
+    problem: "Investigate AI applications in healthcare"
+    goal: "Produce a concise research summary"
+    agents:
+      - name: "ResearcherAgent"
+        tools: ["web_scraper"]
+        model: "github/gpt-4o"
+        system_prompt: "You are a research assistant."
+      - name: "SummarizerAgent"
+        tools: []
+        model: "github/gpt-4o"
+        system_prompt: "You are a summarizer creating concise reports."
+    tasks:
+      - task_name: "gather_data"
+        agent_name: "ResearcherAgent"
+        instruction: "Research {topic} and gather relevant data"
+        dependencies: []
+        required_params: ["topic"]
+      - task_name: "compile_report"
+        agent_name: "SummarizerAgent"
+        instruction: "Compile a report based on: {research_data} (Problem: {problem})"
+        dependencies: ["gather_data"]
+        required_params: ["problem"]
+        dependency_params:
+          gather_data: "research_data"
+    run_params:
+      topics: ["AI in Healthcare"]

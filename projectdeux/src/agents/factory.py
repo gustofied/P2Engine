@@ -1,8 +1,8 @@
-# agents/factory.py
 from typing import Dict, Optional
 from entities.entity_manager import EntityManager
 from entities.component_manager import ComponentManager
 from .base_agent import BaseAgent
+from integrations.tools.tool_registry import ToolRegistry  # Assuming this exists
 
 class AgentFactory:
     @staticmethod
@@ -12,25 +12,24 @@ class AgentFactory:
         config: Dict,
         api_key: Optional[str] = None
     ) -> BaseAgent:
-        """
-        Create a BaseAgent instance based on a configuration dictionary.
-
-        Args:
-            entity_manager (EntityManager): The entity manager instance.
-            component_manager (ComponentManager): The component manager instance.
-            config (Dict): Configuration dictionary with agent settings.
-            api_key (Optional[str]): Optional API key for the LLM client.
-
-        Returns:
-            BaseAgent: An instance of BaseAgent configured with the provided settings.
-        """
         name = config.get("name", "UnnamedAgent")
         model = config.get("model", "github/gpt-4o")
         system_prompt = config.get("system_prompt", "You are a helpful assistant")
-        tools = config.get("tools", [])
+        tools_config = config.get("tools", [])
         behaviors = config.get("behaviors", {})
 
-        # Use the provided api_key or fallback to the config
+        # Map tool names to tool instances using ToolRegistry
+        tool_instances = []
+        missing_tools = []
+        for tool_name in tools_config:
+            tool_class = ToolRegistry.get(tool_name)
+            if tool_class:
+                tool_instances.append(tool_class())  # Instantiate the tool
+            else:
+                missing_tools.append(tool_name)
+        if missing_tools:
+            raise ValueError(f"Missing tools: {', '.join(missing_tools)}")
+
         api_key = api_key or config.get("api_key")
 
         return BaseAgent(
@@ -39,7 +38,7 @@ class AgentFactory:
             name=name,
             model=model,
             api_key=api_key,
-            tools=tools,
+            tools=tool_instances,
             system_prompt=system_prompt,
             behaviors=behaviors
         )

@@ -1,14 +1,18 @@
-# main.py
+import argparse
+from systems.scenario_manager import ScenarioManager
 from systems.scenario_loader import load_system
 
-# Load the system with the configuration
-system = load_system("adaptive_scenario", "src/systems/adaptive_scenario/scenarios/scenario1.json")
+def main():
+    parser = argparse.ArgumentParser(description="Run a scenario.")
+    parser.add_argument("--scenarios", type=str, required=True, help="Path to scenarios directory")
+    parser.add_argument("--scenario", type=str, required=True, help="Name of the scenario to run")
+    args = parser.parse_args()
 
-# Run the system with a problem and question
-result = system.run(
-    problem="Team problem-solving",
-    question="How can teams leverage both analytical reasoning and creative spontaneity to solve complex problems?"
-)
+    scenario_manager = ScenarioManager(args.scenarios)
+    scenario_config = scenario_manager.get_scenario(args.scenario)
+    system = load_system(scenario_config)
+    result = system.run(**scenario_config.get("run_params", {}))
+    print(result)
 
-# Print the result
-print(f"Final result: {result}")
+if __name__ == "__main__":
+    main()
