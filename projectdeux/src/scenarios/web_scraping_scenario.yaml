@@ -1,0 +1,30 @@
+scenarios:
+  - name: "BBC News Summary"
+    system_type: "web_scraping"
+    problem: "Extract and summarize news content"
+    goal: "Provide a concise summary of key points"
+    agents:
+      - name: "ScraperAgent"
+        tools: ["web_scraper"]
+        model: "github/gpt-4o"
+        system_prompt: "You are a web scraper assistant."
+      - name: "CriticAgent"
+        tools: []
+        model: "github/gpt-4o"
+        system_prompt: "You are a critic analyzing content."
+    tasks:
+      - task_name: "scrape"
+        agent_name: "ScraperAgent"
+        instruction: "scrape {url} {target}"
+        dependencies: []
+        required_params: ["url", "target"]
+      - task_name: "analyze"
+        agent_name: "CriticAgent"
+        instruction: "{goal}: {scraped_content} (Problem: {problem})"
+        dependencies: ["scrape"]
+        required_params: ["goal", "problem"]
+        dependency_params:
+          scrape: "scraped_content"
+    run_params:
+      urls: ["https://bbc.com"]
+      target: "p"

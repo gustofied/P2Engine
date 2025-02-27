@@ -12,6 +12,7 @@ packages = [
     { include = "integrations", from = "src" },
     { include = "custom_logging", from = "src" },
     { include = "systems", from = "src" },
+    { include = "tasks", from = "src" },
 
     { include = "visualization", from = "src" },
     { include = "entities", from = "src" },
@@ -23,6 +24,10 @@ litellm = "^1.61.13"
 python-dotenv = "^1.0.1"
 pytest = "^8.3.4"
 rerun-sdk = "^0.22.1"
+lxml = "^4.9.2"
+beautifulsoup4 = "^4.13.3"
+requests = "^2.32.3"
+selenium = "^4.8.0"  # if you're using Selenium fallback
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
