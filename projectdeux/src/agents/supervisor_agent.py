@@ -5,32 +5,28 @@ from typing import Dict
 from .base_agent import BaseAgent
 
 class SupervisorAgent(BaseAgent):
-    def decide_agents(self, task: str, current_agents: Dict[str, "BaseAgent"] = None, context: str = "") -> Dict:
+    def decide_agents(self, task: str) -> Dict:
         """
-        Decide agents and task sequence, optionally adapting existing agents.
-        
-        Args:
-            task (str): The task to analyze.
-            current_agents (Dict[str, BaseAgent], optional): Existing agents in the system.
-            context (str, optional): Additional context to guide the decision.
-            
-        Returns:
-            Dict: Contains 'agents' (list of configs) and 'task_sequence' (list of role names).
+        Decide which agents to spawn and the sequence of tasks based on the task by querying the LLM.
+        Returns a dictionary with 'agents' (list of agent configurations including task names) and 'task_sequence' (list of role names).
         """
-        current_agents = current_agents or {}
-        current_agent_info = {a.name: a.role for a in current_agents.values()}
         prompt = (
-            "You are an AI assistant planning a collaborative project. "
+            "You are an AI assistant helping to plan a collaborative project. "
             f"The task is: '{task}'. "
-            f"Current agents: {current_agent_info}. "
-            f"{context} "  # Include the context here
-            "Determine which specialized AI agents are needed (e.g., 'researcher', 'writer', 'editor'). "
-            "For each agent, provide 'name', 'role', 'task' (from available tasks: plan_research, writer_task, editor_task), "
-            "'queue', and 'system_prompt'. If an existing agent's role should change, include it with the updated 'role'. "
-            "Also, specify the sequence of roles to execute tasks. "
-            "Return a JSON object with 'agents' (array of configs) and 'task_sequence' (array of role names)."
+            "Determine which specialized AI agents are needed (e.g., 'researcher', 'outliner', 'writer', 'editor', 'finalizer'). "
+            "Each agent should have a 'name', 'role', 'task' (from available tasks: plan_research, create_outline, writer_task, editor_task, finalize_article), "
+            "'queue', and 'system_prompt'. Also, specify the sequence of roles to execute their tasks in order. "
+            "Return a JSON object with 'agents' (array of agent configs) and 'task_sequence' (array of role names)."
+            "\n\nExample response:\n```json\n"
+            "{\n  \"agents\": [\n    {\"name\": \"ResearchBot\", \"role\": \"researcher\", \"task\": \"plan_research\", \"queue\": \"research_queue\", \"system_prompt\": \"Research thoroughly.\"},\n"
+            "    {\"name\": \"OutlineBot\", \"role\": \"outliner\", \"task\": \"create_outline\", \"queue\": \"outlining_queue\", \"system_prompt\": \"Create an outline.\"},\n"
+            "    {\"name\": \"WriteBot\", \"role\": \"writer\", \"task\": \"writer_task\", \"queue\": \"writing_queue\", \"system_prompt\": \"Write a draft.\"},\n"
+            "    {\"name\": \"EditBot\", \"role\": \"editor\", \"task\": \"editor_task\", \"queue\": \"editing_queue\", \"system_prompt\": \"Edit for clarity.\"},\n"
+            "    {\"name\": \"FinalizeBot\", \"role\": \"finalizer\", \"task\": \"finalize_article\", \"queue\": \"finalizing_queue\", \"system_prompt\": \"Finalize article.\"}\n  ],\n"
+            "  \"task_sequence\": [\"researcher\", \"outliner\", \"writer\", \"editor\", \"finalizer\"]\n}\n```"
         )
         response = self.llm_client.query([{"role": "user", "content": prompt}])
+        print(f"Supervisor response: {response}")  # For debugging
         try:
             decision = json.loads(response)
             if not isinstance(decision, dict) or "agents" not in decision or "task_sequence" not in decision:
@@ -49,35 +45,3 @@ class SupervisorAgent(BaseAgent):
                     raise ValueError(f"Failed to parse extracted JSON: {str(e)}")
             else:
                 raise ValueError("No JSON block found in the response")
-
-    def adapt_agents(self, task: str, system: "CollaborativeWritingSystem") -> list:
-        """
-        Adapt agents mid-run based on task progress.
-
-        Args:
-            task (str): The updated task or context.
-            system (CollaborativeWritingSystem): The system instance to adapt agents within.
-
-        Returns:
-            list: Updated task sequence.
-        """
-        # Add explicit instruction to avoid research tasks in the adaptive phase
-        context = "The initial research task has been completed. Focus on tasks like writing, editing, and finalizing the article. Do not include research tasks."
-        decision = self.decide_agents(task, system.agents, context=context)
-        agent_configs = decision["agents"]
-        task_sequence = decision["task_sequence"]
-
-        # Update or spawn agents based on the decision
-        for config in agent_configs:
-            agent_name = config["name"]
-            if agent_name in system.agents:
-                # Update existing agent's role if it has changed
-                agent = system.agents[agent_name]
-                if agent.role != config["role"]:
-                    agent.role = config["role"]
-                    system.task_manager.agent_queues[agent_name] = config["queue"]
-            else:
-                # Spawn a new agent if it doesn’t exist
-                system.spawn_agent(config)
-
-        return task_sequence

@@ -1,24 +1,17 @@
-from src.systems.base_system import BaseSystem
 from src.systems.collaborative_writing_system import CollaborativeWritingSystem
 from src.tasks.celery_task_manager import CeleryTaskManager
 from src.entities.entity_manager import EntityManager
 from src.entities.component_manager import ComponentManager
-import logging
+from src.agents.factory import AgentFactory
 
-logger = logging.getLogger(__name__)
-
-# Registry for system classes
 SYSTEM_REGISTRY = {
-    "base_system": BaseSystem,  # Default system type
     "collaborative_writing_system": CollaborativeWritingSystem,
 }
 
 def load_system(config: dict):
-    """Load a system based on the provided config."""
-    system_type = config.get("system_type", "base_system")  # Default to base_system if not specified
+    system_type = config["system_type"]
     system_class = SYSTEM_REGISTRY.get(system_type)
     if not system_class:
-        logger.error(f"Unknown system type '{system_type}'")
         raise ValueError(f"Unknown system type '{system_type}'")
     
     entity_manager = EntityManager()
@@ -28,11 +21,20 @@ def load_system(config: dict):
     # Initialize CeleryTaskManager with agent configurations
     task_manager = CeleryTaskManager(agent_configs=agent_configs)
     
-    # Instantiate the system, letting it create agents from config
+    # Create agents dynamically from the YAML config
+    agents = [
+        AgentFactory.create_agent(
+            entity_manager=entity_manager,
+            component_manager=component_manager,
+            config=agent_config
+        ) for agent_config in agent_configs
+    ]
+
     system = system_class(
-        config=config,
+        agents=agents,
         entity_manager=entity_manager,
         component_manager=component_manager,
+        config=config,
         task_manager=task_manager
     )
     return system
