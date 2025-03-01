@@ -1,4 +1,3 @@
-# projectdeux/src/tasks/celery_tasks.py
 from celery_app import app
 from src.integrations.llm.llm_client import LLMClient
 import datetime
@@ -14,33 +13,12 @@ logger = logging.getLogger(__name__)
 # Task Registry: Maps task names to their functions and descriptions
 TASK_REGISTRY = {}
 
-def validate_scenario_data(scenario_data, agent_id):
-    """
-    Validate that scenario_data is a dictionary and contains required keys for the agent.
-    
-    Args:
-        scenario_data: The scenario data dictionary to validate.
-        agent_id: The ID of the agent to check for in scenario_data.
-    
-    Raises:
-        ValueError: If scenario_data is None, not a dict, or missing required keys.
-    """
-    if scenario_data is None:
-        raise ValueError("scenario_data is required")
-    if not isinstance(scenario_data, dict):
-        raise ValueError("scenario_data must be a dictionary")
-    if "system_prompts" not in scenario_data or agent_id not in scenario_data["system_prompts"]:
-        raise ValueError(f"System prompt for agent {agent_id} not found in scenario_data")
-    if "agent_names" not in scenario_data or agent_id not in scenario_data["agent_names"]:
-        raise ValueError(f"Agent name for agent {agent_id} not found in scenario_data")
-
-# Task Definitions
+# Existing tasks with added logging and error handling
 @app.task
 def plan_research(agent_id: str, domain: str, scenario_data):
     """Task for generating an article plan."""
     try:
         logger.info(f"Starting plan_research for agent {agent_id}")
-        validate_scenario_data(scenario_data, agent_id)
         system_prompt = scenario_data["system_prompts"][agent_id]
         agent_name = scenario_data["agent_names"][agent_id]
         llm_client = LLMClient(model="deepseek/deepseek-chat", api_key=os.getenv("DEEPSEEK_API_KEY"))
@@ -71,16 +49,11 @@ def plan_research(agent_id: str, domain: str, scenario_data):
         raise e
 
 @app.task
-def create_outline(agent_id: str, previous_output=None, scenario_data=None):
-    """Task for creating an article outline based on previous data."""
+def create_outline(previous_output, agent_id: str):
+    """Task for creating an article outline based on research data."""
     try:
         logger.info(f"Starting create_outline for agent {agent_id}")
-        research_data = previous_output[0] if previous_output else "No previous data"
-        logs = previous_output[1] if previous_output else []
-        scenario_data = scenario_data or previous_output[2] if previous_output else {}
-        litellm_logs = previous_output[3] if previous_output else []
-        
-        validate_scenario_data(scenario_data, agent_id)
+        research_data, logs, scenario_data, litellm_logs = previous_output
         system_prompt = scenario_data["system_prompts"][agent_id]
         agent_name = scenario_data["agent_names"][agent_id]
         llm_client = LLMClient(model="deepseek/deepseek-chat", api_key=os.getenv("DEEPSEEK_API_KEY"))
@@ -111,16 +84,11 @@ def create_outline(agent_id: str, previous_output=None, scenario_data=None):
         raise e
 
 @app.task
-def writer_task(agent_id: str, previous_output=None, scenario_data=None):
-    """Task for drafting an article based on the outline."""
+def writer_task(previous_output, agent_id: str):
+    """Task for drafting an article based on the plan."""
     try:
         logger.info(f"Starting writer_task for agent {agent_id}")
-        plan = previous_output[0] if previous_output else "No previous data"
-        logs = previous_output[1] if previous_output else []
-        scenario_data = scenario_data or previous_output[2] if previous_output else {}
-        litellm_logs = previous_output[3] if previous_output else []
-        
-        validate_scenario_data(scenario_data, agent_id)
+        plan, logs, scenario_data, litellm_logs = previous_output
         system_prompt = scenario_data["system_prompts"][agent_id]
         agent_name = scenario_data["agent_names"][agent_id]
         llm_client = LLMClient(model="deepseek/deepseek-chat", api_key=os.getenv("DEEPSEEK_API_KEY"))
@@ -137,14 +105,14 @@ def writer_task(agent_id: str, previous_output=None, scenario_data=None):
             "timestamp": datetime.datetime.now().isoformat()
         }
         logs.append(interaction)
-        litellm_log = {
+        writer_litellm_log = {
             "agent_id": agent_id,
             "model": "deepseek/deepseek-chat",
             "messages": messages,
             "response": draft,
             "timestamp": datetime.datetime.now().isoformat()
         }
-        litellm_logs.append(litellm_log)
+        litellm_logs.append(writer_litellm_log)
         logger.debug(f"Writer task: Message length = {len(interaction['message'])} characters")
         logger.info(f"Completed writer_task for agent {agent_id}")
         return draft, logs, scenario_data, litellm_logs
@@ -153,16 +121,11 @@ def writer_task(agent_id: str, previous_output=None, scenario_data=None):
         raise e
 
 @app.task
-def editor_task(agent_id: str, previous_output=None, scenario_data=None):
+def editor_task(previous_output, agent_id: str):
     """Task for refining the draft."""
     try:
         logger.info(f"Starting editor_task for agent {agent_id}")
-        draft = previous_output[0] if previous_output else "No previous data"
-        logs = previous_output[1] if previous_output else []
-        scenario_data = scenario_data or previous_output[2] if previous_output else {}
-        litellm_logs = previous_output[3] if previous_output else []
-        
-        validate_scenario_data(scenario_data, agent_id)
+        draft, logs, scenario_data, litellm_logs = previous_output
         system_prompt = scenario_data["system_prompts"][agent_id]
         agent_name = scenario_data["agent_names"][agent_id]
         llm_client = LLMClient(model="deepseek/deepseek-chat", api_key=os.getenv("DEEPSEEK_API_KEY"))
@@ -179,14 +142,14 @@ def editor_task(agent_id: str, previous_output=None, scenario_data=None):
             "timestamp": datetime.datetime.now().isoformat()
         }
         logs.append(interaction)
-        litellm_log = {
+        editor_litellm_log = {
             "agent_id": agent_id,
             "model": "deepseek/deepseek-chat",
             "messages": messages,
             "response": final_article,
             "timestamp": datetime.datetime.now().isoformat()
         }
-        litellm_logs.append(litellm_log)
+        litellm_logs.append(editor_litellm_log)
         logger.debug(f"Editor task: Message length = {len(interaction['message'])} characters")
         logger.info(f"Completed editor_task for agent {agent_id}")
         return final_article, logs, scenario_data, litellm_logs
@@ -195,16 +158,11 @@ def editor_task(agent_id: str, previous_output=None, scenario_data=None):
         raise e
 
 @app.task
-def finalize_article(agent_id: str, previous_output=None, scenario_data=None):
+def finalize_article(previous_output, agent_id: str):
     """Task for finalizing the article with final touches."""
     try:
         logger.info(f"Starting finalize_article for agent {agent_id}")
-        edited_article = previous_output[0] if previous_output else "No previous data"
-        logs = previous_output[1] if previous_output else []
-        scenario_data = scenario_data or previous_output[2] if previous_output else {}
-        litellm_logs = previous_output[3] if previous_output else []
-        
-        validate_scenario_data(scenario_data, agent_id)
+        edited_article, logs, scenario_data, litellm_logs = previous_output
         system_prompt = scenario_data["system_prompts"][agent_id]
         agent_name = scenario_data["agent_names"][agent_id]
         llm_client = LLMClient(model="deepseek/deepseek-chat", api_key=os.getenv("DEEPSEEK_API_KEY"))
@@ -234,44 +192,6 @@ def finalize_article(agent_id: str, previous_output=None, scenario_data=None):
         logger.error(f"Error in finalize_article for agent {agent_id}: {e}")
         raise e
 
-@app.task
-def scrape_task(agent_id: str, url: str, target: str = "p", scenario_data=None):
-    """Task for scraping content from a URL."""
-    try:
-        logger.info(f"Starting scrape_task for agent {agent_id}")
-        # Placeholder implementation; replace with actual scraping logic
-        result = f"Scraped {url} with target {target}"
-        interaction = {
-            "from": agent_id,
-            "to": "System",
-            "message": result,
-            "timestamp": datetime.datetime.now().isoformat()
-        }
-        logger.info(f"Completed scrape_task for agent {agent_id}")
-        return result, [interaction], scenario_data, []
-    except Exception as e:
-        logger.error(f"Error in scrape_task for agent {agent_id}: {e}")
-        raise e
-
-@app.task
-def summarize_task(agent_id: str, text: str, scenario_data=None):
-    """Task for summarizing provided text."""
-    try:
-        logger.info(f"Starting summarize_task for agent {agent_id}")
-        # Placeholder implementation; replace with actual summarization logic
-        summary = f"Summarized text: {text[:50]}..."
-        interaction = {
-            "from": agent_id,
-            "to": "System",
-            "message": summary,
-            "timestamp": datetime.datetime.now().isoformat()
-        }
-        logger.info(f"Completed summarize_task for agent {agent_id}")
-        return summary, [interaction], scenario_data, []
-    except Exception as e:
-        logger.error(f"Error in summarize_task for agent {agent_id}: {e}")
-        raise e
-
 # Register all tasks in the TASK_REGISTRY
 TASK_REGISTRY["plan_research"] = {
     "description": "Generate an article plan based on the topic",
@@ -293,11 +213,14 @@ TASK_REGISTRY["finalize_article"] = {
     "description": "Finalize the article with final touches",
     "function": finalize_article
 }
-TASK_REGISTRY["scrape_task"] = {
-    "description": "Scrape content from a URL",
-    "function": scrape_task
-}
-TASK_REGISTRY["summarize_task"] = {
-    "description": "Summarize provided text",
-    "function": summarize_task
-}
+
+# Placeholder tasks (unchanged)
+@app.task
+def scrape_task(url: str, target: str = "p", scenario_data=None):
+    """Placeholder task for scraping a URL."""
+    return f"Scraped {url} with target {target}"
+
+@app.task
+def summarize_task(text: str, scenario_data=None):
+    """Placeholder task for summarizing text."""
+    return f"Summarized text: {text[:50]}..."
