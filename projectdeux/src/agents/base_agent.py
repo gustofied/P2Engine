@@ -1,3 +1,4 @@
+# src/agents/base_agent.py
 from typing import Optional, List, Dict
 from entities.entity import Entity
 from entities.entity_manager import EntityManager
@@ -13,11 +14,12 @@ class BaseAgent(Entity):
         entity_manager: EntityManager,
         component_manager: ComponentManager,
         name: str,
-        model: str = "github/gpt-4o",
+        model: str = "deepseek/deepseek-chat",
         api_key: Optional[str] = None,
         tools: Optional[List[Tool]] = None,
         system_prompt: str = "You are a helpful assistant",
-        behaviors: Optional[Dict] = None
+        behaviors: Optional[Dict] = None,
+        role: str = "unknown"  # Added role parameter with default value
     ):
         super().__init__(entity_type="agent", name=name)
         self.model_name = model
@@ -25,12 +27,28 @@ class BaseAgent(Entity):
         self.system_prompt = system_prompt
         self.behaviors = behaviors or {}
         self.tools = tools or []
+        self._role = role.lower()  # Private attribute for role
 
         # Attach LLM client as Model component
         llm_client = LLMClient(model=self.model_name, api_key=self.api_key, logger_fn=my_custom_logging_fn)
         component_manager.attach_component(self, "model", client=llm_client)
-
         entity_manager.register(self)
+
+    @property
+    def role(self) -> str:
+        """Get the agent's current role."""
+        return self._role
+
+    @role.setter
+    def role(self, new_role: str):
+        """Dynamically update the agent's role and log the change."""
+        old_role = self._role
+        self._role = new_role.lower()
+        central_logger.log_interaction(
+            sender="System",
+            receiver=self.name,
+            message=f"Role changed from '{old_role}' to '{self._role}'"
+        )
 
     @property
     def llm_client(self) -> LLMClient:

@@ -17,11 +17,14 @@ class LLMClient:
         "gpt-3.5-turbo": {"provider": "openai"},
         "gpt-4": {"provider": "openai"},
         "github/gpt-4o": {"provider": "github"},
+        # Support both model strings for Deepseek:
+        "deepseek-chat": {"provider": "deepseek"},
+        "deepseek/deepseek-chat": {"provider": "deepseek"},
     }
 
     def __init__(
         self,
-        model: str = "github/gpt-4o",
+        model: str = "deepseek-chat",
         api_key: Optional[str] = None,
         logger_fn=my_custom_logging_fn,
         debug: bool = False
@@ -29,14 +32,14 @@ class LLMClient:
         if model not in self.SUPPORTED_MODELS:
             raise ValueError(f"Model {model} is not supported.")
         self.model = model
-
-        # Choose the API key based on the provider for the model.
         provider = self.SUPPORTED_MODELS[model]["provider"]
+        # Use the appropriate environment variable based on provider
         if provider == "github":
             self.api_key = api_key or os.getenv("GITHUB_API_KEY")
+        elif provider == "deepseek":
+            self.api_key = api_key or os.getenv("DEEPSEEK_API_KEY")
         else:
             self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-            
         if not self.api_key:
             raise ValueError("API key is missing.")
         self.logger_fn = logger_fn
@@ -49,6 +52,8 @@ class LLMClient:
         metadata = metadata or {}
         if self.debug:
             metadata['debug'] = True
+        # Debug print to confirm logger_fn is set
+        print(f"Calling litellm.completion with logger_fn: {self.logger_fn}")
         try:
             response = litellm.completion(
                 model=self.model,

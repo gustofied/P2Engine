@@ -1,61 +1,38 @@
-from entities.entity_manager import EntityManager
-from entities.component_manager import ComponentManager
-from agents.factory import AgentFactory
-from systems.web_scraping_system import WebScrapingSystem
-from systems.research_system import ResearchSystem
-from tasks.task_manager import TaskManager
-from typing import Dict
+from src.systems.base_system import BaseSystem
+from src.systems.collaborative_writing_system import CollaborativeWritingSystem
+from src.tasks.celery_task_manager import CeleryTaskManager
+from src.entities.entity_manager import EntityManager
+from src.entities.component_manager import ComponentManager
+import logging
 
+logger = logging.getLogger(__name__)
+
+# Registry for system classes
 SYSTEM_REGISTRY = {
-    "web_scraping": WebScrapingSystem,
-    "research_system": ResearchSystem
+    "base_system": BaseSystem,  # Default system type
+    "collaborative_writing_system": CollaborativeWritingSystem,
 }
 
-def load_system(config: Dict):
-    """
-    Load a system based on the provided configuration.
-
-    Args:
-        config (Dict): Configuration dictionary specifying system type, agents, tasks, etc.
-
-    Returns:
-        System instance configured with agents, tasks, and managers.
-
-    Raises:
-        ValueError: If system type or agent is invalid.
-    """
-    system_type = config["system_type"]
+def load_system(config: dict):
+    """Load a system based on the provided config."""
+    system_type = config.get("system_type", "base_system")  # Default to base_system if not specified
     system_class = SYSTEM_REGISTRY.get(system_type)
     if not system_class:
-        raise ValueError(f"Unknown system type: {system_type}")
-
+        logger.error(f"Unknown system type '{system_type}'")
+        raise ValueError(f"Unknown system type '{system_type}'")
+    
     entity_manager = EntityManager()
     component_manager = ComponentManager()
-    agents = [AgentFactory.create_agent(entity_manager, component_manager, agent_conf)
-              for agent_conf in config["agents"]]
+    agent_configs = config.get("agents", [])
     
-    task_manager = TaskManager()
-    agents_dict = {agent.name: agent for agent in agents}
-    for task_config in config.get("tasks", []):
-        agent = agents_dict.get(task_config["agent_name"])
-        if not agent:
-            raise ValueError(f"Agent '{task_config['agent_name']}' not found")
-        task_manager.register_task(
-            task_name=task_config["task_name"],
-            agents=[agent],  # Pass agent as a single-item list
-            instruction=task_config["instruction"],
-            dependencies=task_config.get("dependencies", []),
-            required_params=task_config.get("required_params", []),
-            dependency_params=task_config.get("dependency_params", {})
-        )
-
+    # Initialize CeleryTaskManager with agent configurations
+    task_manager = CeleryTaskManager(agent_configs=agent_configs)
+    
+    # Instantiate the system, letting it create agents from config
     system = system_class(
-        agents=agents,
+        config=config,
         entity_manager=entity_manager,
         component_manager=component_manager,
-        config=config,
         task_manager=task_manager
     )
-    system.goal = config.get("goal", "Solve a problem effectively")
-    system.expected_result = config.get("expected_result", None)
     return system
