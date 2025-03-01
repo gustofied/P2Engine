@@ -13,7 +13,6 @@ packages = [
     { include = "custom_logging", from = "src" },
     { include = "systems", from = "src" },
     { include = "tasks", from = "src" },
-
     { include = "visualization", from = "src" },
     { include = "entities", from = "src" },
 ]
@@ -28,6 +27,7 @@ lxml = "^4.9.2"
 beautifulsoup4 = "^4.13.3"
 requests = "^2.32.3"
 selenium = "^4.8.0"  # if you're using Selenium fallback
+celery = "^5.4.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"

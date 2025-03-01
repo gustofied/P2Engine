@@ -1,3 +1,5 @@
+# projectdeux/src/custom_logging/central_logger.py
+
 import os
 import json
 import datetime
@@ -18,7 +20,8 @@ class CentralLogger:
         self.interaction_logs = []
         self.current_system_start_time = None
 
-    def log_system_start(self, system_name: str, entities: dict, problem: str, goal: str, expected_result: str = None) -> None:
+    def log_system_start(self, system_name: str, entities: Dict[str, object], problem: str, goal: str, expected_result: str = None) -> None:
+        """Log the start of a system with entities as a dict of name to agent objects."""
         self.current_system_start_time = datetime.datetime.now()
         entity_data = {
             entity.id: {
@@ -44,6 +47,7 @@ class CentralLogger:
         logger.info(f"System '{system_name}' started with goal: {goal}, Expected Result: {expected_result or 'Not specified'}")
 
     def log_interaction(self, sender: str, receiver: str, message: str, metadata: Optional[Dict] = None) -> None:
+        print(f"Logging interaction: {sender} -> {receiver}, message length = {len(message)}")
         interaction = {
             "from": sender,
             "to": receiver,
@@ -60,7 +64,8 @@ class CentralLogger:
         my_custom_logging_fn(model_call_dict)
         logger.info(f"LiteLLM event logged: {model_call_dict.get('model', 'unknown')}")
 
-    def log_system_end(self, result: str, evaluation: dict, reward: int) -> None:
+    def log_system_end(self, result: dict, evaluation: dict, reward: int, all_agents: Dict[str, object]) -> None:
+        """Log the end of a system run, updating entities with final agent states."""
         if not self.scenario_logs or not self.current_system_start_time:
             logger.warning("No active system to end")
             return
@@ -70,9 +75,21 @@ class CentralLogger:
         self.scenario_logs[-1]["result"] = result
         self.scenario_logs[-1]["evaluation"] = evaluation
         self.scenario_logs[-1]["reward"] = reward
-        logger.info(f"System ended. Time spent: {time_spent}s, Result: {result}, Reward: {reward}")
+
+        # Update entities with final agent states
+        self.scenario_logs[-1]["entities"] = {
+            agent.id: {
+                "type": agent.entity_type,
+                "name": agent.name,
+                "components": {k: vars(v) for k, v in agent.components.items()}
+            } for agent in all_agents.values()
+        }
+        # Convert result dict to string for logging
+        result_str = str(result)
+        logger.info(f"System ended. Time spent: {time_spent}s, Result: {result_str}, Reward: {reward}")
 
     def flush_logs(self) -> None:
+        print(f"Flushing interaction_logs: {self.interaction_logs}")
         log_dir = "logs"
         os.makedirs(log_dir, exist_ok=True)
         scenario_serializable = make_json_serializable(self.scenario_logs)
@@ -87,5 +104,6 @@ class CentralLogger:
             json.dump(interaction_serializable, f, indent=2)
         logger.info(f"Flushed interaction logs to {interaction_file}")
 
+# Create a global instance and register flush on interpreter exit
 central_logger = CentralLogger()
 atexit.register(central_logger.flush_logs)

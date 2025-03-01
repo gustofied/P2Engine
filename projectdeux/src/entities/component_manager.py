@@ -1,6 +1,6 @@
 import json
 import importlib
-from entities.entity import Entity
+from src.entities.entity import Entity
 
 class Component:
     def __init__(self, name):
