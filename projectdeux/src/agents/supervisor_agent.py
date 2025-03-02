@@ -1,30 +1,27 @@
-# src/agents/supervisor_agent.py
 import json
 import re
 from typing import Dict
 from .base_agent import BaseAgent
 
 class SupervisorAgent(BaseAgent):
-    def decide_agents(self, task: str) -> Dict:
+    def __init__(self, system_type: str, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.system_type = system_type
+
+    def decide_agents(self, prompt: str) -> Dict:
         """
-        Decide which agents to spawn and the sequence of tasks based on the task by querying the LLM.
-        Returns a dictionary with 'agents' (list of agent configurations including task names) and 'task_sequence' (list of role names).
+        Decide which agents to spawn and the sequence of tasks based on the provided prompt.
+        Returns a dictionary with 'agents' (list of agent configurations) and 'task_sequence' (list of role names).
+        
+        Args:
+            prompt (str): The complete prompt specifying the task and constraints, provided by the system.
+        
+        Returns:
+            Dict: A dictionary containing 'agents' (list of agent configs) and 'task_sequence' (list of role names).
+        
+        Raises:
+            ValueError: If the response cannot be parsed into the expected JSON format.
         """
-        prompt = (
-            "You are an AI assistant helping to plan a collaborative project. "
-            f"The task is: '{task}'. "
-            "Determine which specialized AI agents are needed (e.g., 'researcher', 'outliner', 'writer', 'editor', 'finalizer'). "
-            "Each agent should have a 'name', 'role', 'task' (from available tasks: plan_research, create_outline, writer_task, editor_task, finalize_article), "
-            "'queue', and 'system_prompt'. Also, specify the sequence of roles to execute their tasks in order. "
-            "Return a JSON object with 'agents' (array of agent configs) and 'task_sequence' (array of role names)."
-            "\n\nExample response:\n```json\n"
-            "{\n  \"agents\": [\n    {\"name\": \"ResearchBot\", \"role\": \"researcher\", \"task\": \"plan_research\", \"queue\": \"research_queue\", \"system_prompt\": \"Research thoroughly.\"},\n"
-            "    {\"name\": \"OutlineBot\", \"role\": \"outliner\", \"task\": \"create_outline\", \"queue\": \"outlining_queue\", \"system_prompt\": \"Create an outline.\"},\n"
-            "    {\"name\": \"WriteBot\", \"role\": \"writer\", \"task\": \"writer_task\", \"queue\": \"writing_queue\", \"system_prompt\": \"Write a draft.\"},\n"
-            "    {\"name\": \"EditBot\", \"role\": \"editor\", \"task\": \"editor_task\", \"queue\": \"editing_queue\", \"system_prompt\": \"Edit for clarity.\"},\n"
-            "    {\"name\": \"FinalizeBot\", \"role\": \"finalizer\", \"task\": \"finalize_article\", \"queue\": \"finalizing_queue\", \"system_prompt\": \"Finalize article.\"}\n  ],\n"
-            "  \"task_sequence\": [\"researcher\", \"outliner\", \"writer\", \"editor\", \"finalizer\"]\n}\n```"
-        )
         response = self.llm_client.query([{"role": "user", "content": prompt}])
         print(f"Supervisor response: {response}")  # For debugging
         try:

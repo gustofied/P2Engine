@@ -28,6 +28,7 @@ beautifulsoup4 = "^4.13.3"
 requests = "^2.32.3"
 selenium = "^4.8.0"  # if you're using Selenium fallback
 celery = "^5.4.0"
+fastapi = "^0.115.10"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
