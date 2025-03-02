@@ -1,0 +1,28 @@
+scenarios:
+  - name: "discussion_scenario"
+    system_type: "discussion"
+    problem: "Discuss the impact of AI on society"
+    goal: "Generate a summary of the discussion"
+    agents:
+      - name: "EthicalAgent"
+        role: "discussant"
+        system_prompt: "You are a discussant focusing on ethical aspects of AI."
+      - name: "TechAgent"
+        role: "discussant"
+        system_prompt: "You are a discussant focusing on technological aspects of AI."
+      - name: "SocialAgent"
+        role: "discussant"
+        system_prompt: "You are a discussant focusing on societal aspects of AI."
+      - name: "Summarizer"
+        role: "summarizer"
+        system_prompt: "You are a summarizer who creates concise summaries."
+    task_sequence:
+      [
+        "EthicalAgent",
+        "TechAgent",
+        "SocialAgent",
+        "EthicalAgent",
+        "TechAgent",
+        "SocialAgent",
+        "Summarizer",
+      ]

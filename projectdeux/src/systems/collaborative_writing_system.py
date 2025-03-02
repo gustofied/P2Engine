@@ -1,136 +1,186 @@
+# src/systems/collaborative_writing_system.py
+
 from .base_system import BaseSystem
-from celery import chain
-from src.tasks.celery_tasks import TASK_REGISTRY  # Import the task registry
+from src.tasks.task_registry import (
+    register_task,
+    plan_research,
+    create_outline,
+    writer_task,
+    editor_task,
+    finalize_article,
+    TASK_REGISTRY
+)
 from src.agents.factory import AgentFactory
 from src.custom_logging.central_logger import central_logger
-from src.custom_logging.litellm_logger import GLOBAL_LOG_DATA
 from src.agents.supervisor_agent import SupervisorAgent
-from typing import Dict
+from typing import Dict, List
 
 class CollaborativeWritingSystem(BaseSystem):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.agents = {}
-        for agent_config in self.config.get("agents", []):
-            if agent_config.get("role") == "supervisor":
-                agent = SupervisorAgent(
-                    entity_manager=self.entity_manager,
-                    component_manager=self.component_manager,
-                    name=agent_config["name"],
-                    model=agent_config.get("model", "deepseek/deepseek-chat"),
-                    api_key=agent_config.get("api_key"),
-                    system_prompt=agent_config["system_prompt"]
-                )
-                self.agents[agent.name] = agent
-
-    def spawn_agent(self, agent_config: Dict):
-        """Spawn a new agent dynamically and update the task manager."""
-        agent = AgentFactory.create_agent(
-            entity_manager=self.entity_manager,
-            component_manager=self.component_manager,
-            config=agent_config
+    def __init__(self, agents, entity_manager, component_manager, config, task_manager=None):
+        super().__init__(
+            agents=agents,
+            entity_manager=entity_manager,
+            component_manager=component_manager,
+            config=config,
+            task_manager=task_manager,
+            execution_type="asynchronous"
         )
-        self.agents[agent.name] = agent
-        self.task_manager.agent_queues[agent.name] = agent_config["queue"]
-        central_logger.log_interaction(
-            sender="CollaborativeWritingSystem",
-            receiver="System",
-            message=f"Spawned new agent: {agent.name} with role {agent.role} and queue {agent_config['queue']}"
-        )
-        return agent
+        # Use the passed agents directly instead of reinitializing
+        self.agents = {agent.name: agent for agent in agents}
 
-    def run(self, **kwargs):
-        """Run the system using the problem from the config."""
-        problem = self.config["problem"]
-        self.log_start(problem)
-        domain = kwargs.get("domain", "General")
+    def get_agent_by_name(self, agent_name):
+        """Retrieve an agent from the dictionary."""
+        return self.agents.get(agent_name)
 
-        # Find the supervisor agent
-        supervisor = next((agent for agent in self.agents.values() if isinstance(agent, SupervisorAgent)), None)
-        if not supervisor:
-            raise ValueError("No supervisor agent found in the system.")
+    def get_all_agents(self):
+        """Return a list of all agent objects from the dictionary."""
+        return list(self.agents.values())
 
-        # Get agent configurations and task sequence from the supervisor
-        decision = supervisor.decide_agents(problem)
-        agent_configs = decision["agents"]
-        task_sequence = decision["task_sequence"]
-
-        # Spawn agents dynamically
-        for config in agent_configs:
-            self.spawn_agent(config)
-
-        # Map agents to roles (excluding supervisor)
-        role_to_agent = {agent.role: agent for agent in self.agents.values() if hasattr(agent, 'role') and agent.role != "supervisor"}
-
-        # Prepare scenario data
-        system_prompts = {agent.id: agent.system_prompt for agent in self.agents.values()}
-        agent_names = {agent.id: agent.name for agent in self.agents.values()}
-        scenario_data = {
-            "goal": self.goal,
-            "problem": problem,
-            "system_prompts": system_prompts,
-            "agent_names": agent_names
-        }
-
-        # Build the task chain dynamically using the TASK_REGISTRY
-        tasks = []
-        for role in task_sequence:
-            agent_config = next((a for a in agent_configs if a["role"] == role), None)
-            if agent_config and "task" in agent_config:
-                task_name = agent_config["task"]
-                task_func = TASK_REGISTRY.get(task_name)
-                if task_func:
-                    agent = role_to_agent.get(role)
-                    if agent:
-                        queue = self.task_manager.agent_queues.get(agent.name, "default")
-                        if role == "researcher":
-                            task = task_func["function"].s(agent.id, domain, scenario_data).set(queue=queue)
-                            tasks.append(task)
-                            print(f"Added task {task_name} for role {role} to queue {queue}")
+    def define_workflow(self) -> List[Dict]:
+        """Define the workflow based on execution_type."""
+        if self.execution_type == "asynchronous":
+            workflow = []
+            # Use "topic" from run_params (defaulting to "General" if not provided)
+            topic = self.config.get("run_params", {}).get("topic", "General")
+            central_logger.log_interaction("System", "Debug", f"Config: {self.config}")
+            
+            if "task_sequence" in self.config:
+                task_sequence = self.config["task_sequence"]
+                central_logger.log_interaction("System", "Debug", f"Task sequence: {task_sequence}")
+                agent_configs = self.config["agents"]
+                role_to_agent = {agent["role"]: agent for agent in agent_configs}
+                central_logger.log_interaction("System", "Debug", f"Role to agent mapping: {role_to_agent}")
+                
+                # Construct scenario_data with all predefined agents
+                scenario_data = {
+                    "goal": self.goal,
+                    "problem": self.config["problem"],
+                    "system_prompts": {agent.name: agent.system_prompt for agent in self.agents.values()},
+                    "agent_names": {agent.id: agent.name for agent in self.agents.values()}
+                }
+                
+                for i, role in enumerate(task_sequence):
+                    agent_config = role_to_agent.get(role)
+                    central_logger.log_interaction("System", "Debug", f"Role '{role}' -> Agent config: {agent_config}")
+                    if agent_config:
+                        task_name = agent_config["task"]
+                        agent = self.get_agent_by_name(agent_config["name"])
+                        central_logger.log_interaction("System", "Debug", f"Agent for '{agent_config['name']}': {agent}")
+                        if agent:
+                            queue = agent_config.get("queue", "default")
+                            # For the first task, pass agent.id, topic, and scenario_data
+                            if i == 0:
+                                args = [agent.id, topic, scenario_data]
+                            else:
+                                args = [agent.id]
+                            workflow.append({
+                                "task_name": task_name,
+                                "args": args,
+                                "queue": queue
+                            })
+                            central_logger.log_interaction("System", "Debug", f"Added task: {task_name} for agent {agent.name}")
                         else:
-                            task = task_func["function"].s(agent.id).set(queue=queue)
-                            tasks.append(task)
-                            print(f"Added task {task_name} for role {role} to queue {queue}")
-                else:
-                    central_logger.log_interaction(
-                        sender="CollaborativeWritingSystem",
-                        receiver="System",
-                        message=f"Task '{task_name}' not found in registry for role '{role}'. Skipping."
-                    )
+                            central_logger.warning(f"No agent found for name '{agent_config['name']}'")
+                    else:
+                        central_logger.warning(f"No agent config found for role '{role}'")
             else:
-                central_logger.log_interaction(
-                    sender="CollaborativeWritingSystem",
-                    receiver="System",
-                    message=f"No agent or task defined for role '{role}'. Skipping."
+                # If no task_sequence provided, use the supervisor's decision.
+                supervisor = next((agent for agent in self.agents.values() if isinstance(agent, SupervisorAgent)), None)
+                if not supervisor:
+                    raise ValueError("No supervisor agent found.")
+                
+                available_tasks = ", ".join(TASK_REGISTRY.keys())
+                prompt = (
+                    f"You are an AI assistant planning a collaborative writing project on the topic: {self.config.get('run_params', {}).get('topic', 'General')}. "
+                    f"The task is: '{self.config['problem']}'. "
+                    "Determine which specialized AI agents are needed. "
+                    "Each agent should have a 'name', 'role', 'task', 'queue', and 'system_prompt'. "
+                    f"The 'task' must be one of the following: {available_tasks}. "
+                    "Also, specify the 'task_sequence' (list of role names) for execution order. "
+                    "Return a JSON object with 'agents' (array of agent configs) and 'task_sequence'."
+                    "\n\nExample response:\n```json\n"
+                    "{\n  \"agents\": [\n    {\"name\": \"ResearchBot\", \"role\": \"researcher\", \"task\": \"plan_research\", \"queue\": \"research_queue\", \"system_prompt\": \"Research thoroughly.\"},\n"
+                    "    {\"name\": \"OutlineBot\", \"role\": \"outliner\", \"task\": \"create_outline\", \"queue\": \"outlining_queue\", \"system_prompt\": \"Create an outline.\"}\n  ],\n"
+                    "  \"task_sequence\": [\"researcher\", \"outliner\"]\n}\n```"
                 )
+                decision = supervisor.decide_agents(prompt)
+                valid_agents = []
+                skipped_tasks = []
+                for agent_config in decision["agents"]:
+                    task_name = agent_config["task"]
+                    if task_name in TASK_REGISTRY:
+                        valid_agents.append(agent_config)
+                    else:
+                        skipped_tasks.append(task_name)
+                        central_logger.warning(f"Task '{task_name}' not in TASK_REGISTRY; agent '{agent_config['name']}' skipped.")
+                
+                if skipped_tasks and not valid_agents:
+                    central_logger.error("All suggested tasks were invalid; cannot proceed.")
+                    raise ValueError(f"No valid tasks to execute. Skipped: {', '.join(skipped_tasks)}")
+                
+                # Create and store new agents if needed
+                for agent_config in valid_agents:
+                    agent_name = agent_config["name"]
+                    if agent_name not in self.agents:
+                        new_agent = AgentFactory.create_agent(
+                            entity_manager=self.entity_manager,
+                            component_manager=self.component_manager,
+                            config=agent_config
+                        )
+                        self.agents[agent_name] = new_agent
+                        central_logger.log_interaction("System", "Debug", f"Created agent: {agent_name}")
+                
+                # Construct scenario_data with all agents (initial + dynamically created)
+                scenario_data = {
+                    "goal": self.goal,
+                    "problem": self.config["problem"],
+                    "system_prompts": {agent.name: agent.system_prompt for agent in self.agents.values()},
+                    "agent_names": {agent.id: agent.name for agent in self.agents.values()}
+                }
+                
+                task_sequence = decision["task_sequence"]
+                role_to_agent = {agent["role"]: agent for agent in valid_agents}
+                for i, role in enumerate(task_sequence):
+                    agent_config = role_to_agent.get(role)
+                    if agent_config:
+                        task_name = agent_config["task"]
+                        agent = self.get_agent_by_name(agent_config["name"])
+                        if agent is None:
+                            central_logger.error(f"Agent '{agent_config['name']}' not found after creation.")
+                            raise ValueError(f"Agent '{agent_config['name']}' not found in self.agents")
+                        queue = agent_config.get("queue", "default")
+                        if i == 0:
+                            args = [agent.id, topic, scenario_data]
+                        else:
+                            args = [agent.id]
+                        workflow.append({
+                            "task_name": task_name,
+                            "args": args,
+                            "queue": queue
+                        })
+            central_logger.log_interaction("System", "Debug", f"Final workflow: {workflow}")
+            return workflow
+        else:
+            workflow = []
+            if "task_sequence" in self.config:
+                task_sequence = self.config["task_sequence"]
+                agent_configs = self.config["agents"]
+                role_to_agent = {agent["role"]: agent for agent in agent_configs}
+                for role in task_sequence:
+                    workflow.append({
+                        "task_name": agent_configs.get(role)["task"],
+                        "agent_name": agent_configs.get(role)["name"],
+                        "instruction": f"Perform {agent_configs.get(role)['task']}",
+                        "params": {"topic": self.config.get("run_params", {}).get("topic", "General")}
+                    })
+            else:
+                central_logger.log_interaction("System", "Debug", "No task sequence for synchronous mode")
+            return workflow
 
-        if not tasks:
-            raise ValueError("No valid tasks to execute based on supervisor's sequence.")
-
-        # Execute the task chain
-        full_chain = chain(*tasks)
-        async_result = full_chain()
-        final_article, all_logs, scenario_data, all_litellm_logs = async_result.get(timeout=500)
-
-        # Log the results
-        for log in all_logs:
-            central_logger.log_interaction(sender=log["from"], receiver=log["to"], message=log["message"])
-        for log in all_litellm_logs:
-            agent_id = log["agent_id"]
-            if agent_id not in GLOBAL_LOG_DATA["agents"]:
-                GLOBAL_LOG_DATA["agents"][agent_id] = {"calls": []}
-            GLOBAL_LOG_DATA["agents"][agent_id]["calls"].append(log)
-
-        # Prepare all agents for logging
-        all_agents = {
-            agent.id: {
-                "type": agent.__class__.__name__,
-                "name": agent.name,
-                "role": getattr(agent, "role", "unknown"),
-                "components": {k: str(v) for k, v in agent.components.items()}
-            } for agent in self.agents.values()
-        }
-
-        final_result_md = f"# Final Article\n\n{final_article}"
-        central_logger.log_system_end(final_result_md, {"success": True}, 10, all_agents)
-        return final_result_md
+    def register_tasks(self):
+        """Register writing tasks."""
+        register_task("plan_research", "Generate an article plan", plan_research)
+        register_task("create_outline", "Create an article outline", create_outline)
+        register_task("writer_task", "Draft the article", writer_task)
+        register_task("editor_task", "Edit the draft", editor_task)
+        register_task("finalize_article", "Finalize the article", finalize_article)

@@ -1,0 +1,12 @@
+scenarios:
+  - name: "collaborative_writing"
+    system_type: "collaborative_writing"
+    problem: "Write, edit, and finalize an article about Mahdia, the city in Tunisia"
+    goal: "Produce a polished, concise final article with multi-agent collaboration"
+    agents:
+      - name: "supervisor"
+        role: "supervisor"
+        queue: "supervisor_queue"
+        system_prompt: "You are the supervisor. Analyze the task and decide which agents are needed to complete it, including their roles and the sequence in which they should execute their tasks."
+    run_params:
+      topic: "Mahdia, Tunisia"

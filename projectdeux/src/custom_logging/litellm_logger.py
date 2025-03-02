@@ -70,3 +70,6 @@ def my_custom_logging_fn(model_call_dict: dict) -> None:
             GLOBAL_LOG_DATA["agents"][agent_id]["calls"].append(call_entry)
             CURRENT_CALL_INDEX[agent_id] = len(GLOBAL_LOG_DATA["agents"][agent_id]["calls"]) - 1
     print(f"Updated GLOBAL_LOG_DATA: {GLOBAL_LOG_DATA}")
+
+# Register flush_logs to run when the program exits
+atexit.register(flush_logs)

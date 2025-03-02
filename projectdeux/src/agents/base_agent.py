@@ -1,11 +1,11 @@
 from typing import Optional, List, Dict
-from entities.entity import Entity
-from entities.entity_manager import EntityManager
-from entities.component_manager import ComponentManager
-from integrations.llm.llm_client import LLMClient
-from custom_logging.litellm_logger import my_custom_logging_fn
-from custom_logging.central_logger import central_logger
-from integrations.tools.base_tool import Tool
+from src.entities.entity import Entity
+from src.entities.entity_manager import EntityManager
+from src.entities.component_manager import ComponentManager
+from src.integrations.llm.llm_client import LLMClient
+from src.custom_logging.litellm_logger import my_custom_logging_fn
+from src.custom_logging.central_logger import central_logger
+from src.integrations.tools.base_tool import Tool
 
 class BaseAgent(Entity):
     def __init__(
