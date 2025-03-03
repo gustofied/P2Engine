@@ -2,6 +2,7 @@
 from typing import List, Dict, Optional
 from src.agents.base_agent import BaseAgent
 
+
 class TaskManager:
     def __init__(self):
         """Initialize the TaskManager with task registry, state tracking, and result caching."""

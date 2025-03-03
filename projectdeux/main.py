@@ -5,24 +5,35 @@ from dotenv import load_dotenv
 from src.systems.scenario_manager import ScenarioManager
 from src.systems.scenario_loader import load_system
 from src.custom_logging.central_logger import central_logger
-from agents.log_analyzer_agent import LogAnalyzerAgent
+from src.agents.log_analyzer_agent import LogAnalyzerAgent
 from src.entities.entity_manager import EntityManager
 from src.entities.component_manager import ComponentManager
+from celery_app import app as celery_app  # Import the Celery app
 
+# Load environment variables from .env file
 load_dotenv()
 
 def format_scenario_log(scenario_log):
     """Format a scenario log into a string for analysis.
-    This function concatenates key information and interactions. The agent is expected to extract the final 'result' field
-    from this log and present it in a user-friendly article format.
+
+    This function concatenates key information and interactions from the scenario log.
+    The agent is expected to extract the 'result' field and present it in a user-friendly article format.
+
+    Args:
+        scenario_log (dict): The log data to format.
+
+    Returns:
+        str: A formatted string representation of the scenario log.
     """
     if not scenario_log:
         return "No log data available."
+    
     interactions = scenario_log.get("interactions", [])
     interactions_text = "\n".join([
         f"{i['timestamp']} - {i['from']} to {i['to']}: {i['message']}"
         for i in interactions
     ]) if interactions else "No interactions recorded."
+    
     return f"""
 System Name: {scenario_log.get('system_name', 'Unknown')}
 Start Time: {scenario_log.get('start_time', 'N/A')}
@@ -71,7 +82,7 @@ def main():
     prompt = f"Analyze this system log and generate an HTML summary:\n{formatted_log}"
     html_summary = analyzer_agent.interact(prompt)
 
-    # Save and display the HTML
+    # Save and display the HTML summary
     with open("summary.html", "w") as f:
         f.write(html_summary)
     print("Generated HTML Summary:\n", html_summary)

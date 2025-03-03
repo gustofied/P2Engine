@@ -1,0 +1,44 @@
+scenarios:
+  - name: "user_async_joke_test"
+    system_type: "generic"
+    execution_type: "asynchronous" # Works with "synchronous" too
+    problem: "Tell a short joke"
+    goal: "Test user-defined async multi-agent interaction"
+    agents:
+      - name: "Comedian1"
+        role: "comedian"
+        system_prompt: "Tell a one-sentence pun."
+      - name: "Comedian2"
+        role: "comedian"
+        system_prompt: "Tell a one-sentence one-liner."
+      - name: "Critic"
+        role: "critic"
+        system_prompt: "Evaluate all jokes and select the best one."
+    task_sequence:
+      - {
+          "task_name": "tell_joke",
+          "agent_name": "Comedian1",
+          "queue": "joke_queue",
+        }
+      - {
+          "task_name": "tell_joke",
+          "agent_name": "Comedian2",
+          "queue": "joke_queue",
+        }
+      - {
+          "task_name": "react_to_jokes",
+          "agent_name": "Comedian1",
+          "queue": "reaction_queue",
+        }
+      - {
+          "task_name": "react_to_jokes",
+          "agent_name": "Comedian2",
+          "queue": "reaction_queue",
+        }
+      - {
+          "task_name": "evaluate_jokes",
+          "agent_name": "Critic",
+          "queue": "evaluation_queue",
+        }
+    run_params:
+      topic: "Joke telling"

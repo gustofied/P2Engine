@@ -245,11 +245,12 @@
   }
 
   .tab-content {
-    flex: 1;
+    flex: 1;               /* allow this area to grow/shrink in flex layout */
     padding: 20px;
-    overflow: hidden;
+    overflow-y: auto;      /* enable vertical scrolling */
     background: #ffffff;
-  }
+    min-height: 0;         /* important in flex layouts to allow scrolling */
+}
 
   .playground-content {
     padding: 20px;

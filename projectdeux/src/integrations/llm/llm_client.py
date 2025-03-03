@@ -4,6 +4,7 @@ import litellm
 from typing import List, Optional, Dict
 from src.custom_logging.litellm_logger import my_custom_logging_fn
 from dotenv import load_dotenv
+import time
 
 # Load environment variables from a .env file if present
 load_dotenv()
@@ -48,21 +49,27 @@ class LLMClient:
             logger.setLevel(logging.DEBUG)
 
     def query(self, messages: List[Dict], metadata: Optional[Dict] = None) -> str:
-        """Send a query to the LLM and return the response."""
+        """Send a query to the LLM and return the response with retry logic."""
         metadata = metadata or {}
         if self.debug:
             metadata['debug'] = True
         # Debug print to confirm logger_fn is set
         print(f"Calling litellm.completion with logger_fn: {self.logger_fn}")
-        try:
-            response = litellm.completion(
-                model=self.model,
-                messages=messages,
-                api_key=self.api_key,
-                logger_fn=self.logger_fn,
-                metadata=metadata
-            )
-            return response["choices"][0]["message"]["content"]
-        except Exception as e:
-            logger.error(f"LLM query failed: {e}")
-            raise e
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                response = litellm.completion(
+                    model=self.model,
+                    messages=messages,
+                    api_key=self.api_key,
+                    logger_fn=self.logger_fn,
+                    metadata=metadata
+                )
+                return response["choices"][0]["message"]["content"]
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    logger.warning(f"Attempt {attempt + 1} failed: {e}. Retrying in 2 seconds...")
+                    time.sleep(2)
+                else:
+                    logger.error(f"LLM query failed after {max_retries} attempts: {e}")
+                    raise e

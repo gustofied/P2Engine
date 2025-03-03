@@ -13,3 +13,5 @@ export PYTHONPATH=$(pwd)/src
 python main.py --scenarios src/scenarios --scenario "collaborative_writing"
 
 #TODO LÆR DEG CELERY BUILD SÅ ALLE WORKERS KAN BLI HØRT PÅ
+
+celery -A celery_app worker --loglevel=info

@@ -1,16 +1,13 @@
-# src/systems/scenario_loader.py
-from src.systems.collaborative_writing_system import CollaborativeWritingSystem
-from src.systems.research_system import ResearchSystem
+from src.systems.discussion_system import DiscussionSystem
+from src.systems.generic_system import GenericSystem  # New import
 from src.tasks.task_manager import TaskManager
 from src.entities.entity_manager import EntityManager
 from src.entities.component_manager import ComponentManager
 from src.agents.factory import AgentFactory
-from src.systems.discussion_system import DiscussionSystem
 
 SYSTEM_REGISTRY = {
-    "collaborative_writing": CollaborativeWritingSystem,
-    "research": ResearchSystem,
-    "discussion": DiscussionSystem,
+    "generic": GenericSystem,  # Added GenericSystem
+    "discussion": DiscussionSystem,  # Example of specilized system
 }
 
 def load_system(config: dict):
