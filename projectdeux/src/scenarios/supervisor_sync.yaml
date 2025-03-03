@@ -1,0 +1,16 @@
+scenarios:
+  - name: "supervisor_joke_test"
+    system_type: "generic"
+    execution_type: "synchronous"
+    problem: "Tell a short joke"
+    goal: "Test supervisor-driven multi-agent interaction"
+    available_tasks: ["tell_joke", "react_to_jokes", "evaluate_jokes"]
+    agents:
+      - name: "Supervisor"
+        role: "supervisor"
+        system_prompt: "Decide how many comedians to create (2 or 3) and specify distinct types of jokes for each (e.g., puns, one-liners, knock-knock jokes). Then specify the task sequence as a list of {'task_name': task, 'agent_name': name} including 'tell_joke' for each comedian, 'react_to_jokes' for their reactions, and 'evaluate_jokes' for the critic. Ensure each comedian tells a different type of joke. Return JSON with 'agents' (array of {'name', 'role', 'system_prompt'}) and 'task_sequence'."
+      - name: "Critic"
+        role: "critic"
+        system_prompt: "Evaluate all jokes and pick the best one based on humor."
+    run_params:
+      topic: "Joke telling"

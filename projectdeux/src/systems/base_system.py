@@ -72,48 +72,107 @@ class BaseSystem(ABC):
         all_agents = self.get_all_agents()
         self.logger.log_system_end(result, metadata, score, all_agents)
 
+    def build_workflow_from_sequence(self, task_sequence: List[str], agent_configs: List[Dict]) -> List[Dict]:
+        """
+        Build a workflow from a predefined or supervisor-provided task sequence and agent configurations.
+
+        Notes:
+            - For asynchronous tasks, we now pass `agent.system_prompt` instead of `agent.id` to allow
+              Celery tasks to recreate temporary agents.
+        """
+        workflow = []
+        topic = self.config.get("run_params", {}).get("topic", "General")
+        scenario_data = {
+            "goal": self.goal,
+            "problem": self.config.get("problem", "No problem defined"),
+            "system_prompts": {agent.name: agent.system_prompt for agent in self.get_all_agents()},
+            "agent_names": {agent.id: agent.name for agent in self.get_all_agents()}
+        }
+        role_to_config = {config["role"]: config for config in agent_configs}
+        for i, role in enumerate(task_sequence):
+            config = role_to_config.get(role)
+            if config:
+                agent = self.get_agent_by_name(config["name"])
+                if agent:
+                    task_name = config["task"]
+                    queue = config.get("queue", "celery")
+                    # Use system_prompt instead of agent.id for Celery compatibility
+                    args = [agent.system_prompt, topic, scenario_data] if i == 0 else [agent.system_prompt]
+                    task_config = {"task_name": task_name, "args": args, "queue": queue, "agent_name": config["name"]}
+                    workflow.append(task_config)
+                else:
+                    self.logger.warning(f"Agent '{config['name']}' not found for role '{role}'")
+            else:
+                self.logger.warning(f"No agent config found for role '{role}'")
+        return workflow
+
     def run_workflow(self, workflow: List[Dict]) -> Dict:
-        """Execute the workflow based on execution_type."""
+        """
+        Execute the workflow based on execution_type.
+
+        Notes:
+            - For asynchronous execution, we pass the `system_prompt` instead of the agent object or ID,
+              enabling tasks to create temporary agents internally. This avoids serialization issues
+              with Celery.
+        """
         if self.execution_type == "asynchronous":
             task_list = []
-            for task_config in workflow:
+            scenario_data = {
+                "agent_names": {agent.id: agent.name for agent in self.get_all_agents()},
+                "system_prompts": {agent.name: agent.system_prompt for agent in self.get_all_agents()},
+                "context": {}
+            }
+            for i, task_config in enumerate(workflow):
                 task_name = task_config["task_name"]
-                args = task_config["args"]
-                queue = task_config.get("queue", "default")
+                agent_name = task_config["agent_name"]
+                agent = self.get_agent_by_name(agent_name)
+                if not agent:
+                    raise ValueError(f"Agent '{agent_name}' not found.")
                 task_func = TASK_REGISTRY[task_name]["function"]
+                queue = task_config.get("queue", "default")
+                # Pass system_prompt instead of agent.id for temporary agent creation in tasks
+                if i == 0:
+                    args = [None, agent.system_prompt, scenario_data]
+                else:
+                    args = [agent.system_prompt]
                 task_list.append((task_func, args, queue))
+
             async_result = self.async_task_manager.dispatch_workflow(task_list)
             final_result = self.async_task_manager.get_task_result(async_result, timeout=600)
-            # Handle result flexibly
-            if isinstance(final_result, tuple) and len(final_result) >= 4:
-                result, all_logs, _, all_litellm_logs = final_result[:4]
+
+            if isinstance(final_result, tuple) and len(final_result) >= 2:
+                result, scenario_data = final_result[:2]
+                logs = final_result[2] if len(final_result) > 2 else []
             else:
-                result = final_result  # Fallback to raw result
-                all_logs = []
-            for log in all_logs:
+                result, scenario_data, logs = final_result, {}, []
+
+            for log in logs:
                 self.logger.log_interaction(sender=log["from"], receiver=log["to"], message=log["message"])
-            return {"final_result": result, "logs": all_logs}
+            return {"final_result": result, "scenario_data": scenario_data, "logs": logs}
+
         elif self.execution_type == "synchronous":
             results = {}
+            scenario_data = {
+                "agent_names": {agent.id: agent.name for agent in self.get_all_agents()},
+                "system_prompts": {agent.name: agent.system_prompt for agent in self.get_all_agents()},
+                "context": {}
+            }
+            logs = []
             for task_config in workflow:
                 task_name = task_config["task_name"]
                 agent_name = task_config["agent_name"]
                 agent = self.get_agent_by_name(agent_name)
                 if not agent:
                     raise ValueError(f"Agent '{agent_name}' not found.")
-                if task_name not in self.task_manager.tasks:
-                    self.task_manager.register_task(
-                        task_name=task_name,
-                        agents=[agent],
-                        instruction=task_config["instruction"],
-                        dependencies=task_config.get("dependencies", []),
-                        required_params=task_config.get("required_params", []),
-                        dependency_params=task_config.get("dependency_params", {})
-                    )
-                result = self.task_manager.execute_task(task_name, **task_config.get("params", {}))
-                self.task_states[task_name] = self.task_manager.get_task_state(task_name)
-                results[task_name] = result
-            return results
+                task_func = TASK_REGISTRY[task_name]["function"]
+                if not results:
+                    result, scenario_data = task_func(None, agent, scenario_data)
+                else:
+                    prev_result = list(results.values())[-1]
+                    result, scenario_data = task_func((prev_result, scenario_data), agent)
+                results[f"{task_name}_{agent_name}"] = result
+            return {"final_result": results, "scenario_data": scenario_data, "logs": logs}
+
         else:
             raise ValueError(f"Invalid execution type: {self.execution_type}")
 
@@ -123,5 +182,5 @@ class BaseSystem(ABC):
         self.register_tasks()
         workflow = self.define_workflow()
         results = self.run_workflow(workflow)
-        self.log_end(str(results), metadata={"tasks": len(workflow)}, score=100)
+        self.log_end(str(results["final_result"]), metadata={"tasks": len(workflow)}, score=100)
         return results

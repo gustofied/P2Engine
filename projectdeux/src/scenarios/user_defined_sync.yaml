@@ -1,0 +1,24 @@
+scenarios:
+  - name: "user_joke_test"
+    system_type: "generic"
+    execution_type: "synchronous"
+    problem: "Tell a short joke"
+    goal: "Test user-defined multi-agent interaction"
+    agents:
+      - name: "Comedian1"
+        role: "comedian"
+        system_prompt: "Tell a one-sentence fun fact"
+      - name: "Comedian2"
+        role: "comedian"
+        system_prompt: "Tell a one-sentence one-liner fun fact"
+      - name: "Critic"
+        role: "critic"
+        system_prompt: "Evaluate all fun facts and select the best one."
+    task_sequence:
+      - { "task_name": "tell_joke", "agent_name": "Comedian1" }
+      - { "task_name": "tell_joke", "agent_name": "Comedian2" }
+      - { "task_name": "react_to_jokes", "agent_name": "Comedian1" }
+      - { "task_name": "react_to_jokes", "agent_name": "Comedian2" }
+      - { "task_name": "evaluate_jokes", "agent_name": "Critic" }
+    run_params:
+      topic: "Joke telling"
