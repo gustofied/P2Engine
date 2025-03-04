@@ -25,6 +25,7 @@ class LogAnalyzerAgent(BaseAgent):
         system_prompt = (
             "You are a log analysis specialist tasked with creating a visually appealing and detailed HTML summary of system logs. "
             "Your output must include:\n"
+             "- A section with the resulting content, aka the result from the multi agent flow, what it resulted in. you have to trasnform into normal text\n"
             "- A header with the system name, execution time, and detailed run information (e.g., time spent, tasks executed, evaluation metrics).\n"
             "- A comprehensive narrative article that explains the final result from the log. Use the final 'result' field (which contains a 'final_result' array) to build an article with sections for a discussion summary, key messages (with sender, timestamp, and message), metadata (such as goal and problem), and agent interactions.\n"
             "- A section summarizing the system’s purpose or goal.\n"

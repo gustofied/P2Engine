@@ -1,24 +1,34 @@
 scenarios:
-  - name: "user_joke_test"
+  - name: "user_defined_sync"
     system_type: "generic"
     execution_type: "synchronous"
-    problem: "Tell a short joke"
-    goal: "Test user-defined multi-agent interaction"
+    problem: "Write a short article on a given topic"
+    goal: "Research, write, and edit an article synchronously"
     agents:
-      - name: "Comedian1"
-        role: "comedian"
-        system_prompt: "Tell a one-sentence fun fact"
-      - name: "Comedian2"
-        role: "comedian"
-        system_prompt: "Tell a one-sentence one-liner fun fact"
-      - name: "Critic"
-        role: "critic"
-        system_prompt: "Evaluate all fun facts and select the best one."
+      - name: "Researcher"
+        role: "researcher"
+        system_prompt: "You are an expert researcher. Provide key points on the topic."
+      - name: "Writer"
+        role: "writer"
+        system_prompt: "You are a skilled writer. Write a short article based on the research."
+      - name: "Editor"
+        role: "editor"
+        system_prompt: "You are an editor. Review and improve the article."
     task_sequence:
-      - { "task_name": "tell_joke", "agent_name": "Comedian1" }
-      - { "task_name": "tell_joke", "agent_name": "Comedian2" }
-      - { "task_name": "react_to_jokes", "agent_name": "Comedian1" }
-      - { "task_name": "react_to_jokes", "agent_name": "Comedian2" }
-      - { "task_name": "evaluate_jokes", "agent_name": "Critic" }
+      - task_name: "research_topic"
+        agent_name: "Researcher"
+        instruction: "Research the topic: {topic} and provide 3 key points."
+        params:
+          topic: "run_params.topic"
+      - task_name: "write_article"
+        agent_name: "Writer"
+        instruction: "Write a short article using these points: {points}."
+        params:
+          points: "context.research_topic"
+      - task_name: "edit_article"
+        agent_name: "Editor"
+        instruction: "Edit and improve this article: {article}."
+        params:
+          article: "context.write_article"
     run_params:
-      topic: "Joke telling"
+      topic: "Artificial Intelligence"

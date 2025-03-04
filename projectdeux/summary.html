@@ -1,141 +1,156 @@
 ```html
-<div class='playground-llm' style='font-family: Arial, sans-serif; color: #333; padding: 20px;'>
-  <h1 style='color: #0056b3; text-align: center;'>GenericSystem Log Summary</h1>
-  <div style='background-color: #f0f8ff; padding: 15px; border-radius: 5px; margin-bottom: 20px;'>
-    <p><strong>Execution Time:</strong> 2025-03-04T13:05:26.028481</p>
-    <p><strong>Time Spent:</strong> 8.729189 seconds</p>
-    <p><strong>Tasks Executed:</strong> 5</p>
-    <p><strong>Reward:</strong> 100</p>
-  </div>
+<div class='playground-llm' style='font-family: Arial, sans-serif; margin: 20px;'>
+  <header style='background-color: #f0f0f0; padding: 20px; border-bottom: 1px solid #ccc;'>
+    <h1 style='color: #333; margin-bottom: 10px;'>GenericSystem Log Summary</h1>
+    <p style='color: #777;'><b>Execution Time:</b> 2025-03-04T16:23:39.549773</p>
+    <p style='color: #777;'><b>Time Spent:</b> 3.836221 seconds</p>
+    <p style='color: #777;'><b>Tasks Executed:</b> 1</p>
+    <p style='color: #777;'><b>Reward:</b> 100</p>
+  </header>
 
-  <article style='line-height: 1.6; margin-bottom: 20px;'>
-    <h2 style='color: #0056b3;'>Final Result Analysis</h2>
+  <article style='margin-top: 20px; padding: 20px; background-color: #fff; border: 1px solid #ddd;'>
+    <h2 style='color: #444; border-bottom: 1px solid #eee; padding-bottom: 5px;'>Narrative Summary</h2>
 
     <section>
-      <h3 style='color: #007bff;'>Discussion Summary</h3>
-      <p>The system evaluated two jokes: one about facial hair and another about atoms. The critic agent determined that the atom joke was superior due to its relatability, cleverness, and relative originality compared to the more common facial hair pun.</p>
+      <h3 style='color: #555;'>Discussion Summary</h3>
+      <p style='line-height: 1.6;'>
+        The system was designed to test supervisor-driven multi-agent interaction, specifically involving a 'JokeTeller' agent. The agent was tasked with telling a short, funny food joke suitable for all ages. The log captures the interaction flow: the system creates the agent, the agent receives a user request via the system, and the agent generates and delivers a joke. The joke and task output are captured, and performance metrics are reported.
+      </p>
     </section>
 
     <section>
-      <h3 style='color: #007bff;'>Key Messages</h3>
-        <ul>
-          <li><strong>Sender:</strong> AsyncTaskManager, <strong>Timestamp:</strong> 2025-03-04T13:05:26.074117, <strong>Message:</strong> Dispatched workflow, Task ID: 9b17e215-40e6-48f2-8d02-aae685aab4f7</li>
-           <li><strong>Sender:</strong> AsyncTaskManager, <strong>Timestamp:</strong> 2025-03-04T13:05:34.757528, <strong>Message:</strong> Got result: ['Okay, let\'s break down these jokes:\n\n*   **"I used to hate facial hair... but then it grew on me."** This is a classic pun that relies on the double meaning of "grew on me." It\'s simple and relatable.\n\n*   **"Why don\'t scientists trust atoms? Because they make up everything!"** This is another pun, based on the literal meaning of atoms making up matter and the figurative meaning of "making up" a story (lying).\n\n**Evaluation:**\n\nBoth jokes are decent puns, but the atom joke is slightly better. Here\'s why:\n\n*   **Relatability:** While everyone can relate to forming an opinion about something, the atom joke has a wider appeal because science is a common topic.\n*   **Cleverness:** The connection between atoms and lying is a bit more creative than the facial hair growing on someone.\n*   **Originality:** The facial hair joke is a pretty common pun structure, while the atom joke feels slightly fresher.\n\n**Best Joke:**\n\nThe best joke is: **"Why don\'t scientists trust atoms? Because they make up everything!"**', {'agent_names': {'21943632-af9b-420a-88b4-d6f74dfb03e6': 'Comedian1', '5affd15f-2a4b-467f-a35d-838d3678d34f': 'Comedian2', 'd1848996-aa64-4398-89bb-d6ff5ed2aa86': 'Critic'}, 'system_prompts': {'Comedian1': 'Tell a one-sentence pun.', 'Comedian2': 'Tell a one-sentence one-liner.', 'Critic': 'Evaluate all jokes and select the best one.'}, 'context': {'jokes': [{'agent': 'TempAgent', 'joke': 'I used to hate facial hair... but then it grew on me.\n'}, {'agent': 'TempAgent', 'joke': "Why don't scientists trust atoms? Because they make up everything!\n"}]}}]</li>
-        </ul>
+      <h3 style='color: #555;'>Key Messages</h3>
+      <ul style='list-style-type: none; padding: 0;'>
+        <li style='margin-bottom: 10px;'>
+          <b>Sender:</b> System<br>
+          <b>Timestamp:</b> 2025-03-04T16:23:41.778069<br>
+          <b>Message:</b> Created agent: JokeTeller
+        </li>
+        <li style='margin-bottom: 10px;'>
+          <b>Sender:</b> JokeTeller<br>
+          <b>Timestamp:</b> 2025-03-04T16:23:43.385856<br>
+          <b>Message:</b> User input: Tell a short, funny food joke. Keep it concise and appropriate for all ages.
+        </li>
+        <li style='margin-bottom: 10px;'>
+          <b>Sender:</b> JokeTeller<br>
+          <b>Timestamp:</b> 2025-03-04T16:23:43.385920<br>
+          <b>Message:</b> Response: Why did the orange stop running? Because he ran out of juice!
+        </li>
+         <li style='margin-bottom: 10px;'>
+          <b>Sender:</b> System<br>
+          <b>Timestamp:</b> 2025-03-04T16:23:43.385949<br>
+          <b>Message:</b> Executed TellAFoodJoke: Why did the orange stop running?
+
+Because he ran out of juice!
+        </li>
+      </ul>
     </section>
 
     <section>
-      <h3 style='color: #007bff;'>Metadata</h3>
-      <p><strong>Goal:</strong> Test user-defined async multi-agent interaction</p>
-      <p><strong>Problem:</strong> Unnamed problem</p>
+      <h3 style='color: #555;'>Metadata</h3>
+      <p><b>Goal:</b> Test supervisor-driven multi-agent interaction</p>
+      <p><b>Problem:</b> Unnamed problem</p>
     </section>
 
     <section>
-      <h3 style='color: #007bff;'>Agent Interactions</h3>
-      <p>The interaction involved a sequence of joke generation and evaluation, with 'Comedian1' and 'Comedian2' providing jokes, and 'Critic' evaluating them.</p>
+      <h3 style='color: #555;'>Agent Interactions</h3>
+      <ul style='list-style-type: disc; padding-left: 20px;'>
+        <li>System created the JokeTeller agent.</li>
+        <li>JokeTeller received a request to tell a food joke.</li>
+        <li>JokeTeller provided the joke: "Why did the orange stop running? Because he ran out of juice!"</li>
+        <li>System executed the TellAFoodJoke task and captured the agent's response.</li>
+      </ul>
     </section>
   </article>
 
-  <section style='margin-bottom: 20px;'>
-    <h2 style='color: #0056b3;'>System Goal</h2>
-    <p>The system's primary purpose was to facilitate an asynchronous multi-agent interaction where jokes are generated and then evaluated for quality.</p>
+  <section style='margin-top: 20px; padding: 20px; background-color: #fff; border: 1px solid #ddd;'>
+    <h2 style='color: #444; border-bottom: 1px solid #eee; padding-bottom: 5px;'>System Goal</h2>
+    <p style='line-height: 1.6;'>The primary goal of this system is to facilitate and test interactions within a multi-agent environment, specifically focusing on supervisor-driven task execution. This involves creating agents (like JokeTeller), assigning them tasks, and capturing their responses to evaluate performance and interaction flow.</p>
   </section>
 
-  <section style='margin-bottom: 20px;'>
-    <h2 style='color: #0056b3;'>Key Events</h2>
-    <ul>
-      <li>Workflow dispatch initiated by AsyncTaskManager.</li>
-      <li>Reception of the joke evaluation result, indicating the atom joke as the best.</li>
+  <section style='margin-top: 20px; padding: 20px; background-color: #fff; border: 1px solid #ddd;'>
+    <h2 style='color: #444; border-bottom: 1px solid #eee; padding-bottom: 5px;'>Key Events</h2>
+    <ul style='list-style-type: disc; padding-left: 20px;'>
+      <li>Agent "JokeTeller" created.</li>
+      <li>"JokeTeller" agent received instruction to tell a food joke.</li>
+      <li>Joke was successfully generated.</li>
     </ul>
   </section>
 
-  <section style='margin-bottom: 20px;'>
-    <h2 style='color: #0056b3;'>Result Status</h2>
-    <span style='background-color: #28a745; color: white; padding: 0.25em 0.5em; border-radius: 0.25em; font-weight: bold;'>Success</span>
+  <section style='margin-top: 20px; padding: 20px; background-color: #fff; border: 1px solid #ddd;'>
+    <h2 style='color: #444; border-bottom: 1px solid #eee; padding-bottom: 5px;'>Result</h2>
+    <div style='background-color: #d4edda; color: #155724; padding: 10px; border: 1px solid #c3e6cb; border-radius: 4px; display: inline-block;'>
+      Success
+    </div>
   </section>
 
-  <section style='margin-bottom: 20px;'>
-    <h2 style='color: #0056b3;'>Data Visualization</h2>
-    <svg id='visualization' width='600' height='400' style='background-color: #f9f9f9; border: 1px solid #ccc;'></svg>
+  <section style='margin-top: 20px; padding: 20px; background-color: #fff; border: 1px solid #ddd;'>
+    <h2 style='color: #444; border-bottom: 1px solid #eee; padding-bottom: 5px;'>Data Visualization</h2>
+    <svg id='visualization' width='600' height='400'></svg>
   </section>
 
   <script src='https://d3js.org/d3.v7.min.js'></script>
   <script>
-    // Extract data from the log (placeholder data, adjust as needed)
-    const agentInteractions = [
-     {agent: 'Comedian1', count: 1},
-     {agent: 'Comedian2', count: 1},
-     {agent: 'Critic', count: 1} ,
-     {agent: 'AsyncTaskManager', count: 2}
+    const data = [
+      { agent: 'System', interactions: 3 },
+      { agent: 'JokeTeller', interactions: 2 }
     ];
 
-    // Set up SVG dimensions and margins
-    const svgWidth = 600;
-    const svgHeight = 400;
-    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
-    const width = svgWidth - margin.left - margin.right;
-    const height = svgHeight - margin.top - margin.bottom;
+    const width = 600;
+    const height = 400;
+    const margin = { top: 20, right: 30, bottom: 30, left: 40 };
 
-    // Create SVG container
     const svg = d3.select('#visualization')
-      .append('svg')
-      .attr('width', svgWidth)
-      .attr('height', svgHeight)
-      .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
+      .attr('width', width)
+      .attr('height', height);
 
-    // Define scales
-    const xScale = d3.scaleBand()
-      .range([0, width])
-      .domain(agentInteractions.map(d => d.agent))
-      .padding(0.2);
+    const x = d3.scaleBand()
+      .domain(data.map(d => d.agent))
+      .range([margin.left, width - margin.right])
+      .padding(0.1);
 
-    const yScale = d3.scaleLinear()
-      .domain([0, d3.max(agentInteractions, d => d.count)])
-      .range([height, 0]);
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(data, d => d.interactions)])
+      .nice()
+      .range([height - margin.bottom, margin.top]);
 
-    // Create bars
+    const xAxis = g => g
+      .attr('transform', `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x));
+
+    const yAxis = g => g
+      .attr('transform', `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y));
+
+    svg.append('g')
+      .call(xAxis);
+
+    svg.append('g')
+      .call(yAxis);
+
     svg.selectAll('.bar')
-      .data(agentInteractions)
+      .data(data)
       .enter().append('rect')
       .attr('class', 'bar')
-      .attr('x', d => xScale(d.agent))
-      .attr('width', xScale.bandwidth())
-      .attr('y', d => yScale(d.count))
-      .attr('height', d => height - yScale(d.count))
-      .attr('fill', '#4c91cb');
+      .attr('x', d => x(d.agent))
+      .attr('y', d => y(d.interactions))
+      .attr('height', d => height - margin.bottom - y(d.interactions))
+      .attr('width', x.bandwidth())
+      .attr('fill', 'steelblue');
 
-    // Add x axis
-    svg.append('g')
-      .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(xScale));
 
-    // Add y axis
-    svg.append('g')
-      .call(d3.axisLeft(yScale));
+    svg.append('text')
+        .attr('x', width/2)
+        .attr('y', height - (margin.bottom / 2))
+        .style('text-anchor', 'middle')
+        .text('Agent');
 
-         // Add labels to bars
-    svg.selectAll(".text")
-      .data(agentInteractions)
-      .enter()
-      .append("text")
-      .attr("class","label")
-      .attr("x", (d) => xScale(d.agent) + xScale.bandwidth() / 2)
-      .attr("y", (d) => yScale(d.count) - 5)
-      .attr("dy", ".75em")
-      .attr("text-anchor", "middle")
-      .text((d) => d.count)
-      .style("font-size", "12px")
-      .style("fill", "black");
-
-         // Add chart title
-        svg.append("text")
-            .attr("x", (width / 2))
-            .attr("y", -10)
-            .attr("text-anchor", "middle")
-            .style("font-size", "16px")
-            .style("font-weight", "bold")
-            .text("Agent Interaction Count");
+    svg.append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', margin.left/2)
+        .attr('x', -height/2)
+        .style('text-anchor', 'middle')
+        .text('Number of Interactions');
   </script>
 </div>
 ```
