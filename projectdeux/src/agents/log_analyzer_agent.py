@@ -1,7 +1,11 @@
 from .base_agent import BaseAgent
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Load .env at the module level
 
 class LogAnalyzerAgent(BaseAgent):
-    def __init__(self, entity_manager, component_manager, name="LogAnalyzer", model="deepseek/deepseek-chat", api_key=None):
+    def __init__(self, entity_manager, component_manager, name="LogAnalyzer", model="openrouter/google/gemini-2.0-flash-001", api_key=None):
         """
         Initialize the LogAnalyzerAgent with an enhanced system prompt for generating detailed HTML summaries of system logs,
         including an article that presents only the final result from the log, along with comprehensive run details and a D3.js visualization.
@@ -10,9 +14,14 @@ class LogAnalyzerAgent(BaseAgent):
             entity_manager: Manager for entity data
             component_manager: Manager for component data
             name: Name of the agent (default: "LogAnalyzer")
-            model: Model to use for analysis (default: "deepseek/deepseek-chat")
-            api_key: API key for the model (default: None)
+            model: Model to use for analysis (default: "openrouter/google/gemini-2.0-flash-001")
+            api_key: API key for the model (default: None, falls back to OPENROUTER_API_KEY from .env)
         """
+        # Use provided api_key, fallback to .env
+        api_key = api_key or os.getenv("OPENROUTER_API_KEY")
+        if not api_key:
+            raise ValueError("No API key provided and OPENROUTER_API_KEY not found in environment.")
+
         system_prompt = (
             "You are a log analysis specialist tasked with creating a visually appealing and detailed HTML summary of system logs. "
             "Your output must include:\n"
@@ -33,6 +42,6 @@ class LogAnalyzerAgent(BaseAgent):
             component_manager=component_manager,
             name=name,
             model=model,
-            api_key=api_key,
+            api_key=api_key,  # Pass the resolved api_key explicitly
             system_prompt=system_prompt
         )

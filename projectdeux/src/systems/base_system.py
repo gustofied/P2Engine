@@ -138,7 +138,7 @@ class BaseSystem(ABC):
                 task_list.append((task_func, args, queue))
 
             async_result = self.async_task_manager.dispatch_workflow(task_list)
-            final_result = self.async_task_manager.get_task_result(async_result, timeout=600)
+            final_result = self.async_task_manager.get_task_result(async_result, timeout=60)
 
             if isinstance(final_result, tuple) and len(final_result) >= 2:
                 result, scenario_data = final_result[:2]

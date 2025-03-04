@@ -14,7 +14,7 @@ class AgentFactory:
         api_key: Optional[str] = None
     ) -> BaseAgent:
         name = config.get("name", "UnnamedAgent")
-        model = config.get("model", "deepseek/deepseek-chat")
+        model = config.get("model", "openrouter/google/gemini-2.0-flash-001")
         system_prompt = config.get("system_prompt", "You are a helpful assistant")
         tools_config = config.get("tools", [])
         behaviors = config.get("behaviors", {})

@@ -13,7 +13,7 @@ class BaseAgent(Entity):
         entity_manager: EntityManager,
         component_manager: ComponentManager,
         name: str,
-        model: str = "deepseek/deepseek-chat",
+        model: str = "openrouter/google/gemini-2.0-flash-001",
         api_key: Optional[str] = None,
         tools: Optional[List[Tool]] = None,
         system_prompt: str = "You are a helpful assistant",
