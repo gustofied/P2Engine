@@ -1,3 +1,4 @@
+# api.py
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -10,6 +11,9 @@ from src.entities.component_manager import ComponentManager
 import os
 import atexit
 from fastapi.middleware.cors import CORSMiddleware
+import redis
+import traceback
+from celery_app import app as celery_app  # Import shared Celery app
 
 # Load environment variables
 load_dotenv()
@@ -26,13 +30,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Define the request model for running a scenario
+# Define the request model
 class ScenarioRequest(BaseModel):
     scenario_name: str
-    scenarios_dir: str = "src/scenarios"  # Default directory
+    scenarios_dir: str = "src/scenarios"
 
 def format_scenario_log(scenario_log):
-    """Format a scenario log into a string for analysis."""
     if not scenario_log:
         return "No log data available."
     interactions = scenario_log.get("interactions", [])
@@ -56,7 +59,6 @@ Reward: {scenario_log.get('reward', 'N/A')}
 
 @app.get("/list-scenarios")
 async def list_scenarios(scenarios_dir: str = "src/scenarios"):
-    """Return a list of available scenario names."""
     try:
         manager = ScenarioManager(scenarios_dir)
         scenarios = manager.list_scenarios()
@@ -66,31 +68,50 @@ async def list_scenarios(scenarios_dir: str = "src/scenarios"):
 
 @app.post("/run-scenario")
 async def run_scenario(request: ScenarioRequest):
-    """Run a scenario and return an HTML summary."""
     try:
+        # Verify Celery result backend
+        result_backend = os.environ.get("CELERY_RESULT_BACKEND", "redis://localhost:6379/0")
+        print(f"Using RESULT_BACKEND: {result_backend}")
+
+        # Test Redis connectivity
+        try:
+            r = redis.Redis.from_url(result_backend)
+            print(f"Redis ping: {r.ping()}")  # Should print True
+        except redis.ConnectionError as e:
+            print(f"Redis connection failed: {e}")
+            raise HTTPException(status_code=500, detail=f"Redis connection failed: {str(e)}")
+
+        # Register log flushing on exit
         atexit.register(central_logger.flush_logs)
+
+        # Run the scenario
         manager = ScenarioManager(request.scenarios_dir)
         scenario = manager.get_scenario(request.scenario_name)
         system = load_system(scenario)
         result = system.run(**scenario.get("run_params", {}))
-        print("Scenario completed. Result:", result)
+        print(f"Scenario completed. Result: {result}")
 
+        # Initialize analyzer agent
         entity_manager = EntityManager()
         component_manager = ComponentManager()
         analyzer_agent = LogAnalyzerAgent(
             entity_manager=entity_manager,
             component_manager=component_manager,
-            api_key=os.getenv("DEEPSEEK_API_KEY")
+            api_key=os.getenv("OPENROUTER_API_KEY")
         )
 
+        # Generate HTML summary
         scenario_log = central_logger.get_logs()
         formatted_log = format_scenario_log(scenario_log)
         prompt = f"Analyze this system log and generate an HTML summary:\n{formatted_log}"
         html_summary = analyzer_agent.interact(prompt)
 
         return {"html_summary": html_summary}
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Error occurred: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Scenario failed: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

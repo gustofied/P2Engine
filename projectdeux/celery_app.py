@@ -1,7 +1,10 @@
-from src.tasks.task_registry import TASK_REGISTRY  # Import the task registry
-import os
+# celery_app.py
 from celery import Celery
-from src.entities.entity_manager import EntityManager
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Configuration from environment variables
 BROKER_URL = os.environ.get("CELERY_BROKER_URL", "amqp://guest:guest@localhost:5672//")
@@ -14,9 +17,6 @@ app = Celery(
     backend=RESULT_BACKEND,
 )
 
-# Global EntityManager (simplified; consider dependency injection for production)
-entity_manager = EntityManager()
-
 # Update Celery configuration
 app.conf.update(
     task_serializer="json",
@@ -25,8 +25,9 @@ app.conf.update(
     timezone="UTC",
     enable_utc=True,
     worker_concurrency=4,
-    include=["src.tasks.task_registry"],  # Point to where tasks are defined
+    include=["src.tasks.task_registry"],  # Ensure tasks are registered
 )
 
-# Optionally, import tasks explicitly to ensure they’re registered
-# from src.tasks.task_registry import tell_joke, react_to_jokes, evaluate_jokes
+# Debugging: Print configuration
+print(f"Broker: {BROKER_URL}")
+print(f"Result Backend: {RESULT_BACKEND}")
