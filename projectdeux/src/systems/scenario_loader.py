@@ -1,4 +1,3 @@
-from src.systems.discussion_system import DiscussionSystem
 from src.systems.generic_system import GenericSystem  # New import
 from src.tasks.task_manager import TaskManager
 from src.entities.entity_manager import EntityManager
@@ -7,7 +6,6 @@ from src.agents.factory import AgentFactory
 
 SYSTEM_REGISTRY = {
     "generic": GenericSystem,  # Added GenericSystem
-    "discussion": DiscussionSystem,  # Example of specilized system
 }
 
 def load_system(config: dict):

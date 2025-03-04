@@ -33,7 +33,7 @@ class AsyncTaskManager:
         self.logger.log_interaction("AsyncTaskManager", "System", f"Dispatched workflow, Task ID: {async_result.id}")
         return async_result
 
-    def get_task_result(self, async_result: AsyncResult, timeout: int = 60):
+    def get_task_result(self, async_result: AsyncResult, timeout: int = 120):
         """Retrieve the result of a task or workflow with a timeout."""
         try:
             result = async_result.get(timeout=timeout)

@@ -1,0 +1,58 @@
+Broker: amqp://guest:guest@localhost:5672//
+Result Backend: redis://localhost:6379/0
+ 
+ -------------- celery@dhcp-10-22-132-180.wlan.ntnu.no v5.4.0 (opalescent)
+--- ***** ----- 
+-- ******* ---- macOS-15.0.1-arm64-arm-64bit 2025-03-04 17:11:40
+- *** --- * --- 
+- ** ---------- [config]
+- ** ---------- .> app:         multi_agent_system:0x10918f700
+- ** ---------- .> transport:   amqp://guest:**@localhost:5672//
+- ** ---------- .> results:     redis://localhost:6379/0
+- *** --- * --- .> concurrency: 4 (prefork)
+-- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+--- ***** ----- 
+ -------------- [queues]
+                .> content_queue    exchange=content_queue(direct) key=content_queue
+                .> email_queue      exchange=email_queue(direct) key=email_queue
+                .> seo_queue        exchange=seo_queue(direct) key=seo_queue
+                .> social_queue     exchange=social_queue(direct) key=social_queue
+                .> strategic_queue  exchange=strategic_queue(direct) key=strategic_queue
+
+[tasks]
+  . src.tasks.task_registry.generic_task
+
+[2025-03-04 17:11:41,329: WARNING/MainProcess] /Users/adamds/.pyenv/versions/3.8.12/lib/python3.8/site-packages/celery/worker/consumer/consumer.py:508: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2025-03-04 17:11:41,350: INFO/MainProcess] Connected to amqp://guest:**@127.0.0.1:5672//
+[2025-03-04 17:11:41,350: WARNING/MainProcess] /Users/adamds/.pyenv/versions/3.8.12/lib/python3.8/site-packages/celery/worker/consumer/consumer.py:508: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2025-03-04 17:11:41,355: INFO/MainProcess] mingle: searching for neighbors
+[2025-03-04 17:11:42,379: INFO/MainProcess] mingle: all alone
+[2025-03-04 17:11:42,413: WARNING/MainProcess] /Users/adamds/.pyenv/versions/3.8.12/lib/python3.8/site-packages/kombu/pidbox.py:72: UserWarning: A node named celery@dhcp-10-22-132-180.wlan.ntnu.no is already using this process mailbox!
+
+Maybe you forgot to shutdown the other node or did not do so properly?
+Or if you meant to start multiple nodes on the same host please make sure
+you give each node a unique node name!
+
+  warnings.warn(W_PIDBOX_IN_USE.format(node=self))
+
+[2025-03-04 17:11:42,418: INFO/MainProcess] celery@dhcp-10-22-132-180.wlan.ntnu.no ready.
+
+worker: Warm shutdown (MainProcess)
+2025-03-04 17:11:45,941 - INFO - Flushed system logs to logs/system_log_20250304_171140.json
+[2025-03-04 17:11:45,941: INFO/MainProcess] Flushed system logs to logs/system_log_20250304_171140.json
+2025-03-04 17:11:45,942 - INFO - Flushed interaction logs to logs/interaction_log_20250304_171140.json
+[2025-03-04 17:11:45,942: INFO/MainProcess] Flushed interaction logs to logs/interaction_log_20250304_171140.json
+2025-03-04 17:11:45,943 - INFO - Flushed LiteLLM logs to logs/litellm_log_20250304_171140.json
+[2025-03-04 17:11:45,943: INFO/MainProcess] Flushed LiteLLM logs to logs/litellm_log_20250304_171140.json
+[2025-03-04 17:11:45,943: WARNING/MainProcess] Flushing GLOBAL_LOG_DATA: {'run_id': '20250304_171140', 'agents': {}}
+[2025-03-04 17:11:45,943: WARNING/MainProcess] Flushed logs to logs/litellm_log_20250304_171140.json

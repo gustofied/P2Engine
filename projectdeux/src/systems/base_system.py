@@ -6,8 +6,13 @@ from src.custom_logging.central_logger import central_logger
 from src.tasks.task_manager import TaskManager
 from src.tasks.task_registry import TASK_REGISTRY
 from src.tasks.async_task_manager import AsyncTaskManager
+from celery import chain
 
 class BaseSystem(ABC):
+    """
+    Abstract base class for defining and executing a system workflow.
+    Supports both synchronous and asynchronous task execution using Celery.
+    """
     def __init__(
         self,
         agents,
@@ -17,6 +22,17 @@ class BaseSystem(ABC):
         task_manager: Optional[TaskManager] = None,
         execution_type: str = "synchronous"
     ):
+        """
+        Initialize the BaseSystem with agents, managers, and configuration.
+
+        Args:
+            agents: List or dict of agent objects.
+            entity_manager: Manages entities in the system.
+            component_manager: Manages components in the system.
+            config: Configuration dictionary for the system.
+            task_manager: Optional custom TaskManager instance.
+            execution_type: 'synchronous' or 'asynchronous' execution mode.
+        """
         self.agents = agents
         self.entity_manager = entity_manager
         self.component_manager = component_manager
@@ -25,8 +41,6 @@ class BaseSystem(ABC):
         self.logger = central_logger
         self.goal = config.get("goal", "Solve a problem effectively")
         self.expected_result = config.get("expected_result", None)
-        self.task_states: Dict[str, str] = {}
-        self.system_type = self.__class__.__name__.lower().replace("system", "")
         self.execution_type = execution_type
         if self.execution_type == "asynchronous":
             self.async_task_manager = AsyncTaskManager()
@@ -34,7 +48,7 @@ class BaseSystem(ABC):
             self.async_task_manager = None
 
     def get_agent_by_name(self, agent_name):
-        """Retrieve an agent by name."""
+        """Retrieve an agent by its name."""
         try:
             if isinstance(self.agents, dict):
                 return self.agents.get(agent_name)
@@ -50,11 +64,7 @@ class BaseSystem(ABC):
 
     @abstractmethod
     def define_workflow(self) -> List[Dict]:
-        """Define the workflow."""
-        pass
-
-    def register_tasks(self):
-        """Subclasses can override to register system-specific tasks."""
+        """Define the workflow as a list of task configurations. Must be implemented by subclasses."""
         pass
 
     def log_start(self, problem: str):
@@ -72,115 +82,103 @@ class BaseSystem(ABC):
         all_agents = self.get_all_agents()
         self.logger.log_system_end(result, metadata, score, all_agents)
 
-    def build_workflow_from_sequence(self, task_sequence: List[str], agent_configs: List[Dict]) -> List[Dict]:
+    def build_workflow_from_sequence(self, task_sequence: List[Dict]) -> List[Dict]:
         """
-        Build a workflow from a predefined or supervisor-provided task sequence and agent configurations.
+        Build a workflow from a predefined task sequence provided in the config.
+        Each task in the sequence includes 'task_name', 'agent_name', 'instruction', and 'params'.
 
-        Notes:
-            - For asynchronous tasks, we now pass `agent.system_prompt` instead of `agent.id` to allow
-              Celery tasks to recreate temporary agents.
+        Args:
+            task_sequence: List of task configuration dictionaries.
+
+        Returns:
+            List of workflow steps with task functions and arguments.
         """
         workflow = []
-        topic = self.config.get("run_params", {}).get("topic", "General")
         scenario_data = {
             "goal": self.goal,
             "problem": self.config.get("problem", "No problem defined"),
             "system_prompts": {agent.name: agent.system_prompt for agent in self.get_all_agents()},
-            "agent_names": {agent.id: agent.name for agent in self.get_all_agents()}
+            "agent_names": {agent.id: agent.name for agent in self.get_all_agents()},
+            "run_params": self.config.get("run_params", {}),
+            "context": {}
         }
-        role_to_config = {config["role"]: config for config in agent_configs}
-        for i, role in enumerate(task_sequence):
-            config = role_to_config.get(role)
-            if config:
-                agent = self.get_agent_by_name(config["name"])
-                if agent:
-                    task_name = config["task"]
-                    queue = config.get("queue", "celery")
-                    # Use system_prompt instead of agent.id for Celery compatibility
-                    args = [agent.system_prompt, topic, scenario_data] if i == 0 else [agent.system_prompt]
-                    task_config = {"task_name": task_name, "args": args, "queue": queue, "agent_name": config["name"]}
-                    workflow.append(task_config)
+        for i, task_config in enumerate(task_sequence):
+            agent = self.get_agent_by_name(task_config["agent_name"])
+            if agent:
+                task_func = TASK_REGISTRY["generic_task"]["function"]
+                queue = task_config.get("queue", "default")
+                # For the first task, include None as previous_output
+                if i == 0:
+                    args = [None, agent.system_prompt, task_config, scenario_data]
+                # For subsequent tasks, omit previous_output (Celery will provide it in async mode)
                 else:
-                    self.logger.warning(f"Agent '{config['name']}' not found for role '{role}'")
+                    args = [agent.system_prompt, task_config, scenario_data]
+                workflow.append({
+                    "task_func": task_func,
+                    "args": args,
+                    "queue": queue,
+                    "task_config": task_config
+                })
             else:
-                self.logger.warning(f"No agent config found for role '{role}'")
+                self.logger.warning(f"Agent '{task_config['agent_name']}' not found")
         return workflow
 
     def run_workflow(self, workflow: List[Dict]) -> Dict:
         """
-        Execute the workflow based on execution_type.
+        Execute the workflow based on the execution type.
 
-        Notes:
-            - For asynchronous execution, we pass the `system_prompt` instead of the agent object or ID,
-              enabling tasks to create temporary agents internally. This avoids serialization issues
-              with Celery.
+        Args:
+            workflow: List of task dictionaries with functions and arguments.
+
+        Returns:
+            Dictionary containing the final result, scenario data, and logs.
         """
         if self.execution_type == "asynchronous":
-            task_list = []
-            scenario_data = {
-                "agent_names": {agent.id: agent.name for agent in self.get_all_agents()},
-                "system_prompts": {agent.name: agent.system_prompt for agent in self.get_all_agents()},
-                "context": {}
-            }
-            for i, task_config in enumerate(workflow):
-                task_name = task_config["task_name"]
-                agent_name = task_config["agent_name"]
-                agent = self.get_agent_by_name(agent_name)
-                if not agent:
-                    raise ValueError(f"Agent '{agent_name}' not found.")
-                task_func = TASK_REGISTRY[task_name]["function"]
-                queue = task_config.get("queue", "default")
-                # Pass system_prompt instead of agent.id for temporary agent creation in tasks
-                if i == 0:
-                    args = [None, agent.system_prompt, scenario_data]
-                else:
-                    args = [agent.system_prompt]
-                task_list.append((task_func, args, queue))
-
-            async_result = self.async_task_manager.dispatch_workflow(task_list)
-            final_result = self.async_task_manager.get_task_result(async_result, timeout=60)
-
-            if isinstance(final_result, tuple) and len(final_result) >= 2:
-                result, scenario_data = final_result[:2]
-                logs = final_result[2] if len(final_result) > 2 else []
-            else:
-                result, scenario_data, logs = final_result, {}, []
-
+            # Build a Celery chain of tasks
+            celery_tasks = []
+            for task in workflow:
+                task_func = task["task_func"]
+                args = task["args"]
+                queue = task["queue"]
+                celery_task = task_func.s(*args).set(queue=queue)
+                celery_tasks.append(celery_task)
+            full_chain = chain(*celery_tasks)
+            async_result = full_chain()
+            final_result = self.async_task_manager.get_task_result(async_result, timeout=120)
+            result, scenario_data = final_result[:2]
+            logs = final_result[2] if len(final_result) > 2 else []
             for log in logs:
                 self.logger.log_interaction(sender=log["from"], receiver=log["to"], message=log["message"])
             return {"final_result": result, "scenario_data": scenario_data, "logs": logs}
 
         elif self.execution_type == "synchronous":
+            # Execute tasks sequentially, passing output to the next task
             results = {}
-            scenario_data = {
-                "agent_names": {agent.id: agent.name for agent in self.get_all_agents()},
-                "system_prompts": {agent.name: agent.system_prompt for agent in self.get_all_agents()},
-                "context": {}
-            }
-            logs = []
-            for task_config in workflow:
-                task_name = task_config["task_name"]
-                agent_name = task_config["agent_name"]
-                agent = self.get_agent_by_name(agent_name)
-                if not agent:
-                    raise ValueError(f"Agent '{agent_name}' not found.")
-                task_func = TASK_REGISTRY[task_name]["function"]
-                if not results:
-                    result, scenario_data = task_func(None, agent, scenario_data)
+            previous_output = None
+            for task in workflow:
+                task_func = task["task_func"]
+                task_config = task["task_config"]
+                agent = self.get_agent_by_name(task_config["agent_name"])
+                if previous_output is None:
+                    # Use initial args for the first task
+                    args = task["args"]  # [None, agent.system_prompt, task_config, scenario_data]
                 else:
-                    prev_result = list(results.values())[-1]
-                    result, scenario_data = task_func((prev_result, scenario_data), agent)
-                results[f"{task_name}_{agent_name}"] = result
-            return {"final_result": results, "scenario_data": scenario_data, "logs": logs}
+                    # Use previous output for subsequent tasks
+                    scenario_data = previous_output[1]  # Update scenario_data
+                    args = [previous_output, agent.system_prompt, task_config, scenario_data]
+                previous_output = task_func(*args)
+                result, scenario_data = previous_output  # Unpack the result tuple
+                results[task_config["task_name"]] = result
+            return {"final_result": results, "scenario_data": scenario_data, "logs": []}
 
         else:
             raise ValueError(f"Invalid execution type: {self.execution_type}")
 
     def run(self, **kwargs):
-        """Execute the system's workflow."""
+        """Execute the system's workflow and log the process."""
         self.log_start(kwargs.get("problem", "Unnamed problem"))
-        self.register_tasks()
         workflow = self.define_workflow()
-        results = self.run_workflow(workflow)
+        built_workflow = self.build_workflow_from_sequence(workflow)
+        results = self.run_workflow(built_workflow)
         self.log_end(str(results["final_result"]), metadata={"tasks": len(workflow)}, score=100)
         return results

@@ -1,24 +1,17 @@
 scenarios:
-  - name: "supervisor_async_test"
+  - name: "supervisor_async"
     system_type: "generic"
     execution_type: "asynchronous"
-    problem: "Tell and evaluate jokes"
-    goal: "Test async supervisor workflow with joke-telling"
-    available_tasks: ["tell_joke", "react_to_jokes", "evaluate_jokes"]
+    problem: "Plan a marketing campaign"
+    goal: "Use a supervisor to decide agents and tasks for a marketing campaign"
     agents:
       - name: "Supervisor"
         role: "supervisor"
         system_prompt: |
-          You are planning a project to tell and evaluate jokes.
-          Decide how many comedians to create (e.g., 2 or 3) and specify distinct types of jokes for each (e.g., puns, one-liners, knock-knock jokes).
-          Also, include a critic agent to evaluate the jokes.
-          Define agents with 'name', 'role', 'system_prompt'.
-          Available tasks: tell_joke, react_to_jokes, evaluate_jokes.
-          Specify the 'task_sequence' as a list of {'task_name': task, 'agent_name': name, 'queue': 'default'}.
-          Ensure each comedian tells a different type of joke.
+          You are planning a marketing campaign.
+          Decide how many agents to create (e.g., strategist, designer, copywriter) and specify their roles and system prompts.
+          Define the 'task_sequence' as a list of {'task_name': task, 'agent_name': name, 'instruction': instruction, 'params': params, 'queue': 'queue_name'}.
+          Assign each task a unique queue based on the agent's role (e.g., 'strategy_queue', 'design_queue').
           Return JSON with 'agents' (array) and 'task_sequence'.
-      - name: "Critic"
-        role: "critic"
-        system_prompt: "Evaluate all jokes and pick the best one based on humor."
     run_params:
-      topic: "Joke telling"
+      topic: "New Product Launch"
