@@ -1,0 +1,38 @@
+scenarios:
+  - name: "user_defined_async"
+    system_type: "generic"
+    execution_type: "asynchronous"
+    problem: "Generate and review content asynchronously"
+    goal: "Create a joke and a fact, then review them"
+    agents:
+      - name: "JokeTeller"
+        role: "joke_teller"
+        system_prompt: "You are a comedian. Tell a joke about the topic."
+      - name: "FactFinder"
+        role: "fact_finder"
+        system_prompt: "You are a fact expert. Provide an interesting fact about the topic."
+      - name: "Reviewer"
+        role: "reviewer"
+        system_prompt: "You are a reviewer. Evaluate the joke and fact for quality."
+    task_sequence:
+      - task_name: "tell_joke"
+        agent_name: "JokeTeller"
+        instruction: "Tell a joke about {topic}."
+        params:
+          topic: "run_params.topic"
+        queue: "joke_queue"
+      - task_name: "find_fact"
+        agent_name: "FactFinder"
+        instruction: "Find an interesting fact about {topic}."
+        params:
+          topic: "run_params.topic"
+        queue: "fact_queue"
+      - task_name: "review_content"
+        agent_name: "Reviewer"
+        instruction: "Review this joke and fact: Joke - {joke}, Fact - {fact}."
+        params:
+          joke: "context.tell_joke"
+          fact: "context.find_fact"
+        queue: "review_queue"
+    run_params:
+      topic: "Technology"

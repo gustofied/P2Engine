@@ -1,156 +1,155 @@
 ```html
-<div class='playground-llm' style='font-family: Arial, sans-serif; margin: 20px;'>
-  <header style='background-color: #f0f0f0; padding: 20px; border-bottom: 1px solid #ccc;'>
-    <h1 style='color: #333; margin-bottom: 10px;'>GenericSystem Log Summary</h1>
-    <p style='color: #777;'><b>Execution Time:</b> 2025-03-04T16:23:39.549773</p>
-    <p style='color: #777;'><b>Time Spent:</b> 3.836221 seconds</p>
-    <p style='color: #777;'><b>Tasks Executed:</b> 1</p>
-    <p style='color: #777;'><b>Reward:</b> 100</p>
-  </header>
-
-  <article style='margin-top: 20px; padding: 20px; background-color: #fff; border: 1px solid #ddd;'>
-    <h2 style='color: #444; border-bottom: 1px solid #eee; padding-bottom: 5px;'>Narrative Summary</h2>
-
-    <section>
-      <h3 style='color: #555;'>Discussion Summary</h3>
-      <p style='line-height: 1.6;'>
-        The system was designed to test supervisor-driven multi-agent interaction, specifically involving a 'JokeTeller' agent. The agent was tasked with telling a short, funny food joke suitable for all ages. The log captures the interaction flow: the system creates the agent, the agent receives a user request via the system, and the agent generates and delivers a joke. The joke and task output are captured, and performance metrics are reported.
-      </p>
-    </section>
-
-    <section>
-      <h3 style='color: #555;'>Key Messages</h3>
-      <ul style='list-style-type: none; padding: 0;'>
-        <li style='margin-bottom: 10px;'>
-          <b>Sender:</b> System<br>
-          <b>Timestamp:</b> 2025-03-04T16:23:41.778069<br>
-          <b>Message:</b> Created agent: JokeTeller
-        </li>
-        <li style='margin-bottom: 10px;'>
-          <b>Sender:</b> JokeTeller<br>
-          <b>Timestamp:</b> 2025-03-04T16:23:43.385856<br>
-          <b>Message:</b> User input: Tell a short, funny food joke. Keep it concise and appropriate for all ages.
-        </li>
-        <li style='margin-bottom: 10px;'>
-          <b>Sender:</b> JokeTeller<br>
-          <b>Timestamp:</b> 2025-03-04T16:23:43.385920<br>
-          <b>Message:</b> Response: Why did the orange stop running? Because he ran out of juice!
-        </li>
-         <li style='margin-bottom: 10px;'>
-          <b>Sender:</b> System<br>
-          <b>Timestamp:</b> 2025-03-04T16:23:43.385949<br>
-          <b>Message:</b> Executed TellAFoodJoke: Why did the orange stop running?
-
-Because he ran out of juice!
-        </li>
-      </ul>
-    </section>
-
-    <section>
-      <h3 style='color: #555;'>Metadata</h3>
-      <p><b>Goal:</b> Test supervisor-driven multi-agent interaction</p>
-      <p><b>Problem:</b> Unnamed problem</p>
-    </section>
-
-    <section>
-      <h3 style='color: #555;'>Agent Interactions</h3>
-      <ul style='list-style-type: disc; padding-left: 20px;'>
-        <li>System created the JokeTeller agent.</li>
-        <li>JokeTeller received a request to tell a food joke.</li>
-        <li>JokeTeller provided the joke: "Why did the orange stop running? Because he ran out of juice!"</li>
-        <li>System executed the TellAFoodJoke task and captured the agent's response.</li>
-      </ul>
-    </section>
-  </article>
-
-  <section style='margin-top: 20px; padding: 20px; background-color: #fff; border: 1px solid #ddd;'>
-    <h2 style='color: #444; border-bottom: 1px solid #eee; padding-bottom: 5px;'>System Goal</h2>
-    <p style='line-height: 1.6;'>The primary goal of this system is to facilitate and test interactions within a multi-agent environment, specifically focusing on supervisor-driven task execution. This involves creating agents (like JokeTeller), assigning them tasks, and capturing their responses to evaluate performance and interaction flow.</p>
-  </section>
-
-  <section style='margin-top: 20px; padding: 20px; background-color: #fff; border: 1px solid #ddd;'>
-    <h2 style='color: #444; border-bottom: 1px solid #eee; padding-bottom: 5px;'>Key Events</h2>
-    <ul style='list-style-type: disc; padding-left: 20px;'>
-      <li>Agent "JokeTeller" created.</li>
-      <li>"JokeTeller" agent received instruction to tell a food joke.</li>
-      <li>Joke was successfully generated.</li>
-    </ul>
-  </section>
-
-  <section style='margin-top: 20px; padding: 20px; background-color: #fff; border: 1px solid #ddd;'>
-    <h2 style='color: #444; border-bottom: 1px solid #eee; padding-bottom: 5px;'>Result</h2>
-    <div style='background-color: #d4edda; color: #155724; padding: 10px; border: 1px solid #c3e6cb; border-radius: 4px; display: inline-block;'>
-      Success
+<div class='playground-llm' style='font-family: Arial, sans-serif; color: #333; margin: 20px;'>
+  <div style='background-color: #f8f8f8; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+    <h1 style='color: #0056b3; margin-bottom: 10px;'>System: DiscoverySystem</h1>
+    <p style='font-size: 14px;'><b>Execution Time:</b> 2025-03-05T09:59:25.119490</p>
+    <div style='margin-top: 15px;'>
+      <h2 style='color: #444; margin-bottom: 8px;'>Run Information</h2>
+      <p style='font-size: 13px;'><b>Time Spent:</b> 55.997434 seconds</p>
+      <p style='font-size: 13px;'><b>Iterations:</b> 5</p>
+      <p style='font-size: 13px;'><b>History Size:</b> 0</p>
+      <p style='font-size: 13px;'><b>Reward:</b> 0</p>
     </div>
-  </section>
+  </div>
 
-  <section style='margin-top: 20px; padding: 20px; background-color: #fff; border: 1px solid #ddd;'>
-    <h2 style='color: #444; border-bottom: 1px solid #eee; padding-bottom: 5px;'>Data Visualization</h2>
+  <div style='margin-top: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 5px;'>
+    <h2 style='color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 5px; margin-bottom: 15px;'>Comprehensive Narrative</h2>
+    <article>
+      <section>
+        <h3 style='color: #555;'>Discussion Summary</h3>
+        <p style='font-size: 14px; line-height: 1.6;'>The system aimed to design a multi-agent architecture for autonomous resource allocation in a dynamic environment. The primary goal was to solve this problem effectively. The Architect agent proposed several architectures, each including different agent roles and task sequences, but the system flagged each response as having invalid JSON format repeatedly. The system failed to produce a valid final result. The "Reward" is reported as 0, pointing to a lack of substantive progress due to parsing errors.  The final 'result' is 'None' also indicates that a satisfactory outcome was not achieved.</p>
+      </section>
+
+      <section style='margin-top: 15px;'>
+        <h3 style='color: #555;'>Key Messages</h3>
+        <ul style='list-style-type: none; padding-left: 0;'>
+          <li style='margin-bottom: 5px;'>
+            <span style='font-weight: bold; color: #666;'>Sender:</span> Architect<br>
+            <span style='font-weight: bold; color: #666;'>Timestamp:</span> 2025-03-05T09:59:36.480422<br>
+            <span style='font-weight: bold; color: #666;'>Message:</span> User input: Propose a multi-agent architecture for solving Design a multi-agent system for autonomous resource allocation in a dynamic environment..
+          </li>
+          <li style='margin-bottom: 5px;'>
+            <span style='font-weight: bold; color: #666;'>Sender:</span> Architect<br>
+            <span style='font-weight: bold; color: #666;'>Timestamp:</span> 2025-03-05T09:59:47.417245<br>
+            <span style='font-weight: bold; color: #666;'>Message:</span> User input: Propose a multi-agent architecture for solving Design a multi-agent system for autonomous resource allocation in a dynamic environment..
+          </li>
+           <li style='margin-bottom: 5px;'>
+            <span style='font-weight: bold; color: #666;'>Sender:</span> Architect<br>
+            <span style='font-weight: bold; color: #666;'>Timestamp:</span> 2025-03-05T09:59:59.937117<br>
+            <span style='font-weight: bold; color: #666;'>Message:</span> User input: Propose a multi-agent architecture for solving Design a multi-agent system for autonomous resource allocation in a dynamic environment..
+          </li>
+           <li style='margin-bottom: 5px;'>
+            <span style='font-weight: bold; color: #666;'>Sender:</span> Architect<br>
+            <span style='font-weight: bold; color: #666;'>Timestamp:</span> 2025-03-05T10:00:12.635899<br>
+            <span style='font-weight: bold; color: #666;'>Message:</span> User input: Propose a multi-agent architecture for solving Design a multi-agent system for autonomous resource allocation in a dynamic environment..
+          </li>
+           <li style='margin-bottom: 5px;'>
+            <span style='font-weight: bold; color: #666;'>Sender:</span> Architect<br>
+            <span style='font-weight: bold; color: #666;'>Timestamp:</span> 2025-03-05T10:00:21.116772<br>
+            <span style='font-weight: bold; color: #666;'>Message:</span> User input: Propose a multi-agent architecture for solving Design a multi-agent system for autonomous resource allocation in a dynamic environment..
+          </li>
+        </ul>
+      </section>
+
+      <section style='margin-top: 15px;'>
+        <h3 style='color: #555;'>Metadata</h3>
+        <p style='font-size: 14px;'><b>Goal:</b> Solve a problem effectively</p>
+        <p style='font-size: 14px;'><b>Problem:</b> Design a multi-agent system for autonomous resource allocation in a dynamic environment.</p>
+      </section>
+
+      <section style='margin-top: 15px;'>
+        <h3 style='color: #555;'>Agent Interactions</h3>
+        <ul style='list-style-type: disc; padding-left: 20px;'>
+          <li style='font-size: 14px;'>The Architect received the user input and generated several multi-agent architectures in JSON format.</li>
+          <li style='font-size: 14px;'>However, the system detected that the JSON responses from the Architect were invalid.</li>
+          <li style='font-size: 14px;'>The repeated parsing failures prevented the successful implementation or evaluation of any proposed architecture.</li>
+        </ul>
+      </section>
+    </article>
+  </div>
+
+  <div style='margin-top: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 5px;'>
+    <h2 style='color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 5px; margin-bottom: 15px;'>System Purpose</h2>
+    <p style='font-size: 14px;'>The system aims to autonomously design a multi-agent system for resource allocation in a dynamic environment.  It leverages an Architect agent to propose architectures, debug logging to identify issues, and a reward system to evaluate performance.  However, in this run, the core objective was not achieved due to data integrity issues and JSON validation failures.</p>
+  </div>
+
+  <div style='margin-top: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 5px;'>
+    <h2 style='color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 5px; margin-bottom: 15px;'>Key Events and Interactions</h2>
+    <ul style='list-style-type: none; padding-left: 0;'>
+      <li style='margin-bottom: 10px;'>
+        <b style='color: #555;'>Initial Task:</b> User provides the problem statement to the Architect.
+      </li>
+      <li style='margin-bottom: 10px;'>
+        <b style='color: #555;'>Architect Response:</b> The Architect generates multi-agent architecture proposals.
+      </li>
+      <li style='margin-bottom: 10px;'>
+        <b style='color: #555;'>System Debug:</b> The system flags invalid JSON responses from the Architect throughout the execution.
+      </li>
+       <li style='margin-bottom: 10px;'>
+        <b style='color: #555;'>Outcome:</b> No valid architecture is processed, leading to a null result.
+      </li>
+    </ul>
+  </div>
+
+  <div style='margin-top: 30px; text-align: center;'>
+    <h2 style='color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 5px; margin-bottom: 15px;'>Result Status</h2>
+    <span style='background-color: #dc3545; color: white; padding: 8px 15px; border-radius: 5px; font-weight: bold;'>Failed</span>
+  </div>
+
+  <div style='margin-top: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 5px;'>
+    <h2 style='color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 5px; margin-bottom: 15px;'>Data Visualization</h2>
     <svg id='visualization' width='600' height='400'></svg>
-  </section>
+  </div>
 
   <script src='https://d3js.org/d3.v7.min.js'></script>
   <script>
-    const data = [
-      { agent: 'System', interactions: 3 },
-      { agent: 'JokeTeller', interactions: 2 }
+    // Extract data from the log (example - count Architect interactions)
+    const interactions = [
+        { agent: 'Architect', count: 5}
+        // Add other agents if their interactions were valid and significant
     ];
 
+    // Set up SVG dimensions and margins
     const width = 600;
     const height = 400;
-    const margin = { top: 20, right: 30, bottom: 30, left: 40 };
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const chartWidth = width - margin.left - margin.right;
+    const chartHeight = height - margin.top - margin.bottom;
 
-    const svg = d3.select('#visualization')
-      .attr('width', width)
-      .attr('height', height);
-
-    const x = d3.scaleBand()
-      .domain(data.map(d => d.agent))
-      .range([margin.left, width - margin.right])
+    // Create scales
+    const xScale = d3.scaleBand()
+      .domain(interactions.map(d => d.agent))
+      .range([0, chartWidth])
       .padding(0.1);
 
-    const y = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.interactions)])
-      .nice()
-      .range([height - margin.bottom, margin.top]);
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(interactions, d => d.count)])
+      .range([chartHeight, 0]);
 
-    const xAxis = g => g
-      .attr('transform', `translate(0,${height - margin.bottom})`)
-      .call(d3.axisBottom(x));
+    // Create SVG element
+    const svg = d3.select('#visualization')
+      .append('g')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-    const yAxis = g => g
-      .attr('transform', `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y));
-
-    svg.append('g')
-      .call(xAxis);
-
-    svg.append('g')
-      .call(yAxis);
-
+    // Create bars
     svg.selectAll('.bar')
-      .data(data)
+      .data(interactions)
       .enter().append('rect')
       .attr('class', 'bar')
-      .attr('x', d => x(d.agent))
-      .attr('y', d => y(d.interactions))
-      .attr('height', d => height - margin.bottom - y(d.interactions))
-      .attr('width', x.bandwidth())
-      .attr('fill', 'steelblue');
+      .attr('x', d => xScale(d.agent))
+      .attr('y', d => yScale(d.count))
+      .attr('width', xScale.bandwidth())
+      .attr('height', d => chartHeight - yScale(d.count))
+      .attr('fill', '#4c9bff'); // Different shade of blue
 
+    // Add x axis
+    svg.append('g')
+      .attr('transform', `translate(0, ${chartHeight})`)
+      .call(d3.axisBottom(xScale));
 
-    svg.append('text')
-        .attr('x', width/2)
-        .attr('y', height - (margin.bottom / 2))
-        .style('text-anchor', 'middle')
-        .text('Agent');
-
-    svg.append('text')
-        .attr('transform', 'rotate(-90)')
-        .attr('y', margin.left/2)
-        .attr('x', -height/2)
-        .style('text-anchor', 'middle')
-        .text('Number of Interactions');
+    // Add y axis
+    svg.append('g')
+      .call(d3.axisLeft(yScale));
   </script>
 </div>
 ```

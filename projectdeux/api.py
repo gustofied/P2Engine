@@ -13,6 +13,7 @@ import atexit
 from fastapi.middleware.cors import CORSMiddleware
 import redis
 import traceback
+import uuid  # Added for run_id generation
 from celery_app import app as celery_app  # Import shared Celery app
 
 # Load environment variables
@@ -69,6 +70,9 @@ async def list_scenarios(scenarios_dir: str = "src/scenarios"):
 @app.post("/run-scenario")
 async def run_scenario(request: ScenarioRequest):
     try:
+        # Generate a unique run_id for this request
+        run_id = str(uuid.uuid4())
+        
         # Verify Celery result backend
         result_backend = os.environ.get("CELERY_RESULT_BACKEND", "redis://localhost:6379/0")
         print(f"Using RESULT_BACKEND: {result_backend}")
@@ -84,10 +88,10 @@ async def run_scenario(request: ScenarioRequest):
         # Register log flushing on exit
         atexit.register(central_logger.flush_logs)
 
-        # Run the scenario
+        # Run the scenario with the run_id
         manager = ScenarioManager(request.scenarios_dir)
         scenario = manager.get_scenario(request.scenario_name)
-        system = load_system(scenario)
+        system = load_system(scenario, run_id=run_id)  # Pass run_id to load_system
         result = system.run(**scenario.get("run_params", {}))
         print(f"Scenario completed. Result: {result}")
 

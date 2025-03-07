@@ -17,3 +17,5 @@ python main.py --scenarios src/scenarios --scenario "collaborative_writing"
 celery -A celery_app worker --loglevel=info
 
 python main.py --scenarios src/scenarios --scenario "user_joke_test"
+python main.py --scenarios src/scenarios --scenario "supervisor_joke_test"
+
