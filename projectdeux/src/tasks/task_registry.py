@@ -6,7 +6,11 @@ from src.entities.component_manager import ComponentManager
 from src.custom_logging.central_logger import central_logger
 
 def resolve_param(param_value, scenario_data):
-    """Resolve parameter values from run_params or context."""
+    """Resolve parameter values from run_params or context, handling non-string values."""
+    # If param_value is not a string, return it directly (e.g., integers, floats)
+    if not isinstance(param_value, str):
+        return param_value
+    # If it's a string, check for references and resolve them
     if param_value.startswith("run_params."):
         key = param_value.split(".", 1)[1]
         return scenario_data.get("run_params", {}).get(key, "")
@@ -19,6 +23,7 @@ def resolve_param(param_value, scenario_data):
             outputs = [item["output"] for item in value if "output" in item]
             return ", ".join(outputs)
         return str(value)
+    # If no reference is found, return the string as is
     return param_value
 
 @shared_task
@@ -44,7 +49,7 @@ def generic_task(previous_output, agent_system_prompt, task_config, scenario_dat
         system_prompt=agent_system_prompt
     )
 
-    # Resolve parameters
+    # Resolve parameters, handling both strings and non-strings
     params = {k: resolve_param(v, scenario_data) for k, v in params_config.items()}
     user_input = instruction.format(**params)
 

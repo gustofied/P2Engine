@@ -1,14 +1,16 @@
-from src.systems.generic_system import GenericSystem  # New import
+from src.systems.generic_system import GenericSystem
+from projectdeux.discovery.meta_system_inventor import MetaSystemInventor  # Updated import
 from src.tasks.task_manager import TaskManager
 from src.entities.entity_manager import EntityManager
 from src.entities.component_manager import ComponentManager
 from src.agents.factory import AgentFactory
 
 SYSTEM_REGISTRY = {
-    "generic": GenericSystem,  # Added GenericSystem
+    "generic": GenericSystem,
+    "discovery": MetaSystemInventor,  # Changed from DiscoverySystem
 }
 
-def load_system(config: dict):
+def load_system(config: dict, run_id=None):
     system_type = config["system_type"]
     system_class = SYSTEM_REGISTRY.get(system_type)
     if not system_class:
@@ -32,6 +34,7 @@ def load_system(config: dict):
         entity_manager=entity_manager,
         component_manager=component_manager,
         config=config,
-        task_manager=task_manager
+        task_manager=task_manager,
+        run_id=run_id
     )
     return system

@@ -147,8 +147,8 @@ class CentralLogger:
         return self.scenario_logs[-1]
 
     def flush_logs(self) -> None:
-        """Write all logs to JSON files in the 'logs' directory."""
-        log_dir = "logs"
+        """Write all logs to JSON files in the 'discovery' directory."""
+        log_dir = "discovery"  # Updated from 'logs' to 'discovery'
         os.makedirs(log_dir, exist_ok=True)
 
         # Flush scenario logs

@@ -1,4 +1,5 @@
 import os
+import json
 import logging
 import litellm
 from typing import List, Optional, Dict
@@ -12,44 +13,41 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 class LLMClient:
-    SUPPORTED_MODELS = {
-        "openai/gpt-3.5-turbo": {"provider": "openai"},
-        "openai/gpt-4": {"provider": "openai"},
-        "gpt-3.5-turbo": {"provider": "openai"},
-        "gpt-4": {"provider": "openai"},
-        "github/gpt-4o": {"provider": "github"},
-        "deepseek-chat": {"provider": "deepseek"},
-        "deepseek/deepseek-chat": {"provider": "deepseek"},
-        "together_ai/deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B": {"provider": "together_ai"},
-        "openrouter/google/gemini-2.0-flash-001": {"provider": "openrouter"},
-        "gemini-2.0-flash-001": {"provider": "openrouter"},
-    }
-
     def __init__(
         self,
-        model: str = "openrouter/google/gemini-2.0-flash-001",
+        model: Optional[str] = None,
         api_key: Optional[str] = None,
         logger_fn=my_custom_logging_fn,
-        debug: bool = False
+        debug: bool = False,
+        config_path: Optional[str] = None
     ) -> None:
-        if model not in self.SUPPORTED_MODELS:
-            raise ValueError(f"Model {model} is not supported.")
-        self.model = model
-        provider = self.SUPPORTED_MODELS[model]["provider"]
+        # Determine the config file path: use provided path, then env variable, then default
+        config_path = config_path or os.path.join(os.path.dirname(__file__), "models_config.json")
+        
+        # Load configuration from the JSON file
+        try:
+            with open(config_path, "r") as f:
+                config = json.load(f)
+            self.supported_models = config["supported_models"]
+            default_model = config["default_model"]
+        except Exception as e:
+            logger.error(f"Failed to load config from {config_path}: {e}")
+            raise ValueError(f"Configuration file {config_path} not found or invalid.")
+        
+        # Set the model: use provided model or fall back to default from config
+        self.model = model or default_model
+        if self.model not in self.supported_models:
+            raise ValueError(f"Model {self.model} is not supported.")
+        
+        # Determine the provider for the selected model
+        provider = self.supported_models[self.model]["provider"]
+        
         # Set the API key based on the provider
-        if provider == "github":
-            self.api_key = api_key or os.getenv("GITHUB_API_KEY")
-        elif provider == "deepseek":
-            self.api_key = api_key or os.getenv("DEEPSEEK_API_KEY")
-        elif provider == "together_ai":
-            self.api_key = api_key or os.getenv("TOGETHER_AI_API_KEY")
-        elif provider == "openrouter":
-            self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
-            print(f"OpenRouter API Key: {self.api_key}")  # Debug print
-        else:
-            self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+        api_key_env_var = f"{provider.upper()}_API_KEY"
+        self.api_key = api_key or os.getenv(api_key_env_var)
         if not self.api_key:
-            raise ValueError(f"API key for {provider} is missing.")
+            raise ValueError(f"API key for {provider} is missing. Set {api_key_env_var} environment variable.")
+        
         self.logger_fn = logger_fn
         self.debug = debug
         if self.debug:
@@ -64,11 +62,9 @@ class LLMClient:
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                # Add api_base for OpenRouter if provider is "openrouter"
                 extra_kwargs = {}
-                if self.SUPPORTED_MODELS[self.model]["provider"] == "openrouter":
+                if self.supported_models[self.model]["provider"] == "openrouter":
                     extra_kwargs["api_base"] = "https://openrouter.ai/api/v1"
-
                 response = litellm.completion(
                     model=self.model,
                     messages=messages,
