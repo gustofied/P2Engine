@@ -1,26 +1,30 @@
 states:
   - name: UserMessage
-    class: src.agents.states.UserMessage
+    class: src.states.base.UserMessage
   - name: AssistantMessage
-    class: src.agents.states.AssistantMessage
+    class: src.states.base.AssistantMessage
   - name: Finished
-    class: src.agents.states.Finished
+    class: src.states.base.Finished
   - name: ToolCall
-    class: src.agents.states_advanced.ToolCall
+    class: src.states.advanced.ToolCall
   - name: WaitingForToolResult
-    class: src.agents.states_advanced.WaitingForToolResult
+    class: src.states.advanced.WaitingForToolResult
   - name: ToolResult
-    class: src.agents.states_advanced.ToolResult
+    class: src.states.advanced.ToolResult
   - name: AgentCall
-    class: src.agents.states_advanced.AgentCall
+    class: src.states.advanced.AgentCall
   - name: WaitingForAgentResult
-    class: src.agents.states_advanced.WaitingForAgentResult
+    class: src.states.advanced.WaitingForAgentResult
   - name: AgentResult
-    class: src.agents.states_advanced.AgentResult
-  - name: ErrorState
-    class: src.agents.states_advanced.ErrorState
+    class: src.states.advanced.AgentResult
+  - name: ToolFailureState
+    class: src.states.error_states.ToolFailureState
+  - name: AgentFailureState
+    class: src.states.error_states.AgentFailureState
+  - name: TimeoutState
+    class: src.states.error_states.TimeoutState
   - name: ClarificationState
-    class: src.agents.states.ClarificationState
+    class: src.states.base.ClarificationState
 
 tools:
   - name: calculator

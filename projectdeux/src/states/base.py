@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
-import uuid
 from src.custom_logging.central_logger import central_logger
 from src.systems.event_system import Event
+import uuid
 
 if TYPE_CHECKING:
     from src.agents.base_agent import BaseAgent
@@ -50,13 +50,10 @@ class AssistantMessage(State):
             self.response = response
 
     def on_enter(self):
-        """Handle state entry by appending appropriate events based on the user message."""
         if self.agent.parent:
-            # For sub-agents, include the response in the event payload
             self.agent.pending_events.append(Event("ResponseReadyEvent", self.response))
             central_logger.log_interaction(self.agent.name, "System", "Appended ResponseReadyEvent for sub-agent")
         else:
-            # Main agent logic using state registry for consistency
             user_message_class = self.agent.state_registry.get_state_class("UserMessage")
             user_message_state = next(
                 (state for state in self.agent.interaction_stack if isinstance(state, user_message_class)),
@@ -102,7 +99,6 @@ class AssistantMessage(State):
                 else:
                     self.agent.pending_events.append(Event("ClarificationEvent", "Unrecognized command"))
                     central_logger.log_interaction(self.agent.name, "System", "Appended ClarificationEvent for unrecognized command")
-            # Fallback if no events are appended
             if not self.agent.pending_events:
                 self.agent.pending_events.append(Event("ResponseReadyEvent", self.response))
                 central_logger.log_interaction(self.agent.name, "System", "Appended fallback ResponseReadyEvent")

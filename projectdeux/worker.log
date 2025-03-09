@@ -2309,3 +2309,320 @@ worker: Warm shutdown (MainProcess)
 [2025-03-09 20:28:50,946: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
 [2025-03-09 20:28:50,947: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 528/30215, now - 528/30245, monotonic - 778243.376688458, last_heartbeat_sent - 778223.37428425, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
 [2025-03-09 20:28:50,947: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:29:10,948: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:29:10,949: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 528/30245, now - 529/30275, monotonic - 778263.378372, last_heartbeat_sent - 778263.378371833, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:29:30,951: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:29:30,951: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 529/30275, now - 529/30305, monotonic - 778283.381106, last_heartbeat_sent - 778263.378371833, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:29:30,952: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:29:50,953: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:29:50,955: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 529/30305, now - 530/30335, monotonic - 778303.384854625, last_heartbeat_sent - 778303.384853, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:30:10,957: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:30:10,958: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 530/30335, now - 530/30365, monotonic - 778323.387102291, last_heartbeat_sent - 778303.384853, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:30:10,958: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:30:30,960: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:30:30,960: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 530/30365, now - 531/30395, monotonic - 778343.389702875, last_heartbeat_sent - 778343.389701541, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:30:50,962: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:30:50,964: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 531/30395, now - 531/30425, monotonic - 778363.39333875, last_heartbeat_sent - 778343.389701541, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:30:50,964: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:31:10,967: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:31:10,968: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 531/30425, now - 532/30455, monotonic - 778383.396778125, last_heartbeat_sent - 778383.396777958, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:31:30,970: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:31:30,971: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 532/30455, now - 532/30485, monotonic - 778403.399645583, last_heartbeat_sent - 778383.396777958, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:31:30,971: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:31:50,973: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:31:50,975: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 532/30485, now - 533/30515, monotonic - 778423.403705833, last_heartbeat_sent - 778423.4037055, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:32:10,977: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:32:10,978: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 533/30515, now - 533/30545, monotonic - 778443.406886166, last_heartbeat_sent - 778423.4037055, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:32:10,978: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:32:30,981: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:32:30,982: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 533/30545, now - 534/30575, monotonic - 778463.410665458, last_heartbeat_sent - 778463.410664958, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:32:50,983: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:32:50,984: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 534/30575, now - 534/30605, monotonic - 778483.413103, last_heartbeat_sent - 778463.410664958, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:32:50,985: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:33:10,987: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:33:10,988: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 534/30605, now - 535/30635, monotonic - 778503.416273541, last_heartbeat_sent - 778503.416273291, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:33:30,990: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:33:30,990: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 535/30635, now - 535/30665, monotonic - 778523.418356625, last_heartbeat_sent - 778503.416273291, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:33:30,990: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:33:50,992: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:33:50,993: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 535/30665, now - 536/30695, monotonic - 778543.421237333, last_heartbeat_sent - 778543.421237, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:34:10,995: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:34:10,995: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 536/30695, now - 536/30725, monotonic - 778563.423656416, last_heartbeat_sent - 778543.421237, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:34:10,996: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:34:30,998: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:34:30,999: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 536/30725, now - 537/30755, monotonic - 778583.426701041, last_heartbeat_sent - 778583.426700041, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:34:51,000: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:34:51,000: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 537/30755, now - 537/30785, monotonic - 778603.4283815, last_heartbeat_sent - 778583.426700041, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:34:51,000: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:35:11,003: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:35:11,005: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 537/30785, now - 538/30815, monotonic - 778623.432772041, last_heartbeat_sent - 778623.432770583, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:35:31,007: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:35:31,008: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 538/30815, now - 538/30845, monotonic - 778643.435958625, last_heartbeat_sent - 778623.432770583, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:35:31,008: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:35:51,011: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:35:51,011: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 538/30845, now - 539/30875, monotonic - 778663.438846708, last_heartbeat_sent - 778663.438845916, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:36:11,012: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:36:11,013: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 539/30875, now - 539/30905, monotonic - 778683.440776833, last_heartbeat_sent - 778663.438845916, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:36:11,014: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:36:31,016: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:36:31,017: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 539/30905, now - 540/30935, monotonic - 778703.444537625, last_heartbeat_sent - 778703.4445365, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:36:51,019: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:36:51,019: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 540/30935, now - 540/30965, monotonic - 778723.44676875, last_heartbeat_sent - 778703.4445365, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:36:51,019: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:37:11,022: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:37:11,024: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 540/30965, now - 541/30995, monotonic - 778743.451589041, last_heartbeat_sent - 778743.451587625, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:37:31,027: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:37:31,029: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 541/30995, now - 541/31025, monotonic - 778763.456331083, last_heartbeat_sent - 778743.451587625, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:37:31,029: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:37:51,030: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:37:51,032: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 541/31025, now - 542/31055, monotonic - 778783.458812625, last_heartbeat_sent - 778783.458811166, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:38:11,035: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:38:11,036: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 542/31055, now - 542/31085, monotonic - 778803.463082916, last_heartbeat_sent - 778783.458811166, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:38:11,036: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:38:31,038: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:38:31,039: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 542/31085, now - 543/31115, monotonic - 778823.465712166, last_heartbeat_sent - 778823.465710791, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:38:51,041: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:38:51,044: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 543/31115, now - 543/31145, monotonic - 778843.470256416, last_heartbeat_sent - 778823.465710791, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:38:51,044: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:39:11,046: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:39:11,048: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 543/31145, now - 544/31175, monotonic - 778863.474891583, last_heartbeat_sent - 778863.474891166, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:39:31,049: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:39:31,050: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 544/31175, now - 544/31205, monotonic - 778883.476740541, last_heartbeat_sent - 778863.474891166, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:39:31,050: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:39:51,053: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:39:51,055: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 544/31205, now - 545/31235, monotonic - 778903.480970375, last_heartbeat_sent - 778903.480969125, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:40:11,057: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:40:11,058: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 545/31235, now - 545/31265, monotonic - 778923.484040625, last_heartbeat_sent - 778903.480969125, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:40:11,058: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:40:31,060: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:40:31,063: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 545/31265, now - 546/31295, monotonic - 778943.489580708, last_heartbeat_sent - 778943.489579083, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:40:51,066: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:40:51,068: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 546/31295, now - 546/31325, monotonic - 778963.493774041, last_heartbeat_sent - 778943.489579083, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:40:51,068: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:41:11,070: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:41:11,072: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 546/31325, now - 547/31355, monotonic - 778983.498245125, last_heartbeat_sent - 778983.498243333, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:41:31,075: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:41:31,077: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 547/31355, now - 547/31385, monotonic - 779003.502806708, last_heartbeat_sent - 778983.498243333, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:41:31,077: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:41:51,079: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:41:51,082: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 547/31385, now - 548/31415, monotonic - 779023.50755025, last_heartbeat_sent - 779023.507547375, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:42:11,083: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:42:11,086: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 548/31415, now - 548/31445, monotonic - 779043.51122175, last_heartbeat_sent - 779023.507547375, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:42:11,086: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:42:31,088: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:42:31,088: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 548/31445, now - 549/31475, monotonic - 779063.513899833, last_heartbeat_sent - 779063.5138995, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:42:51,090: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:42:51,092: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 549/31475, now - 549/31505, monotonic - 779083.5173205, last_heartbeat_sent - 779063.5138995, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:42:51,092: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:43:11,095: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:43:11,097: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 549/31505, now - 550/31535, monotonic - 779103.522291208, last_heartbeat_sent - 779103.52229, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:43:31,099: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:43:31,100: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 550/31535, now - 550/31565, monotonic - 779123.525576, last_heartbeat_sent - 779103.52229, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:43:31,100: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:43:51,103: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:43:51,104: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 550/31565, now - 551/31595, monotonic - 779143.52929625, last_heartbeat_sent - 779143.529295166, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:44:11,107: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:44:11,131: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 551/31595, now - 551/31625, monotonic - 779163.555528625, last_heartbeat_sent - 779143.529295166, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:44:11,131: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:44:31,132: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:44:31,133: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 551/31625, now - 552/31655, monotonic - 779183.558138, last_heartbeat_sent - 779183.558136625, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:44:51,137: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:44:51,139: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 552/31655, now - 552/31685, monotonic - 779203.56252275, last_heartbeat_sent - 779183.558136625, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:44:51,139: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:45:11,148: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:45:11,149: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 552/31685, now - 553/31715, monotonic - 779223.566180458, last_heartbeat_sent - 779223.566178791, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:45:31,153: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:45:31,155: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 553/31715, now - 553/31745, monotonic - 779243.569731291, last_heartbeat_sent - 779223.566178791, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:45:31,155: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:45:51,158: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:45:51,160: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 553/31745, now - 554/31775, monotonic - 779263.574135583, last_heartbeat_sent - 779263.574133625, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:46:11,162: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:46:11,163: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 554/31775, now - 554/31805, monotonic - 779283.577404333, last_heartbeat_sent - 779263.574133625, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:46:11,163: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:46:31,166: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:46:31,168: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 554/31805, now - 555/31835, monotonic - 779303.581606041, last_heartbeat_sent - 779303.581604375, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:46:51,170: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:46:51,172: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 555/31835, now - 555/31865, monotonic - 779323.585400708, last_heartbeat_sent - 779303.581604375, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:46:51,172: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:47:11,174: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:47:11,176: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 555/31865, now - 556/31895, monotonic - 779343.589209416, last_heartbeat_sent - 779343.589208875, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:47:31,178: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:47:31,179: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 556/31895, now - 556/31925, monotonic - 779363.592422416, last_heartbeat_sent - 779343.589208875, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:47:31,179: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:47:51,181: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:47:51,183: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 556/31925, now - 557/31955, monotonic - 779383.596354666, last_heartbeat_sent - 779383.596353416, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:48:11,185: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:48:11,188: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 557/31955, now - 557/31985, monotonic - 779403.600711666, last_heartbeat_sent - 779383.596353416, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:48:11,188: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:48:31,190: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:48:31,191: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 557/31985, now - 558/32015, monotonic - 779423.604450958, last_heartbeat_sent - 779423.604449958, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:48:51,194: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:48:51,195: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 558/32015, now - 558/32045, monotonic - 779443.608318333, last_heartbeat_sent - 779423.604449958, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:48:51,196: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:49:11,198: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:49:11,199: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 558/32045, now - 559/32075, monotonic - 779463.612042541, last_heartbeat_sent - 779463.612041583, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:49:31,201: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:49:31,202: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 559/32075, now - 559/32105, monotonic - 779483.614311666, last_heartbeat_sent - 779463.612041583, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:49:31,202: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:49:51,204: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:49:51,206: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 559/32105, now - 560/32132, monotonic - 779503.617954041, last_heartbeat_sent - 779503.617953375, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:50:11,207: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:50:11,208: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 560/32132, now - 560/32162, monotonic - 779523.620269291, last_heartbeat_sent - 779503.617953375, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:50:11,208: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:50:31,210: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:50:31,213: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 560/32162, now - 561/32192, monotonic - 779543.625535458, last_heartbeat_sent - 779543.625534458, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:50:51,216: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:50:51,217: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 561/32192, now - 561/32222, monotonic - 779563.629119166, last_heartbeat_sent - 779543.625534458, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:50:51,217: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:51:11,220: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:51:11,222: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 561/32222, now - 562/32252, monotonic - 779583.633536833, last_heartbeat_sent - 779583.633535875, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:51:31,224: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:51:31,224: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 562/32252, now - 562/32282, monotonic - 779603.63578875, last_heartbeat_sent - 779583.633535875, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:51:31,224: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:51:51,226: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:51:51,228: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 562/32282, now - 563/32312, monotonic - 779623.639167666, last_heartbeat_sent - 779623.639166333, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:52:11,231: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:52:11,232: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 563/32312, now - 563/32342, monotonic - 779643.643671, last_heartbeat_sent - 779623.639166333, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:52:11,233: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:52:31,236: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:52:31,238: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 563/32342, now - 564/32372, monotonic - 779663.649128458, last_heartbeat_sent - 779663.649126916, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:52:51,241: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:52:51,245: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 564/32372, now - 564/32402, monotonic - 779683.655559833, last_heartbeat_sent - 779663.649126916, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:52:51,245: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:53:11,246: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:53:11,247: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 564/32402, now - 565/32432, monotonic - 779703.6580565, last_heartbeat_sent - 779703.65805525, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:53:31,249: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:53:31,251: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 565/32432, now - 565/32462, monotonic - 779723.661901458, last_heartbeat_sent - 779703.65805525, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:53:31,251: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:53:51,254: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:53:51,256: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 565/32462, now - 566/32492, monotonic - 779743.666270833, last_heartbeat_sent - 779743.666269, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:54:11,258: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:54:11,259: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 566/32492, now - 566/32522, monotonic - 779763.669590458, last_heartbeat_sent - 779743.666269, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:54:11,259: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:54:31,261: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:54:31,263: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 566/32522, now - 567/32552, monotonic - 779783.672855, last_heartbeat_sent - 779783.672854333, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:54:51,263: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:54:51,264: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 567/32552, now - 567/32582, monotonic - 779803.673873291, last_heartbeat_sent - 779783.672854333, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:54:51,264: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:55:11,266: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:55:11,268: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 567/32582, now - 568/32612, monotonic - 779823.677604791, last_heartbeat_sent - 779823.677604125, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:55:31,270: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:55:31,272: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 568/32612, now - 568/32642, monotonic - 779843.681559791, last_heartbeat_sent - 779823.677604125, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:55:31,272: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:55:51,275: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:55:51,275: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 568/32642, now - 569/32672, monotonic - 779863.684706791, last_heartbeat_sent - 779863.684704958, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:56:11,277: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:56:11,279: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 569/32672, now - 569/32702, monotonic - 779883.688325708, last_heartbeat_sent - 779863.684704958, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:56:11,279: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:56:31,282: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:56:31,283: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 569/32702, now - 570/32732, monotonic - 779903.692457041, last_heartbeat_sent - 779903.692456708, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:56:51,285: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:56:51,287: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 570/32732, now - 570/32762, monotonic - 779923.695801916, last_heartbeat_sent - 779903.692456708, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:56:51,287: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:57:11,289: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:57:11,314: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 570/32762, now - 571/32792, monotonic - 779943.72333175, last_heartbeat_sent - 779943.72333025, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:57:31,317: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:57:31,319: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 571/32792, now - 571/32822, monotonic - 779963.728207208, last_heartbeat_sent - 779943.72333025, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:57:31,320: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:57:51,322: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:57:51,322: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 571/32822, now - 572/32852, monotonic - 779983.730659791, last_heartbeat_sent - 779983.730659125, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:58:11,324: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:58:11,324: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 572/32852, now - 572/32882, monotonic - 780003.732827791, last_heartbeat_sent - 779983.730659125, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:58:11,325: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:58:31,327: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:58:31,328: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 572/32882, now - 573/32912, monotonic - 780023.735816583, last_heartbeat_sent - 780023.735815875, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:58:51,330: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:58:51,331: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 573/32912, now - 573/32942, monotonic - 780043.739524333, last_heartbeat_sent - 780023.735815875, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:58:51,332: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:59:11,335: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:59:11,336: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 573/32942, now - 574/32972, monotonic - 780063.743943708, last_heartbeat_sent - 780063.743943125, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:59:31,338: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:59:31,339: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 574/32972, now - 574/33002, monotonic - 780083.74695025, last_heartbeat_sent - 780063.743943125, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:59:31,339: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:59:51,342: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 20:59:51,343: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 574/33002, now - 575/33032, monotonic - 780103.750330541, last_heartbeat_sent - 780103.750329833, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:00:11,345: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:00:11,348: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 575/33032, now - 575/33062, monotonic - 780123.755335666, last_heartbeat_sent - 780103.750329833, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:00:11,348: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:00:31,350: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:00:31,351: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 575/33062, now - 576/33092, monotonic - 780143.757871916, last_heartbeat_sent - 780143.7578705, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:00:51,351: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:00:51,353: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 576/33092, now - 576/33122, monotonic - 780163.759787541, last_heartbeat_sent - 780143.7578705, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:00:51,353: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:01:11,355: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:01:11,356: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 576/33122, now - 577/33152, monotonic - 780183.762975041, last_heartbeat_sent - 780183.76297475, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:01:31,357: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:01:31,359: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 577/33152, now - 577/33182, monotonic - 780203.765791958, last_heartbeat_sent - 780183.76297475, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:01:31,360: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:01:51,362: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:01:51,364: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 577/33182, now - 578/33212, monotonic - 780223.771193166, last_heartbeat_sent - 780223.77119175, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:02:11,366: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:02:11,368: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 578/33212, now - 578/33242, monotonic - 780243.774377416, last_heartbeat_sent - 780223.77119175, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:02:11,368: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:02:31,370: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:02:31,372: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 578/33242, now - 579/33272, monotonic - 780263.778478625, last_heartbeat_sent - 780263.778477791, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:02:51,375: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:02:51,376: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 579/33272, now - 579/33302, monotonic - 780283.782576166, last_heartbeat_sent - 780263.778477791, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:02:51,377: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:03:11,379: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:03:11,381: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 579/33302, now - 580/33332, monotonic - 780303.786715875, last_heartbeat_sent - 780303.786713875, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:03:31,383: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:03:31,384: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 580/33332, now - 580/33362, monotonic - 780323.789977, last_heartbeat_sent - 780303.786713875, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:03:31,384: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:03:51,387: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:03:51,387: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 580/33362, now - 581/33392, monotonic - 780343.792986083, last_heartbeat_sent - 780343.792985833, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:04:11,389: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:04:11,390: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 581/33392, now - 581/33422, monotonic - 780363.795902583, last_heartbeat_sent - 780343.792985833, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:04:11,390: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:04:31,393: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:04:31,394: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 581/33422, now - 582/33452, monotonic - 780383.799441875, last_heartbeat_sent - 780383.799440333, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:04:51,396: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:04:51,397: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 582/33452, now - 582/33482, monotonic - 780403.80247275, last_heartbeat_sent - 780383.799440333, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:04:51,397: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:05:11,399: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:05:11,400: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 582/33482, now - 583/33512, monotonic - 780423.805072416, last_heartbeat_sent - 780423.805071458, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:05:31,403: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:05:31,405: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 583/33512, now - 583/33542, monotonic - 780443.809735416, last_heartbeat_sent - 780423.805071458, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:05:31,405: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:05:51,407: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:05:51,409: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 583/33542, now - 584/33572, monotonic - 780463.814074083, last_heartbeat_sent - 780463.81407275, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:06:11,411: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:06:11,413: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 584/33572, now - 584/33602, monotonic - 780483.817405958, last_heartbeat_sent - 780463.81407275, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:06:11,413: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:06:31,417: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:06:31,425: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 584/33602, now - 585/33632, monotonic - 780503.829869416, last_heartbeat_sent - 780503.829868958, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:06:51,428: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:06:51,429: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 585/33632, now - 585/33662, monotonic - 780523.833377333, last_heartbeat_sent - 780503.829868958, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:06:51,429: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:07:11,429: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:07:11,432: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 585/33662, now - 586/33692, monotonic - 780543.837301958, last_heartbeat_sent - 780543.837301375, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:07:31,423: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:07:31,425: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 586/33692, now - 586/33722, monotonic - 780563.841505541, last_heartbeat_sent - 780543.837301375, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:07:31,425: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:07:51,424: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:07:51,425: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 586/33722, now - 587/33752, monotonic - 780583.844721458, last_heartbeat_sent - 780583.844721083, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:08:11,426: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:08:11,431: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 587/33752, now - 587/33782, monotonic - 780603.852006958, last_heartbeat_sent - 780583.844721083, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:08:11,432: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:08:31,433: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:08:31,435: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 587/33782, now - 588/33812, monotonic - 780623.855589083, last_heartbeat_sent - 780623.855588333, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:08:51,437: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:08:51,438: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 588/33812, now - 588/33842, monotonic - 780643.858896875, last_heartbeat_sent - 780623.855588333, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:08:51,438: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:09:11,440: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:09:11,441: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 588/33842, now - 589/33872, monotonic - 780663.862050666, last_heartbeat_sent - 780663.862049458, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:09:31,444: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:09:31,446: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 589/33872, now - 589/33902, monotonic - 780683.866485875, last_heartbeat_sent - 780663.862049458, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:09:31,446: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:09:51,448: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:09:51,450: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 589/33902, now - 590/33932, monotonic - 780703.870389625, last_heartbeat_sent - 780703.870388583, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:10:11,452: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:10:11,453: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 590/33932, now - 590/33962, monotonic - 780723.873605333, last_heartbeat_sent - 780703.870388583, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:10:11,453: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:10:31,456: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:10:31,456: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 590/33962, now - 591/33992, monotonic - 780743.876525708, last_heartbeat_sent - 780743.876525041, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:10:51,457: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:10:51,459: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 591/33992, now - 591/34022, monotonic - 780763.879511791, last_heartbeat_sent - 780743.876525041, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:10:51,459: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:11:11,462: DEBUG/MainProcess] heartbeat_tick : for connection ba5b201c8f3943e59d42c8eb98f85617
+[2025-03-09 21:11:11,464: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 591/34022, now - 592/34052, monotonic - 780783.884133291, last_heartbeat_sent - 780783.884132625, heartbeat int. - 60 for connection ba5b201c8f3943e59d42c8eb98f85617

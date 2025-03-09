@@ -5,7 +5,7 @@ from src.entities.entity_manager import EntityManager
 from src.entities.component_manager import ComponentManager
 from src.tasks.task_manager import TaskManager
 from src.custom_logging.central_logger import central_logger
-from src.config.state_registry import StateRegistry
+from src.states.state_registry import StateRegistry
 from src.agents.base_agent import BaseAgent
 
 class GenericSystem(BaseSystem):

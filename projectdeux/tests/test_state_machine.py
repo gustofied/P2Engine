@@ -3,7 +3,7 @@ from src.entities.entity_manager import EntityManager
 from src.entities.component_manager import ComponentManager
 from src.agents.base_agent import BaseAgent
 from src.systems.event_system import Event
-from src.config.state_registry import StateRegistry
+from src.states.state_registry import StateRegistry
 
 def test_state_machine():
     # Setup
