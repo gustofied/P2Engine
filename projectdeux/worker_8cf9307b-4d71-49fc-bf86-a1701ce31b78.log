@@ -1,0 +1,140 @@
+2025-03-08 12:24:58,861 - INFO - Interaction: Celery -> System: Broker: amqp://guest:guest@localhost:5672//...
+2025-03-08 12:24:58,861 - INFO - Interaction: Celery -> System: Result Backend: redis://localhost:6379/0...
+2025-03-08 12:24:58,862 - INFO - Interaction: Celery -> System: Registered tasks: ['src.tasks.task_registry', 'src...
+[2025-03-08 12:24:59,666: DEBUG/MainProcess] | Worker: Preparing bootsteps.
+[2025-03-08 12:24:59,669: DEBUG/MainProcess] | Worker: Building graph...
+[2025-03-08 12:24:59,669: DEBUG/MainProcess] | Worker: New boot order: {StateDB, Beat, Timer, Hub, Pool, Autoscaler, Consumer}
+[2025-03-08 12:24:59,680: DEBUG/MainProcess] | Consumer: Preparing bootsteps.
+[2025-03-08 12:24:59,680: DEBUG/MainProcess] | Consumer: Building graph...
+[2025-03-08 12:24:59,687: DEBUG/MainProcess] | Consumer: New boot order: {Connection, Events, Mingle, Gossip, Agent, Tasks, Control, Heart, event loop}
+ 
+ -------------- celery@dhcp-10-22-132-180.wlan.ntnu.no v5.4.0 (opalescent)
+--- ***** ----- 
+-- ******* ---- macOS-15.0.1-arm64-arm-64bit 2025-03-08 12:24:59
+- *** --- * --- 
+- ** ---------- [config]
+- ** ---------- .> app:         multi_agent_system:0x1042e5050
+- ** ---------- .> transport:   amqp://guest:**@localhost:5672//
+- ** ---------- .> results:     redis://localhost:6379/0
+- *** --- * --- .> concurrency: 1 (prefork)
+-- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+--- ***** ----- 
+ -------------- [queues]
+                .> =tool_queue_8cf9307b-4d71-49fc-bf86-a1701ce31b78 exchange==tool_queue_8cf9307b-4d71-49fc-bf86-a1701ce31b78(direct) key==tool_queue_8cf9307b-4d71-49fc-bf86-a1701ce31b78
+                
+
+[tasks]
+  . celery.accumulate
+  . celery.backend_cleanup
+  . celery.chain
+  . celery.chord
+  . celery.chord_unlock
+  . celery.chunks
+  . celery.group
+  . celery.map
+  . celery.starmap
+  . src.agents.states_advanced.execute_tool_task
+  . src.tasks.task_registry.generic_task
+
+[2025-03-08 12:24:59,723: DEBUG/MainProcess] | Worker: Starting Hub
+[2025-03-08 12:24:59,723: DEBUG/MainProcess] ^-- substep ok
+[2025-03-08 12:24:59,723: DEBUG/MainProcess] | Worker: Starting Pool
+[2025-03-08 12:24:59,788: DEBUG/MainProcess] ^-- substep ok
+[2025-03-08 12:24:59,788: DEBUG/MainProcess] | Worker: Starting Consumer
+[2025-03-08 12:24:59,788: DEBUG/MainProcess] | Consumer: Starting Connection
+[2025-03-08 12:24:59,790: WARNING/MainProcess] /Users/adamds/Library/Caches/pypoetry/virtualenvs/projectdeux-drlyUxii-py3.11/lib/python3.11/site-packages/celery/worker/consumer/consumer.py:508: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2025-03-08 12:24:59,795: DEBUG/MainProcess] Start from server, version: 0.9, properties: {'capabilities': {'publisher_confirms': True, 'exchange_exchange_bindings': True, 'basic.nack': True, 'consumer_cancel_notify': True, 'connection.blocked': True, 'consumer_priorities': True, 'authentication_failure_close': True, 'per_consumer_qos': True, 'direct_reply_to': True}, 'cluster_name': 'rabbit@dhcp-10-22-132-180.wlan.ntnu.no', 'copyright': 'Copyright (c) 2007-2024 Broadcom Inc and/or its subsidiaries', 'information': 'Licensed under the MPL 2.0. Website: https://rabbitmq.com', 'platform': 'Erlang/OTP 27.2.4', 'product': 'RabbitMQ', 'version': '4.0.6'}, mechanisms: [b'ANONYMOUS', b'PLAIN', b'AMQPLAIN'], locales: ['en_US']
+[2025-03-08 12:24:59,801: INFO/MainProcess] Connected to amqp://guest:**@127.0.0.1:5672//
+[2025-03-08 12:24:59,801: DEBUG/MainProcess] ^-- substep ok
+[2025-03-08 12:24:59,801: DEBUG/MainProcess] | Consumer: Starting Events
+[2025-03-08 12:24:59,801: WARNING/MainProcess] /Users/adamds/Library/Caches/pypoetry/virtualenvs/projectdeux-drlyUxii-py3.11/lib/python3.11/site-packages/celery/worker/consumer/consumer.py:508: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2025-03-08 12:24:59,804: DEBUG/MainProcess] Start from server, version: 0.9, properties: {'capabilities': {'publisher_confirms': True, 'exchange_exchange_bindings': True, 'basic.nack': True, 'consumer_cancel_notify': True, 'connection.blocked': True, 'consumer_priorities': True, 'authentication_failure_close': True, 'per_consumer_qos': True, 'direct_reply_to': True}, 'cluster_name': 'rabbit@dhcp-10-22-132-180.wlan.ntnu.no', 'copyright': 'Copyright (c) 2007-2024 Broadcom Inc and/or its subsidiaries', 'information': 'Licensed under the MPL 2.0. Website: https://rabbitmq.com', 'platform': 'Erlang/OTP 27.2.4', 'product': 'RabbitMQ', 'version': '4.0.6'}, mechanisms: [b'ANONYMOUS', b'PLAIN', b'AMQPLAIN'], locales: ['en_US']
+[2025-03-08 12:24:59,805: DEBUG/MainProcess] ^-- substep ok
+[2025-03-08 12:24:59,805: DEBUG/MainProcess] | Consumer: Starting Mingle
+[2025-03-08 12:24:59,805: INFO/MainProcess] mingle: searching for neighbors
+[2025-03-08 12:24:59,805: DEBUG/MainProcess] using channel_id: 1
+[2025-03-08 12:24:59,806: DEBUG/MainProcess] Channel open
+[2025-03-08 12:24:59,813: DEBUG/MainProcess] Start from server, version: 0.9, properties: {'capabilities': {'publisher_confirms': True, 'exchange_exchange_bindings': True, 'basic.nack': True, 'consumer_cancel_notify': True, 'connection.blocked': True, 'consumer_priorities': True, 'authentication_failure_close': True, 'per_consumer_qos': True, 'direct_reply_to': True}, 'cluster_name': 'rabbit@dhcp-10-22-132-180.wlan.ntnu.no', 'copyright': 'Copyright (c) 2007-2024 Broadcom Inc and/or its subsidiaries', 'information': 'Licensed under the MPL 2.0. Website: https://rabbitmq.com', 'platform': 'Erlang/OTP 27.2.4', 'product': 'RabbitMQ', 'version': '4.0.6'}, mechanisms: [b'ANONYMOUS', b'PLAIN', b'AMQPLAIN'], locales: ['en_US']
+[2025-03-08 12:24:59,813: DEBUG/MainProcess] using channel_id: 1
+[2025-03-08 12:24:59,814: DEBUG/MainProcess] Channel open
+[2025-03-08 12:25:00,824: INFO/MainProcess] mingle: all alone
+[2025-03-08 12:25:00,824: DEBUG/MainProcess] ^-- substep ok
+[2025-03-08 12:25:00,824: DEBUG/MainProcess] | Consumer: Starting Gossip
+[2025-03-08 12:25:00,824: DEBUG/MainProcess] using channel_id: 2
+[2025-03-08 12:25:00,825: DEBUG/MainProcess] Channel open
+[2025-03-08 12:25:00,830: DEBUG/MainProcess] ^-- substep ok
+[2025-03-08 12:25:00,830: DEBUG/MainProcess] | Consumer: Starting Tasks
+[2025-03-08 12:25:00,846: DEBUG/MainProcess] ^-- substep ok
+[2025-03-08 12:25:00,846: DEBUG/MainProcess] | Consumer: Starting Control
+[2025-03-08 12:25:00,847: DEBUG/MainProcess] using channel_id: 3
+[2025-03-08 12:25:00,848: DEBUG/MainProcess] Channel open
+[2025-03-08 12:25:00,854: DEBUG/MainProcess] ^-- substep ok
+[2025-03-08 12:25:00,855: DEBUG/MainProcess] | Consumer: Starting Heart
+[2025-03-08 12:25:00,855: DEBUG/MainProcess] using channel_id: 1
+[2025-03-08 12:25:00,856: DEBUG/MainProcess] Channel open
+[2025-03-08 12:25:00,858: DEBUG/MainProcess] ^-- substep ok
+[2025-03-08 12:25:00,858: DEBUG/MainProcess] | Consumer: Starting event loop
+[2025-03-08 12:25:00,858: DEBUG/MainProcess] | Worker: Hub.register Pool...
+[2025-03-08 12:25:00,860: INFO/MainProcess] celery@dhcp-10-22-132-180.wlan.ntnu.no ready.
+[2025-03-08 12:25:00,861: DEBUG/MainProcess] basic.qos: prefetch_count->4
+[2025-03-08 12:25:20,860: DEBUG/MainProcess] heartbeat_tick : for connection f56ddb5ad5714395b1b10aab97db0264
+[2025-03-08 12:25:20,861: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: None/None, now - 28/58, monotonic - 725073.796660791, last_heartbeat_sent - 725073.796656416, heartbeat int. - 60 for connection f56ddb5ad5714395b1b10aab97db0264
+[2025-03-08 12:25:40,866: DEBUG/MainProcess] heartbeat_tick : for connection f56ddb5ad5714395b1b10aab97db0264
+[2025-03-08 12:25:40,868: DEBUG/MainProcess] heartbeat_tick : Prev sent/recv: 28/58, now - 28/89, monotonic - 725093.800918291, last_heartbeat_sent - 725073.796656416, heartbeat int. - 60 for connection f56ddb5ad5714395b1b10aab97db0264
+[2025-03-08 12:25:40,869: DEBUG/MainProcess] heartbeat_tick: sending heartbeat for connection f56ddb5ad5714395b1b10aab97db0264
+
+worker: Warm shutdown (MainProcess)
+[2025-03-08 12:25:50,408: DEBUG/MainProcess] | Worker: Closing Hub...
+[2025-03-08 12:25:50,408: DEBUG/MainProcess] | Worker: Closing Pool...
+[2025-03-08 12:25:50,408: DEBUG/MainProcess] | Worker: Closing Consumer...
+[2025-03-08 12:25:50,408: DEBUG/MainProcess] | Worker: Stopping Consumer...
+[2025-03-08 12:25:50,408: DEBUG/MainProcess] | Consumer: Closing Connection...
+[2025-03-08 12:25:50,408: DEBUG/MainProcess] | Consumer: Closing Events...
+[2025-03-08 12:25:50,408: DEBUG/MainProcess] | Consumer: Closing Mingle...
+[2025-03-08 12:25:50,408: DEBUG/MainProcess] | Consumer: Closing Gossip...
+[2025-03-08 12:25:50,408: DEBUG/MainProcess] | Consumer: Closing Tasks...
+[2025-03-08 12:25:50,408: DEBUG/MainProcess] | Consumer: Closing Control...
+[2025-03-08 12:25:50,408: DEBUG/MainProcess] | Consumer: Closing Heart...
+[2025-03-08 12:25:50,408: DEBUG/MainProcess] | Consumer: Closing event loop...
+[2025-03-08 12:25:50,408: DEBUG/MainProcess] | Consumer: Stopping event loop...
+[2025-03-08 12:25:50,408: DEBUG/MainProcess] | Consumer: Stopping Heart...
+[2025-03-08 12:25:50,409: DEBUG/MainProcess] | Consumer: Stopping Control...
+[2025-03-08 12:25:50,414: DEBUG/MainProcess] Closed channel #3
+[2025-03-08 12:25:50,414: DEBUG/MainProcess] | Consumer: Stopping Tasks...
+[2025-03-08 12:25:50,414: DEBUG/MainProcess] Canceling task consumer...
+[2025-03-08 12:25:50,415: DEBUG/MainProcess] | Consumer: Stopping Gossip...
+[2025-03-08 12:25:50,421: DEBUG/MainProcess] Closed channel #2
+[2025-03-08 12:25:50,421: DEBUG/MainProcess] | Consumer: Stopping Mingle...
+[2025-03-08 12:25:50,421: DEBUG/MainProcess] | Consumer: Stopping Events...
+[2025-03-08 12:25:50,421: DEBUG/MainProcess] | Consumer: Stopping Connection...
+[2025-03-08 12:25:50,421: DEBUG/MainProcess] | Worker: Stopping Pool...
+[2025-03-08 12:25:50,422: DEBUG/MainProcess] | Worker: Stopping Hub...
+[2025-03-08 12:25:50,423: DEBUG/MainProcess] | Consumer: Shutdown Heart...
+[2025-03-08 12:25:50,423: DEBUG/MainProcess] | Consumer: Shutdown Control...
+[2025-03-08 12:25:50,423: DEBUG/MainProcess] | Consumer: Shutdown Tasks...
+[2025-03-08 12:25:50,423: DEBUG/MainProcess] Canceling task consumer...
+[2025-03-08 12:25:50,423: DEBUG/MainProcess] Closing consumer channel...
+[2025-03-08 12:25:50,423: DEBUG/MainProcess] | Consumer: Shutdown Gossip...
+[2025-03-08 12:25:50,423: DEBUG/MainProcess] | Consumer: Shutdown Events...
+[2025-03-08 12:25:50,423: DEBUG/MainProcess] Closed channel #1
+[2025-03-08 12:25:50,423: DEBUG/MainProcess] | Consumer: Shutdown Connection...
+[2025-03-08 12:25:50,424: DEBUG/MainProcess] Closed channel #1
+[2025-03-08 12:25:50,424: DEBUG/MainProcess] removing tasks from inqueue until task handler finished
+[2025-03-08 12:25:50,927: WARNING/MainProcess] Flushing GLOBAL_LOG_DATA: {'run_id': '20250308_122459', 'agents': {}}
+[2025-03-08 12:25:50,929: WARNING/MainProcess] Flushed logs to logs/litellm_log_20250308_122459.json
+2025-03-08 12:25:50,931 - INFO - Flushed system logs to discovery/system_log_20250308_122458.json
+[2025-03-08 12:25:50,931: INFO/MainProcess] Flushed system logs to discovery/system_log_20250308_122458.json
+2025-03-08 12:25:50,931 - INFO - Flushed interaction logs to discovery/interaction_log_20250308_122458.json
+[2025-03-08 12:25:50,931: INFO/MainProcess] Flushed interaction logs to discovery/interaction_log_20250308_122458.json
+2025-03-08 12:25:50,932 - INFO - Flushed LiteLLM logs to discovery/litellm_log_20250308_122458.json
+[2025-03-08 12:25:50,932: INFO/MainProcess] Flushed LiteLLM logs to discovery/litellm_log_20250308_122458.json

@@ -19,3 +19,11 @@ celery -A celery_app worker --loglevel=info
 python main.py --scenarios src/scenarios --scenario "user_joke_test"
 python main.py --scenarios src/scenarios --scenario "supervisor_joke_test"
 
+--
+
+export PYTHONPATH=.
+poetry run celery -A celery_app worker --loglevel=info
+
+--
+export PYTHONPATH=$(pwd)
+poetry run pytest tests/

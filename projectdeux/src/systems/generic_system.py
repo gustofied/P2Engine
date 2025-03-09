@@ -1,77 +1,59 @@
-from .base_system import BaseSystem
-from src.agents.factory import AgentFactory
+# projectdeux/src/systems/generic_system.py
+from typing import List, Dict, Optional
+from src.systems.base_system import BaseSystem
+from src.entities.entity_manager import EntityManager
+from src.entities.component_manager import ComponentManager
+from src.tasks.task_manager import TaskManager
 from src.custom_logging.central_logger import central_logger
-from typing import List, Dict
-from src.utils import start_celery_workers  # Import the utility function
+from src.config.state_registry import StateRegistry
+from src.agents.base_agent import BaseAgent
 
 class GenericSystem(BaseSystem):
-    """A generic system that builds workflows from predefined sequences or supervisor decisions."""
-    
-    def __init__(self, agents, entity_manager, component_manager, config, task_manager=None, run_id=None):
-        execution_type = config.get("execution_type", "synchronous")
+    def __init__(
+        self,
+        config_path: str,  # Path to scenario.yaml
+        entity_manager: EntityManager,
+        component_manager: ComponentManager,
+        config: Dict,
+        run_id: str,
+        task_manager: Optional[TaskManager] = None
+    ):
         super().__init__(
-            agents=agents,
+            agents=[],
             entity_manager=entity_manager,
             component_manager=component_manager,
             config=config,
+            run_id=run_id,
             task_manager=task_manager,
-            execution_type=execution_type
+            config_path=config_path  # Pass config_path to BaseSystem
         )
-        self.agents = {agent.name: agent for agent in agents}
-        self.run_id = run_id  # Store the run_id for queue uniqueness
+        # No need for this line anymore: self.state_registry = StateRegistry(config_path)
+
+    def spawn_agent(self, name: str, parent: Optional["BaseAgent"] = None, correlation_id: Optional[str] = None):
+        """Spawn a new agent with the state registry, parent, and correlation_id."""
+        agent = BaseAgent(
+            entity_manager=self.entity_manager,
+            component_manager=self.component_manager,
+            name=name,
+            state_registry=self.state_registry,
+            session=self
+        )
+        agent.parent = parent  # Set parent if provided
+        agent.correlation_id = correlation_id  # Set correlation_id if provided
+        self.agents.append(agent)
+        return agent
 
     def define_workflow(self) -> List[Dict]:
-        """Define the workflow based on config: either predefined or dynamic."""
-        if "task_sequence" in self.config:
-            workflow = self.config["task_sequence"]
-            if self.execution_type != "synchronous":
-                # Append run_id to queues for async scenarios
-                for task in workflow:
-                    task["queue"] = f"{task['queue']}_{self.run_id}"
-            return workflow
-        else:
-            supervisor = next((agent for agent in self.agents.values() if agent.role == "supervisor"), None)
-            if not supervisor:
-                raise ValueError("No supervisor agent found for dynamic workflow")
-            topic = self.config.get("run_params", {}).get("topic", "General")
-            prompt = (
-                f"You are planning a project on the topic: {topic}. "
-                f"Task: '{self.config['problem']}'. "
-                "Define agents with 'name', 'role', 'system_prompt'. "
-                "Also, specify the 'task_sequence' as a list of {'task_name': task, 'agent_name': name, 'instruction': instruction, 'params': params}."
-                "If execution is asynchronous, append the run_id to queue names, e.g., 'queue_name_{self.run_id}'."
-                "Return JSON with 'agents' (array) and 'task_sequence'."
-            )
-            decision = supervisor.decide_agents(prompt)
-            agent_configs = decision["agents"]
-            workflow = decision["task_sequence"]
-            for config in agent_configs:
-                if config["name"] not in self.agents:
-                    new_agent = AgentFactory.create_agent(
-                        self.entity_manager, self.component_manager, config
-                    )
-                    self.agents[config["name"]] = new_agent
-                    central_logger.log_interaction("System", "Debug", f"Created agent: {config['name']}")
-            return workflow
+        """Define a workflow based on the config's task sequence with dynamic queues."""
+        task_sequence = self.config.get("task_sequence", [])
+        if self.execution_type == "asynchronous":
+            for task in task_sequence:
+                base_queue = task.get("queue", "default")
+                task["queue"] = f"{base_queue}_{self.run_id}"
+        return task_sequence
 
-    def run(self, **kwargs):
-        self.log_start(kwargs.get("problem", "Unnamed problem"))
-        workflow = self.define_workflow()
-        
-        if self.execution_type == "synchronous":
-            # Synchronous execution: run directly without workers
-            built_workflow = self.build_workflow_from_sequence(workflow)
-            results = self.run_workflow(built_workflow)
-        else:
-            # Asynchronous execution: manage a worker dynamically
-            # Use default queue if "queue" key is missing, appending run_id for uniqueness
-            queues = set(task.get("queue", f"default_{self.run_id}") for task in workflow)
-            worker_process = start_celery_workers(queues)
-            try:
-                built_workflow = self.build_workflow_from_sequence(workflow)
-                results = self.run_workflow(built_workflow)
-            finally:
-                worker_process.terminate()
-        
-        self.log_end(str(results["final_result"]), metadata={"tasks": len(workflow)}, score=100)
-        return results
+    def tick(self):
+        """Simulate one cycle of the event loop."""
+        self.event_queue.dispatch()
+        for agent in self.agents:
+            agent.step()

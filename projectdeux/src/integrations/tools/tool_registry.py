@@ -1,6 +1,10 @@
-# src/integrations/tools/tool_registry.py
 from typing import Dict, Type
-from .base_tool import Tool  # Assume base_tool.py defines a Tool base class
+from .base_tool import Tool
+from .calculator_tool import CalculatorTool
+
+class TestTool(Tool):
+    def execute(self, **args):
+        return f"Test tool executed with args: {args}"
 
 class ToolRegistry:
     _tools: Dict[str, Type[Tool]] = {}
@@ -19,3 +23,7 @@ class ToolRegistry:
     def list_tools(cls) -> list:
         """List all registered tool names."""
         return list(cls._tools.keys())
+
+# Register tools at module load
+ToolRegistry.register("calculator", CalculatorTool)
+ToolRegistry.register("test_tool", TestTool)

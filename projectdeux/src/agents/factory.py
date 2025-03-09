@@ -1,8 +1,14 @@
-from typing import Dict, Optional
+# src/agents/agent_factory.py
+from typing import Dict, Optional, TYPE_CHECKING
 from src.entities.entity_manager import EntityManager
 from src.entities.component_manager import ComponentManager
+
+# Remove the runtime import of BaseSystem to avoid circular dependency.
+if TYPE_CHECKING:
+    from src.systems.base_system import BaseSystem
+
 from .base_agent import BaseAgent
-from .supervisor_agent import SupervisorAgent  # Import SupervisorAgent
+from .supervisor_agent import SupervisorAgent
 from src.integrations.tools.tool_registry import ToolRegistry
 
 class AgentFactory:
@@ -11,14 +17,15 @@ class AgentFactory:
         entity_manager: EntityManager,
         component_manager: ComponentManager,
         config: Dict,
-        api_key: Optional[str] = None
+        api_key: Optional[str] = None,
+        session: Optional["BaseSystem"] = None  # This is now only for type checking.
     ) -> BaseAgent:
         name = config.get("name", "UnnamedAgent")
         model = config.get("model", "openrouter/qwen/qwq-32b:free")
         system_prompt = config.get("system_prompt", "You are a helpful assistant")
         tools_config = config.get("tools", [])
         behaviors = config.get("behaviors", {})
-        role = config.get("role", "unknown").lower()  # Normalize role to lowercase
+        role = config.get("role", "unknown").lower()
 
         tool_instances = []
         missing_tools = []
@@ -33,7 +40,6 @@ class AgentFactory:
 
         api_key = api_key or config.get("api_key")
 
-        # Create SupervisorAgent if role is 'supervisor'
         if role == "supervisor":
             system_type = config.get("system_type", "collaborative_writing")
             agent = SupervisorAgent(
@@ -45,7 +51,8 @@ class AgentFactory:
                 api_key=api_key,
                 tools=tool_instances,
                 system_prompt=system_prompt,
-                behaviors=behaviors
+                behaviors=behaviors,
+                session=session  # Pass session to SupervisorAgent
             )
         else:
             agent = BaseAgent(
@@ -56,7 +63,8 @@ class AgentFactory:
                 api_key=api_key,
                 tools=tool_instances,
                 system_prompt=system_prompt,
-                behaviors=behaviors
+                behaviors=behaviors,
+                session=session  # Pass session to BaseAgent
             )
         
         agent.role = role

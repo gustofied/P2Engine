@@ -1,0 +1,29 @@
+states:
+  - name: UserMessage
+    class: src.agents.states.UserMessage
+  - name: AssistantMessage
+    class: src.agents.states.AssistantMessage
+  - name: Finished
+    class: src.agents.states.Finished
+  - name: ToolCall
+    class: src.agents.states_advanced.ToolCall
+  - name: WaitingForToolResult
+    class: src.agents.states_advanced.WaitingForToolResult
+  - name: ToolResult
+    class: src.agents.states_advanced.ToolResult
+  - name: AgentCall
+    class: src.agents.states_advanced.AgentCall
+  - name: WaitingForAgentResult
+    class: src.agents.states_advanced.WaitingForAgentResult
+  - name: AgentResult
+    class: src.agents.states_advanced.AgentResult
+  - name: ErrorState
+    class: src.agents.states_advanced.ErrorState
+  - name: ClarificationState
+    class: src.agents.states.ClarificationState
+
+tools:
+  - name: calculator
+    class: src.integrations.tools.tool_registry.CalculatorTool
+  - name: test_tool
+    class: src.integrations.tools.tool_registry.TestTool

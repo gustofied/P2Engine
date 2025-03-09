@@ -2,7 +2,6 @@
 from typing import List, Dict, Optional
 from src.agents.base_agent import BaseAgent
 
-
 class TaskManager:
     def __init__(self):
         """Initialize the TaskManager with task registry, state tracking, and result caching."""
@@ -10,7 +9,7 @@ class TaskManager:
         self.task_states: Dict[str, str] = {}      # Tracks state: "pending", "active", "completed"
         self.task_results: Dict[str, str] = {}     # Cache for task execution results
 
-    def register_task(self, task_name: str, agents: List[BaseAgent], instruction: str, 
+    def register_task(self, task_name: str, agents: List['src.agents.base_agent.BaseAgent'], instruction: str, 
                       dependencies: List[str] = None, required_params: List[str] = None,
                       dependency_params: Dict[str, str] = None):
         """Register a task with its agents, instruction, and dependencies."""
