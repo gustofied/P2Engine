@@ -26,21 +26,28 @@ def test_error_handling():
     assert isinstance(agent.interaction_stack[-1], session.state_registry.get_state_class("AssistantMessage"))
 
     # Step 2: Transition to ToolCall
-    session.tick()
+    session.tick()  # AssistantMessage -> ToolCall
     assert isinstance(agent.interaction_stack[-1], session.state_registry.get_state_class("ToolCall"))
 
     # Step 3: Simulate tool failure
-    agent.pending_events.append(Event("ToolFailureEvent", "Simulated tool failure"))
-    session.tick()
-    assert isinstance(agent.interaction_stack[-1], session.state_registry.get_state_class("ErrorState"))
+    agent.pending_events.append(Event("ToolFailureEvent", {"error": "Simulated tool failure"}, correlation_id="test_corr_id"))
+    session.tick()  # ToolCall -> ToolFailureState
+    assert isinstance(agent.interaction_stack[-1], session.state_registry.get_state_class("ToolFailureState"))
 
     # Step 4: Verify retry
-    session.tick()
+    session.tick()  # ToolFailureState -> AssistantMessage
     assert isinstance(agent.interaction_stack[-1], session.state_registry.get_state_class("AssistantMessage"))
 
     # Step 5: Simulate failure again to stop
-    agent.pending_events.append(Event("ToolFailureEvent", "Simulated tool failure again"))
-    session.tick()  # Processes ToolCallEvent -> ToolCall
-    session.tick()  # Processes ToolFailureEvent -> ErrorState, appends StopEvent
-    session.tick()  # Processes StopEvent -> Finished
+    agent.pending_events.clear()  # Clear queue to remove unwanted events
+    agent.pending_events.append(Event("ToolCallEvent", {"tool_name": "test_tool", "correlation_id": "test_corr_id"}))
+    session.tick()  # AssistantMessage -> ToolCall
+    assert isinstance(agent.interaction_stack[-1], session.state_registry.get_state_class("ToolCall"))
+
+    agent.pending_events.append(Event("ToolFailureEvent", {"error": "Simulated tool failure again"}, correlation_id="test_corr_id"))
+    session.tick()  # ToolCall -> ToolFailureState
+    assert isinstance(agent.interaction_stack[-1], session.state_registry.get_state_class("ToolFailureState"))
+
+    # Step 6: Verify final transition (assuming retry limit reached)
+    session.tick()  # ToolFailureState -> Finished (via StopEvent)
     assert isinstance(agent.interaction_stack[-1], session.state_registry.get_state_class("Finished"))

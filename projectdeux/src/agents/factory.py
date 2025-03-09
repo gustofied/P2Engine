@@ -1,9 +1,8 @@
-# src/agents/agent_factory.py
 from typing import Dict, Optional, TYPE_CHECKING
 from src.entities.entity_manager import EntityManager
 from src.entities.component_manager import ComponentManager
+from src.states.state_registry import StateRegistry
 
-# Remove the runtime import of BaseSystem to avoid circular dependency.
 if TYPE_CHECKING:
     from src.systems.base_system import BaseSystem
 
@@ -18,7 +17,8 @@ class AgentFactory:
         component_manager: ComponentManager,
         config: Dict,
         api_key: Optional[str] = None,
-        session: Optional["BaseSystem"] = None  # This is now only for type checking.
+        session: Optional["BaseSystem"] = None,
+        state_registry: Optional[StateRegistry] = None
     ) -> BaseAgent:
         name = config.get("name", "UnnamedAgent")
         model = config.get("model", "openrouter/qwen/qwq-32b:free")
@@ -39,6 +39,7 @@ class AgentFactory:
             raise ValueError(f"Missing tools: {', '.join(missing_tools)}")
 
         api_key = api_key or config.get("api_key")
+        state_registry = state_registry or session.state_registry if session else StateRegistry("scenario.yaml")
 
         if role == "supervisor":
             system_type = config.get("system_type", "collaborative_writing")
@@ -52,19 +53,21 @@ class AgentFactory:
                 tools=tool_instances,
                 system_prompt=system_prompt,
                 behaviors=behaviors,
-                session=session  # Pass session to SupervisorAgent
+                session=session,
+                state_registry=state_registry
             )
         else:
             agent = BaseAgent(
                 entity_manager=entity_manager,
                 component_manager=component_manager,
                 name=name,
+                state_registry=state_registry,
                 model=model,
                 api_key=api_key,
                 tools=tool_instances,
                 system_prompt=system_prompt,
                 behaviors=behaviors,
-                session=session  # Pass session to BaseAgent
+                session=session
             )
         
         agent.role = role

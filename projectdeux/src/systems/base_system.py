@@ -8,7 +8,7 @@ from src.custom_logging.central_logger import central_logger
 from src.tasks.task_manager import TaskManager
 from src.systems.event_system import EventQueue
 from src.agents.factory import AgentFactory
-from src.config.state_registry import StateRegistry
+from src.states.state_registry import StateRegistry
 
 class BaseSystem(ABC):
     session_instances = {}  # Class-level dictionary to track sessions

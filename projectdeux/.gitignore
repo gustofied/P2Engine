@@ -5,3 +5,4 @@
 .env
 **/logs
 .DS_Store
+**/discovery
