@@ -1,54 +1,86 @@
 from abc import ABC, abstractmethod
 from typing import List, Dict, Optional
+import uuid
+from agents.base_agent import BaseAgent
 from src.entities.entity_manager import EntityManager
 from src.entities.component_manager import ComponentManager
 from src.custom_logging.central_logger import central_logger
 from src.tasks.task_manager import TaskManager
-from src.tasks.task_registry import TASK_REGISTRY
-from src.tasks.async_task_manager import AsyncTaskManager
-from celery import chain
+from src.systems.event_system import EventQueue
+from src.agents.factory import AgentFactory
+from src.config.state_registry import StateRegistry
 
 class BaseSystem(ABC):
-    """
-    Abstract base class for defining and executing a system workflow.
-    Supports both synchronous and asynchronous task execution using Celery.
-    """
+    session_instances = {}  # Class-level dictionary to track sessions
+
     def __init__(
         self,
-        agents,
+        agents: List,
         entity_manager: EntityManager,
         component_manager: ComponentManager,
         config: Dict,
+        run_id: Optional[str] = None,
         task_manager: Optional[TaskManager] = None,
-        execution_type: str = "synchronous"
+        config_path: str = "scenario.yaml"  # New parameter for scenario.yaml
     ):
-        """
-        Initialize the BaseSystem with agents, managers, and configuration.
-
-        Args:
-            agents: List or dict of agent objects.
-            entity_manager: Manages entities in the system.
-            component_manager: Manages components in the system.
-            config: Configuration dictionary for the system.
-            task_manager: Optional custom TaskManager instance.
-            execution_type: 'synchronous' or 'asynchronous' execution mode.
-        """
+        self.id = run_id or str(uuid.uuid4())
+        self.run_id = self.id
         self.agents = agents
         self.entity_manager = entity_manager
         self.component_manager = component_manager
         self.config = config
         self.task_manager = task_manager or TaskManager()
         self.logger = central_logger
-        self.goal = config.get("goal", "Solve a problem effectively")
-        self.expected_result = config.get("expected_result", None)
-        self.execution_type = execution_type
-        if self.execution_type == "asynchronous":
-            self.async_task_manager = AsyncTaskManager()
-        else:
-            self.async_task_manager = None
+        self.event_queue = EventQueue()
+        self.config_path = config_path  # Store config path
+        self.state_registry = StateRegistry(config_path)  # Initialize StateRegistry
+
+        # Set goal and expected_result from config with defaults
+        self.goal = config.get('goal', 'No goal specified')
+        self.expected_result = config.get('expected_result', 'No expected result specified')
+
+        # Assign session to agents
+        for agent in self.agents:
+            agent.session = self
+            agent.state_registry = self.state_registry  # Pass StateRegistry to existing agents
+
+        BaseSystem.session_instances[self.id] = self
+
+    def spawn_agent(self, agent_type: str, parent: "BaseAgent" = None, correlation_id: str = None):
+        """Spawn a new agent using AgentFactory with StateRegistry."""
+        config = {
+            "name": f"{agent_type}_{uuid.uuid4()}",
+            "system_prompt": f"Agent type: {agent_type}",
+            "role": agent_type
+        }
+        agent = AgentFactory.create_agent(
+            entity_manager=self.entity_manager,
+            component_manager=self.component_manager,
+            config=config,
+            session=self,
+            state_registry=self.state_registry  # Pass StateRegistry
+        )
+        agent.parent = parent
+        agent.correlation_id = correlation_id
+        self.agents.append(agent)
+        self.logger.log_interaction("System", agent.name, f"Spawned as sub-agent of {parent.name if parent else 'None'}")
+        return agent
+
+    @abstractmethod
+    def define_workflow(self) -> List[Dict]:
+        pass
+
+    def tick(self):
+        """Simulate one cycle of the event loop."""
+        self.event_queue.dispatch()
+        for agent in self.agents:
+            agent.step()
+
+    # Other methods (get_agent_by_name, get_all_agents, etc.) remain unchanged
+
+    # ... (other methods like get_all_agents, run, etc., remain unchanged)
 
     def get_agent_by_name(self, agent_name):
-        """Retrieve an agent by its name."""
         try:
             if isinstance(self.agents, dict):
                 return self.agents.get(agent_name)
@@ -57,18 +89,15 @@ class BaseSystem(ABC):
             return None
 
     def get_all_agents(self):
-        """Return a list of all agent objects."""
         if isinstance(self.agents, dict):
             return list(self.agents.values())
         return self.agents
 
     @abstractmethod
     def define_workflow(self) -> List[Dict]:
-        """Define the workflow as a list of task configurations. Must be implemented by subclasses."""
         pass
 
     def log_start(self, problem: str):
-        """Log the start of the system run."""
         self.logger.log_system_start(
             system_name=self.__class__.__name__,
             entities=self.entity_manager.entities,
@@ -78,21 +107,13 @@ class BaseSystem(ABC):
         )
 
     def log_end(self, result: str, metadata: Dict, score: int):
-        """Log the end of the system run."""
         all_agents = self.get_all_agents()
         self.logger.log_system_end(result, metadata, score, all_agents)
 
     def build_workflow_from_sequence(self, task_sequence: List[Dict]) -> List[Dict]:
-        """
-        Build a workflow from a predefined task sequence provided in the config.
-        Each task in the sequence includes 'task_name', 'agent_name', 'instruction', and 'params'.
+        # Local import to avoid circular dependency
+        from src.tasks.task_registry import TASK_REGISTRY
 
-        Args:
-            task_sequence: List of task configuration dictionaries.
-
-        Returns:
-            List of workflow steps with task functions and arguments.
-        """
         workflow = []
         scenario_data = {
             "goal": self.goal,
@@ -102,17 +123,21 @@ class BaseSystem(ABC):
             "run_params": self.config.get("run_params", {}),
             "context": {}
         }
+
         for i, task_config in enumerate(task_sequence):
             agent = self.get_agent_by_name(task_config["agent_name"])
             if agent:
+                # The function from TASK_REGISTRY
                 task_func = TASK_REGISTRY["generic_task"]["function"]
+
                 queue = task_config.get("queue", "default")
-                # For the first task, include None as previous_output
+
+                # For first task, pass None as "previous_output"
                 if i == 0:
                     args = [None, agent.system_prompt, task_config, scenario_data]
-                # For subsequent tasks, omit previous_output (Celery will provide it in async mode)
                 else:
                     args = [agent.system_prompt, task_config, scenario_data]
+
                 workflow.append({
                     "task_func": task_func,
                     "args": args,
@@ -121,61 +146,64 @@ class BaseSystem(ABC):
                 })
             else:
                 self.logger.warning(f"Agent '{task_config['agent_name']}' not found")
+
         return workflow
 
     def run_workflow(self, workflow: List[Dict]) -> Dict:
-        """
-        Execute the workflow based on the execution type.
-
-        Args:
-            workflow: List of task dictionaries with functions and arguments.
-
-        Returns:
-            Dictionary containing the final result, scenario data, and logs.
-        """
+        """Execute the tasks either asynchronously with Celery or synchronously."""
         if self.execution_type == "asynchronous":
-            # Build a Celery chain of tasks
             celery_tasks = []
             for task in workflow:
                 task_func = task["task_func"]
                 args = task["args"]
                 queue = task["queue"]
+                # Build the Celery signature
                 celery_task = task_func.s(*args).set(queue=queue)
                 celery_tasks.append(celery_task)
+
+            # Chain them in sequence
             full_chain = chain(*celery_tasks)
             async_result = full_chain()
             final_result = self.async_task_manager.get_task_result(async_result, timeout=120)
+
             result, scenario_data = final_result[:2]
             logs = final_result[2] if len(final_result) > 2 else []
+
+            # If logs were captured, store them
             for log in logs:
                 self.logger.log_interaction(sender=log["from"], receiver=log["to"], message=log["message"])
+
             return {"final_result": result, "scenario_data": scenario_data, "logs": logs}
 
         elif self.execution_type == "synchronous":
-            # Execute tasks sequentially, passing output to the next task
             results = {}
             previous_output = None
-            for task in workflow:
+
+            for i, task in enumerate(workflow):
                 task_func = task["task_func"]
                 task_config = task["task_config"]
                 agent = self.get_agent_by_name(task_config["agent_name"])
-                if previous_output is None:
-                    # Use initial args for the first task
-                    args = task["args"]  # [None, agent.system_prompt, task_config, scenario_data]
+
+                # For first task, pass None as "previous_output"
+                if i == 0:
+                    args = task["args"]
                 else:
-                    # Use previous output for subsequent tasks
-                    scenario_data = previous_output[1]  # Update scenario_data
+                    # subsequent tasks get the previous output
+                    scenario_data = previous_output[1]
                     args = [previous_output, agent.system_prompt, task_config, scenario_data]
+
+                # Execute the task
                 previous_output = task_func(*args)
-                result, scenario_data = previous_output  # Unpack the result tuple
+                result, scenario_data = previous_output
                 results[task_config["task_name"]] = result
+
             return {"final_result": results, "scenario_data": scenario_data, "logs": []}
 
         else:
             raise ValueError(f"Invalid execution type: {self.execution_type}")
 
     def run(self, **kwargs):
-        """Execute the system's workflow and log the process."""
+        """Convenience method to start the workflow and log results."""
         self.log_start(kwargs.get("problem", "Unnamed problem"))
         workflow = self.define_workflow()
         built_workflow = self.build_workflow_from_sequence(workflow)

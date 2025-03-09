@@ -1,0 +1,11 @@
+states:
+  - name: UserMessage
+    class: src.agents.states.UserMessage
+  - name: AssistantMessage
+    class: src.agents.states.AssistantMessage
+  - name: Finished
+    class: src.agents.states.Finished
+  - name: ToolResult
+    class: src.agents.states_advanced.ToolResult
+  - name: AgentResult
+    class: src.agents.states_advanced.AgentResult

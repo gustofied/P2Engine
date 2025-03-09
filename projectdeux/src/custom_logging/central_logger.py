@@ -12,19 +12,32 @@ handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 logger.addHandler(handler)
 
-# Enhanced JSON serialization function
-def make_json_serializable(obj):
-    """Convert any object to a JSON-serializable format."""
+def make_json_serializable(obj, cache=None):
+    # Initialize cache on first call
+    if cache is None:
+        cache = set()
+    
+    # Check for circular reference
+    obj_id = id(obj)
+    if obj_id in cache:
+        return f"<Circular reference to {type(obj).__name__}>"
+    cache.add(obj_id)
+    
+    # Handle basic types
     if isinstance(obj, (str, int, float, bool, type(None))):
         return obj
+    # Handle lists/tuples
     elif isinstance(obj, (list, tuple)):
-        return [make_json_serializable(item) for item in obj]
+        return [make_json_serializable(item, cache) for item in obj]
+    # Handle dictionaries
     elif isinstance(obj, dict):
-        return {str(k): make_json_serializable(v) for k, v in obj.items()}
-    elif hasattr(obj, '__dict__'):  # Handle custom objects (e.g., BaseAgent)
-        return make_json_serializable(obj.__dict__)
+        return {str(k): make_json_serializable(v, cache) for k, v in obj.items()}
+    # Handle objects with __dict__
+    elif hasattr(obj, '__dict__'):
+        return make_json_serializable(obj.__dict__, cache)
+    # Fallback: convert to string
     else:
-        return str(obj)  # Fallback for non-serializable objects
+        return str(obj)
 
 # Global run ID for log file naming
 def get_run_id():
@@ -148,7 +161,7 @@ class CentralLogger:
 
     def flush_logs(self) -> None:
         """Write all logs to JSON files in the 'discovery' directory."""
-        log_dir = "discovery"  # Updated from 'logs' to 'discovery'
+        log_dir = "discovery"
         os.makedirs(log_dir, exist_ok=True)
 
         # Flush scenario logs
@@ -156,21 +169,18 @@ class CentralLogger:
         system_file = os.path.join(log_dir, f"system_log_{RUN_ID}.json")
         with open(system_file, "w") as f:
             json.dump(scenario_serializable, f, indent=2)
-        logger.info(f"Flushed system logs to {system_file}")
 
         # Flush interaction logs
         interaction_serializable = make_json_serializable(self.interaction_logs)
         interaction_file = os.path.join(log_dir, f"interaction_log_{RUN_ID}.json")
         with open(interaction_file, "w") as f:
             json.dump(interaction_serializable, f, indent=2)
-        logger.info(f"Flushed interaction logs to {interaction_file}")
 
         # Flush LiteLLM logs (global log data)
         global_serializable = make_json_serializable(self.global_log_data)
         litellm_file = os.path.join(log_dir, f"litellm_log_{RUN_ID}.json")
         with open(litellm_file, "w") as f:
             json.dump(global_serializable, f, indent=2)
-        logger.info(f"Flushed LiteLLM logs to {litellm_file}")
 
 # Singleton instance
 central_logger = CentralLogger()
