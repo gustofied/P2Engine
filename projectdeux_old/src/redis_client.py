@@ -1,7 +1,6 @@
 # src/redis_client.py
-from config import RESULT_BACKEND
 import redis
-
+from src.config import RESULT_BACKEND  # Absolute import
 try:
     redis_client = redis.Redis.from_url(RESULT_BACKEND)
     redis_client.ping()  # Test connection
