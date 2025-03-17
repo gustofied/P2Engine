@@ -1,0 +1,10 @@
+.venv/
+**/__pycache__/
+**/latexbuild/
+!**/latexbuild/*.pdf
+.env
+**/logs
+.DS_Store
+**/discovery/
+*.log
+*.json
