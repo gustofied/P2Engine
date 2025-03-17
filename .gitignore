@@ -1,0 +1,11 @@
+projectdeux_docs/discovery/system_log_20250312_111006.json
+.venv/
+**/__pycache__/
+**/latexbuild/
+!**/latexbuild/*.pdf
+.env
+**/logs
+.DS_Store
+**/discovery/
+*.log
+*.json

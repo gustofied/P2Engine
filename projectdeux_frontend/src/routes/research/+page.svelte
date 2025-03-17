@@ -8,46 +8,40 @@
 
 <svelte:head>
   <title>Project Deux - Research</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap">
-  <style>
-    @font-face {
-      font-family: "Pecita";
-      src: url("/pecita.otf") format("opentype");
-      font-weight: normal;
-      font-style: normal;
-      font-display: swap;
-    }
-  </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courier+New&family=Georgia&display=swap">
 </svelte:head>
 
 <div class="page-wrapper">
-  <!-- Greek Column as a bookmark-like element -->
-  <div class="greek-column">
-    <div class="greek-text">Research</div>
+  <!-- Navigation -->
+  <div class="nav-bar">
+    <div class="nav-title">RESEARCH ARCHIVE</div>
+    <a href="/" class="nav-link">> HOME</a>
+    <a href="#" class="nav-link" class:active={activeSection === 'papers'} on:click|preventDefault={() => setSection('papers')}> > PAPERS</a>
+    <a href="#" class="nav-link" class:active={activeSection === 'theses'} on:click|preventDefault={() => setSection('theses')}> > MASTER THESES</a>
+    <a href="#" class="nav-link" class:active={activeSection === 'findings'} on:click|preventDefault={() => setSection('findings')}> > FINDINGS</a>
   </div>
-  <!-- Navigation Buttons (Right of Column, Vertical) -->
-  <div class="nav-buttons">
-    <a href="/" class="nav-button">Back Home</a>
-    <button class:active={activeSection === 'papers'} on:click={() => setSection('papers')}>Papers</button>
-    <button class:active={activeSection === 'methods'} on:click={() => setSection('methods')}>Methods</button>
-    <button class:active={activeSection === 'findings'} on:click={() => setSection('findings')}>Findings</button>
-  </div>
+
   <!-- Content Area -->
   <div class="content-area">
     {#if activeSection === 'papers'}
-      <div class="content fade-in">
-        <h2>Papers</h2>
-        <p>Explore our published works on technology and human interaction.</p>
+      <div class="content">
+        <h2>[ PAPERS ]</h2>
+        <p>Hard-hitting studies on tech and human crossover. Peer-reviewed and stacked for your brain, brah.</p>
       </div>
-    {:else if activeSection === 'methods'}
-      <div class="content fade-in">
-        <h2>Methods</h2>
-        <p>Learn about our research methodologies and experimental designs.</p>
+    {:else if activeSection === 'theses'}
+      <div class="content">
+        <h2>[ MASTER THESES ]</h2>
+        <ul>
+          <li>1. Master Thesis</li>
+          <li>   1.1 Primer: A foundational dive into the core principles of autonomous systems and their interplay with human decision-making in complex environments.</li>
+          <li>   1.2 Agent Economy: Exploring the emergent behaviors of AI-driven agents in simulated markets, with focus on resource allocation and adaptive strategies.</li>
+          <li>   1.3 Collective Intel: Unpacking how networked minds—human and machine—amplify problem-solving, with case studies on swarm dynamics and data synthesis.</li>
+        </ul>
       </div>
     {:else if activeSection === 'findings'}
-      <div class="content fade-in">
-        <h2>Findings</h2>
-        <p>Key insights and results from our ongoing studies.</p>
+      <div class="content">
+        <h2>[ FINDINGS ]</h2>
+        <p>Lab-fresh insights. No BS, just the real deal from our grind.</p>
       </div>
     {/if}
   </div>
@@ -59,127 +53,100 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    background: #f5e8c7;
-    font-family: 'Playfair Display', serif;
+    background: url('/column1.jpg') no-repeat center center fixed, #1a1a1a;
+    background-size: cover;
+    background-blend-mode: soft-light;
+    font-family: 'Courier New', monospace;
   }
 
   .page-wrapper {
     position: relative;
     width: 100%;
     height: 100vh;
-    overflow: hidden;
+    background: rgba(235, 225, 205, 0.9);
+    background-image: url('/parchment-texture.png');
+    background-blend-mode: overlay;
   }
 
-  .greek-column {
+  .nav-bar {
     position: fixed;
-    left: 10%;
+    left: 0;
     top: 0;
     bottom: 0;
-    width: 15%;
-    background: url('/column1.jpg') no-repeat center center, linear-gradient(to bottom, #3b2f2b, #4a2c2a);
-    background-size: cover;
-    background-blend-mode: overlay;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-right: 2px solid #b8975b;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-    z-index: 10;
-  }
-
-  .greek-text {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    font-size: 40px;
-    color: #f5e8c7;
-    transform: rotate(180deg);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
-  }
-
-  .nav-buttons {
-    position: fixed;
-    left: 25%;
-    top: 40px;
+    width: 220px;
+    padding: 20px;
+    background: #2b2b2b;
+    border-right: 3px solid #666;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 200px;
-    z-index: 12;
   }
 
-  .nav-buttons a.nav-button,
-  .nav-buttons button {
-    padding: 14px 28px;
-    font-size: 20px;
-    color: #f5e8c7;
-    background: linear-gradient(135deg, #4a2c2a, #5e3a36);
-    border: 2px solid #b8975b;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
+  .nav-title {
+    font-size: 24px;
+    color: #ffaa00; /* Orange-gold for title */
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ffaa00;
+    font-family: 'Georgia', serif;
+    text-align: center;
+  }
+
+  .nav-link {
+    font-size: 18px;
+    color: #ffffff; /* All links white */
     text-decoration: none;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.3s ease;
-    text-align: left;
-    position: relative;
+    transition: all 0.2s ease;
   }
 
-  .nav-buttons button.active {
-    background: linear-gradient(135deg, #5e3a36, #4a2c2a);
-    transform: scale(1.05);
+  .nav-link.active {
+    color: #ffffff; /* Active stays white */
+    font-weight: bold;
+    padding-left: 10px;
   }
 
-  .nav-buttons a.nav-button:hover,
-  .nav-buttons button:hover:not(.active) {
-    background: linear-gradient(135deg, #5e3a36, #4a2c2a);
-    transform: translateX(3px);
-  }
-
-  .nav-buttons a.nav-button:not(:last-child)::after,
-  .nav-buttons button:not(:last-child)::after {
-    content: '····················';
-    position: absolute;
-    bottom: -10px;
-    left: 28px;
-    color: #b8975b;
-    font-size: 12px;
-    letter-spacing: 2px;
+  .nav-link:hover {
+    color: #ffffff; /* Hover stays white */
+    padding-left: 5px;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8); /* Subtle glow for hover */
   }
 
   .content-area {
     position: absolute;
-    left: 45%;
-    top: 40px;
-    right: 0;
-    bottom: 0;
-    padding: 30px 50px;
+    left: 240px;
+    top: 20px;
+    right: 20px;
+    bottom: 20px;
+    padding: 30px;
+    background: #f5f5f5;
+    border: 2px solid #333;
+    box-shadow: 6px 6px 0 #1a1a1a;
     overflow-y: auto;
-    background: rgba(245, 232, 199, 0.9);
-    z-index: 5;
-  }
-
-  .content {
-    color: #3b2f2b;
   }
 
   .content h2 {
-    font-size: 32px;
-    letter-spacing: 1.5px;
-    margin: 0 0 25px 0;
+    font-size: 28px;
+    color: #222;
+    margin: 0 0 20px 0;
+    border-bottom: 1px solid #666;
+    font-family: 'Georgia', serif;
+    text-align: center;
   }
 
-  .content p {
-    font-size: 20px;
-    line-height: 1.6;
+  .content p, .content ul {
+    font-size: 16px;
+    color: #111;
+    line-height: 1.7;
+    margin: 15px 0;
   }
 
-  .fade-in {
-    animation: fadeIn 0.5s ease-in;
+  .content ul {
+    list-style: none;
+    padding-left: 0;
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  .content li {
+    margin: 10px 0;
   }
 </style>
