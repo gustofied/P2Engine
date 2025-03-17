@@ -19,10 +19,14 @@ class LLMClient:
         api_key: Optional[str] = None,
         logger_fn=central_logger.log_litellm_event,  # Use CentralLogger's method
         debug: bool = False,
-        config_path: Optional[str] = None
+        config_path: Optional[str] = None,
+        run_id: Optional[str] = None  # New parameter for run_id
     ) -> None:
-        # Determine the config file path: use provided path, then env variable, then default
-        config_path = config_path or os.path.join(os.path.dirname(__file__), "models_config.json")
+        # Use provided run_id or fallback to CentralLogger's run_id
+        self.run_id = run_id or central_logger.run_id
+        
+        # Determine config file path: provided path, env variable, or default
+        config_path = config_path or os.getenv("MODELS_CONFIG_PATH", os.path.join(os.path.dirname(__file__), "models_config.json"))
         
         # Load configuration from the JSON file
         try:
@@ -56,6 +60,7 @@ class LLMClient:
     def query(self, messages: List[Dict], metadata: Optional[Dict] = None) -> str:
         """Send a query to the LLM and return the response with retry logic."""
         metadata = metadata or {}
+        metadata['run_id'] = self.run_id  # Add run_id to metadata for tracing
         if self.debug:
             metadata['debug'] = True
         print(f"Calling litellm.completion with logger_fn: {self.logger_fn}")
@@ -75,9 +80,11 @@ class LLMClient:
                 )
                 return response["choices"][0]["message"]["content"]
             except Exception as e:
+                error_context = {"attempt": attempt + 1, "model": self.model, "run_id": self.run_id}
                 if attempt < max_retries - 1:
-                    logger.warning(f"Attempt {attempt + 1} failed: {e}. Retrying in 2 seconds...")
+                    logger.warning(f"Attempt {attempt + 1} failed: {e}. Retrying in 2 seconds...", extra=error_context)
                     time.sleep(2)
                 else:
-                    logger.error(f"LLM query failed after {max_retries} attempts: {e}")
+                    logger.error(f"LLM query failed after {max_retries} attempts: {e}", extra=error_context)
+                    central_logger.log_error("LLMClient", e, self.run_id, context=error_context)
                     raise e

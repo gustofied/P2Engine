@@ -8,7 +8,7 @@ import json
 import os
 import uuid
 import time
-from event import Event
+from src.event import Event
 
 if TYPE_CHECKING:
     from src.agents.base_agent import BaseAgent

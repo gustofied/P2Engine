@@ -3,8 +3,8 @@ import json
 import datetime
 import logging
 from typing import List, Optional, Dict, Any
-from redis_client import redis_client  # Adjust based on your Redis client setup
 import atexit
+from src.redis_client import redis_client  # Absolute import from src package
 
 # Set up basic logging
 logger = logging.getLogger("CentralLogger")
@@ -35,18 +35,18 @@ def make_json_serializable(obj: Any, cache: set = None) -> Any:
         return str(obj)
 
 class CentralLogger:
-    def __init__(self):
-        """Initialize the logger with a unique run ID and tracking structures."""
-        self.run_id = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.scenario_logs: List[Dict] = []  # System-level logs
-        self.interaction_logs: List[Dict] = []  # Interaction logs
-        self.error_logs: List[Dict] = []  # Error logs
-        self.simple_messages: List[Dict] = []  # Simple message logs (from simple_logger)
+    def __init__(self, run_id: str = None):
+        """Initialize the logger with an optional run_id; default to timestamp if not provided."""
+        self.run_id = run_id or datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        self.scenario_logs: List[Dict] = []
+        self.interaction_logs: List[Dict] = []
+        self.error_logs: List[Dict] = []
+        self.simple_messages: List[Dict] = []
         self.global_log_data: Dict = {
             "run_id": self.run_id,
-            "agents": {}  # LiteLLM call tracking (from litellm_logger)
+            "agents": {}
         }
-        self.current_call_index: Dict[str, int] = {}  # Track latest LiteLLM call index per agent
+        self.current_call_index: Dict[str, int] = {}
         self.current_system_start_time: Optional[datetime.datetime] = None
 
     def log_system_start(self, system_name: str, entities: Dict, problem: str, goal: str, expected_result: str = None) -> None:
@@ -216,8 +216,6 @@ class CentralLogger:
 
         print(f"Flushed logs to {system_file}, {interaction_file}, {error_file}, {litellm_file}, {simple_file}")
 
-# Singleton instance
 central_logger = CentralLogger()
-
-# Automatically flush logs on program exit
-atexit.register(central_logger.flush_logs)
+# Singleton instance will be created in main.py with run_id
+# atexit.register(central_logger.flush_logs)  # Moved to main.py

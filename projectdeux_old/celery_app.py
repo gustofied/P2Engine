@@ -1,4 +1,3 @@
-# celery_app.py
 import datetime
 from celery import Celery
 import os
@@ -24,11 +23,19 @@ app.conf.update(
     worker_concurrency=4,
     include=[
         "src.tasks.task_definitions",
-        "src.tasks.task_registry",  # Added to register generic_task
+        "src.tasks.task_registry",
         "src.integrations.tools",
         "src.states.advanced",
     ],
     broker_connection_retry_on_startup=True,
+    task_track_started=True,  # Track task start time
+    task_publish_retry=True,  # Retry publishing tasks
+    task_publish_retry_policy={
+        "max_retries": 3,
+        "interval_start": 0,
+        "interval_step": 0.2,
+        "interval_max": 1,
+    },
 )
 
 def log_celery_interaction(sender, receiver, message, run_id=None):
@@ -47,4 +54,4 @@ except Exception as e:
 
 log_celery_interaction("Celery", "System", f"Broker: {BROKER_URL}")
 log_celery_interaction("Celery", "System", f"Result Backend: {RESULT_BACKEND}")
-log_celery_interaction("Celery", "System", f"Registered tasks: {app.conf.include}")
+log_celery_interaction("Celery", "System", f"Registered tasks: {list(app.tasks.keys())}")

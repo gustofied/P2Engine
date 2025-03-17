@@ -30,6 +30,7 @@ class BaseSystem(ABC):
         run_id: Optional[str] = None,
         config_path: str = "test_scenario.yaml"
     ):
+        """Initialize the BaseSystem with agents and configuration."""
         self.id = run_id if run_id is not None else str(uuid.uuid4())
         self.run_id = self.id
         self.agents = agents
@@ -53,9 +54,12 @@ class BaseSystem(ABC):
             agent.subscribe("UserMessageEvent")
 
         BaseSystem.session_instances[self.id] = self
-        self.logger.log_interaction("System", "Init", f"Initialized BaseSystem with ID {self.id}", self.run_id)
+        self.logger.log_interaction(
+            "System", "Init", f"Initialized BaseSystem with ID {self.id}", self.run_id
+        )
 
     async def start_event_consumer(self):
+        """Start consuming events from a RabbitMQ queue."""
         try:
             connection = await aio_pika.connect_robust("amqp://127.0.0.1/")
             self.channel = await connection.channel()
@@ -63,18 +67,23 @@ class BaseSystem(ABC):
             queue = await self.channel.declare_queue(queue_name)
             await queue.consume(self.process_system_event)
         except Exception as e:
-            self.logger.log_error("BaseSystem", e, self.run_id, context={"action": "start_event_consumer"})
+            self.logger.log_error(
+                "BaseSystem", e, self.run_id, context={"action": "start_event_consumer"}
+            )
 
     async def process_system_event(self, message: aio_pika.IncomingMessage):
+        """Process incoming system events."""
         async with message.process():
             event_data = json.loads(message.body)
             event = Event(**event_data)
             self.handle_event(event)
 
     def handle_event(self, event: Event):
+        """Handle a system event (to be implemented by subclasses)."""
         pass
 
     def publish(self, event: Event) -> List[str]:
+        """Publish an event to subscribers via Celery tasks."""
         task_ids = []
         subscribers = redis_client.smembers(f"subscriptions:{event.type}") or set()
         print(f"Publishing event {event.type} to {len(subscribers)} subscribers")
@@ -93,6 +102,7 @@ class BaseSystem(ABC):
         return task_ids
 
     def subscribe(self, entity, event_type: str, correlation_id: Optional[str] = None) -> None:
+        """Subscribe an entity to an event type."""
         key = f"subscriptions:{event_type}"
         value = f"agent:{entity.id}" if entity != self else f"system:{self.id}"
         redis_client.sadd(key, value)
@@ -102,6 +112,7 @@ class BaseSystem(ABC):
         )
 
     def unsubscribe(self, entity, event_type: str) -> None:
+        """Unsubscribe an entity from an event type."""
         key = f"subscriptions:{event_type}"
         value = f"agent:{entity.id}" if entity != self else f"system:{self.id}"
         redis_client.srem(key, value)
@@ -111,6 +122,7 @@ class BaseSystem(ABC):
         )
 
     def spawn_agent(self, agent_type: str, parent: "BaseAgent" = None, correlation_id: str = None):
+        """Spawn a new agent dynamically."""
         config = {
             "name": f"{agent_type}_{uuid.uuid4()}",
             "system_prompt": f"Agent type: {agent_type}",
@@ -128,10 +140,14 @@ class BaseSystem(ABC):
         agent.correlation_id = correlation_id
         self.agents.append(agent)
         redis_client.set(f"agent_config:{agent.id}", json.dumps(config))
-        self.logger.log_interaction("System", agent.name, f"Spawned as sub-agent of {parent.name if parent else 'None'}", self.run_id)
+        self.logger.log_interaction(
+            "System", agent.name,
+            f"Spawned as sub-agent of {parent.name if parent else 'None'}", self.run_id
+        )
         return agent
 
     def tick(self) -> List[str]:
+        """Execute a single step for all agents."""
         task_ids = []
         for agent in self.agents:
             queue_name = f"agent_queue_{self.run_id}"
@@ -145,9 +161,11 @@ class BaseSystem(ABC):
 
     @abstractmethod
     def define_workflow(self) -> List[Dict]:
+        """Define the workflow for the system (must be implemented by subclasses)."""
         pass
 
     def log_start(self, problem: str):
+        """Log the start of the system execution."""
         self.logger.log_system_start(
             system_name=self.__class__.__name__,
             entities=self.entity_manager.entities,
@@ -157,10 +175,12 @@ class BaseSystem(ABC):
         )
 
     def log_end(self, result: str, metadata: Dict, score: int):
+        """Log the end of the system execution."""
         all_agents = self.get_all_agents()
         self.logger.log_system_end(result, metadata, score, all_agents)
 
     def build_workflow_from_sequence(self, task_sequence: List[Dict]) -> List[Dict]:
+        """Build a workflow from a sequence of tasks."""
         from src.tasks.task_registry import TASK_REGISTRY
         workflow = []
         scenario_data = {
@@ -186,10 +206,14 @@ class BaseSystem(ABC):
                     "task_config": task_config
                 })
             else:
-                self.logger.log_interaction("System", "WorkflowBuilder", f"Agent '{task_config['agent_name']}' not found", self.run_id)
+                self.logger.log_interaction(
+                    "System", "WorkflowBuilder",
+                    f"Agent '{task_config['agent_name']}' not found", self.run_id
+                )
         return workflow
 
     def run_workflow(self, workflow: List[Dict]) -> Dict:
+        """Execute the workflow using Celery tasks."""
         celery_tasks = [task["task_func"].s(*task["args"]).set(queue=task["queue"]) for task in workflow]
         full_chain = chain(*celery_tasks)
         async_result = full_chain()
@@ -201,6 +225,7 @@ class BaseSystem(ABC):
         return {"final_result": result, "scenario_data": scenario_data, "logs": logs}
 
     def run(self, **kwargs):
+        """Run the system with the defined workflow."""
         self.log_start(kwargs.get("problem", "Unnamed problem"))
         workflow = self.define_workflow()
         built_workflow = self.build_workflow_from_sequence(workflow)
@@ -209,10 +234,12 @@ class BaseSystem(ABC):
         return results
 
     def get_agent_by_name(self, agent_name):
+        """Retrieve an agent by its name."""
         try:
             return next(agent for agent in self.agents if agent.name == agent_name)
         except StopIteration:
             return None
 
     def get_all_agents(self):
+        """Return all agents in the system."""
         return self.agents

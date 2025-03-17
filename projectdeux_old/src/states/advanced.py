@@ -3,7 +3,7 @@ from src.custom_logging.central_logger import central_logger
 from celery_app import app as celery_app
 from .base import State
 from src.event import Event
-from redis_client import redis_client
+from src.redis_client import redis_client
 
 if TYPE_CHECKING:
     from src.agents.base_agent import BaseAgent

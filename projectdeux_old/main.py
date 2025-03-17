@@ -1,8 +1,10 @@
 import sys
 import os
 import time
+from src.custom_logging.central_logger import CentralLogger
 from src.systems.scenario_manager import ScenarioManager
 from src.utils import start_celery_workers
+import atexit
 
 def run_scenario(scenarios_dir: str, scenario_name: str) -> None:
     """Run a specified scenario from the scenarios directory."""
@@ -12,6 +14,11 @@ def run_scenario(scenarios_dir: str, scenario_name: str) -> None:
     # Load the scenario configuration
     scenario = manager.get_scenario(scenario_name)
     run_id = f"run_{scenario_name}_{int(time.time())}"
+    
+    # Initialize CentralLogger with run_id
+    global central_logger
+    central_logger = CentralLogger(run_id=run_id)
+    atexit.register(central_logger.flush_logs)  # Register flush_logs on exit
     
     # Define queues for the workers
     queues = {f"agent_queue_{run_id}", f"tool_queue_{run_id}", "default"}

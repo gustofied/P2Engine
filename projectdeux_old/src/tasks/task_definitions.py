@@ -17,20 +17,25 @@ def process_agent_event(agent_id: str, session_id: str, run_id: str, event_data:
         run_id (str): Unique identifier for the current run.
         event_data (dict): Data describing the event to process.
     """
-    central_logger.log_interaction("Celery", "System", f"Starting task for agent {agent_id}", run_id)
+    central_logger.log_interaction("Celery", "System", f"Task received for agent {agent_id} with event: {event_data['type']}", run_id)
     lock = redis_client.lock(f"agent_lock:{agent_id}", timeout=30)
     try:
         if lock.acquire(blocking=True, blocking_timeout=5):
-            central_logger.log_interaction("Celery", "System", f"Acquired lock for agent {agent_id}", run_id)
+            central_logger.log_interaction("Celery", "System", f"Lock acquired for agent {agent_id}", run_id)
         else:
             central_logger.log_interaction("Celery", "System", f"Failed to acquire lock for agent {agent_id}", run_id)
             return
+        
+        # Fetch agent configuration
+        central_logger.log_interaction("Celery", "System", f"Fetching config for agent {agent_id}", run_id)
         config_str = redis_client.get(f"agent_config:{agent_id}")
         if not config_str:
-            central_logger.log_interaction("Celery", "System", f"Agent config for {agent_id} not found", run_id)
+            central_logger.log_interaction("Celery", "System", f"Agent config for {agent_id} not found in Redis", run_id)
             return
         config = json.loads(config_str)
+        central_logger.log_interaction("Celery", "System", f"Config loaded for agent {agent_id}: {config}", run_id)
 
+        # Initialize dependencies
         from src.entities.entity_manager import EntityManager
         from src.entities.component_manager import ComponentManager
         from src.states.state_registry import StateRegistry
@@ -40,6 +45,8 @@ def process_agent_event(agent_id: str, session_id: str, run_id: str, event_data:
         config_path = config.get("config_path", "src/scenarios/test_scenario.yaml")
         state_registry = StateRegistry(config_path)
 
+        # Create agent
+        central_logger.log_interaction("Celery", "System", f"Creating agent {agent_id}", run_id)
         agent = AgentFactory.create_agent(
             entity_manager=entity_manager,
             component_manager=component_manager,
@@ -48,24 +55,30 @@ def process_agent_event(agent_id: str, session_id: str, run_id: str, event_data:
             run_id=run_id
         )
         agent.id = agent_id
+        central_logger.log_interaction("Celery", "System", f"Agent {agent.name} (ID: {agent_id}) created", run_id)
 
+        # Process event
+        central_logger.log_interaction("Celery", "System", f"Loading state for agent {agent_id}", run_id)
         agent.load_state()
         event = Event(**event_data)
+        central_logger.log_interaction("Celery", "System", f"Processing event {event.type} for agent {agent_id}", run_id)
         agent.process_event(event)
+        central_logger.log_interaction("Celery", "System", f"Stepping agent {agent_id}", run_id)
         agent.step()
+        central_logger.log_interaction("Celery", "System", f"Saving state for agent {agent_id}", run_id)
         agent.save_state()
 
-        central_logger.log_interaction("Celery", agent.name, f"Processed event: {event.type}", run_id)
+        central_logger.log_interaction("Celery", agent.name, f"Event {event.type} processed successfully", run_id)
     except Exception as e:
-        central_logger.log_interaction("Celery", "System", f"Error processing event for agent {agent_id}: {str(e)}", run_id)
+        central_logger.log_interaction("Celery", "System", f"Error in task for agent {agent_id}: {str(e)}", run_id)
         raise
     finally:
         try:
             lock.release()
-            central_logger.log_interaction("Celery", "System", f"Released lock for agent {agent_id}", run_id)
+            central_logger.log_interaction("Celery", "System", f"Lock released for agent {agent_id}", run_id)
         except LockError:
             central_logger.log_interaction("Celery", "System", f"Lock already released for agent {agent_id}", run_id)
-        central_logger.log_interaction("Celery", "System", f"Completed task for agent {agent_id}", run_id)
+        central_logger.log_interaction("Celery", "System", f"Task completed for agent {agent_id}", run_id)
 
 @app.task
 def process_agent_step(agent_id: str, session_id: str, run_id: str):
