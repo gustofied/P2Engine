@@ -1,28 +1,29 @@
 import json
 import pika
-from celery import Celery
-import litellm
-
-app = Celery('tasks', broker='pyamqp://guest@localhost//')
+from src.celery_app import app
+from src.utils.llm_client import LLMClient
 
 def publish_task_complete(queue, task_id, result):
     connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
     channel = connection.channel()
-    channel.queue_declare(queue=queue)
+    channel.queue_declare(queue=queue, durable=True)
     message = {"type": "task_complete", "task_id": task_id, "result": result}
     channel.basic_publish(exchange='', routing_key=queue, body=json.dumps(message))
     connection.close()
 
 @app.task(bind=True)
-def process_request(self, request_data, agent_event_queue):
+def process_request(self, request_data, agent_event_queue, model=None):
     task_id = self.request.id
-    prompt = request_data  # Assume request_data is a string prompt
+    print(f"Task {task_id} started with data: {request_data}")
+    prompt = request_data
     try:
-        # Generate response with LiteLLM (configure with your API key if needed)
-        response = litellm.completion(
-            model="gpt-3.5-turbo",  # Adjust model as needed
-            messages=[{"role": "user", "content": prompt}]
-        ).choices[0].message.content
+        llm_client = LLMClient(model=model) if model else LLMClient()
+        print(f"Querying LLM with model: {llm_client.model}")
+        messages = [{"role": "user", "content": prompt}]
+        response = llm_client.query(messages)
+        print(f"Task {task_id} got response: {response}")
     except Exception as e:
         response = f"Error generating response: {str(e)}"
+        print(f"Task {task_id} failed: {response}")
     publish_task_complete(agent_event_queue, task_id, response)
+    print(f"Task {task_id} published task_complete")
