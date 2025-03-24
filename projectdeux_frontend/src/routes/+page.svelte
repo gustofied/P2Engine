@@ -22,6 +22,7 @@
         <a href="/about">About</a>
         <a href="/research">Research</a>
         <a href="/contact">Contact</a>
+        <a href="/playground">Playground</a>
       </div>
       <h1>Project Deux</h1>
       <p>Just a master thesis project</p>
