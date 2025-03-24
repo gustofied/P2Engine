@@ -19,6 +19,7 @@
     <a href="#" class="nav-link" class:active={activeSection === 'papers'} on:click|preventDefault={() => setSection('papers')}> > PAPERS</a>
     <a href="#" class="nav-link" class:active={activeSection === 'theses'} on:click|preventDefault={() => setSection('theses')}> > MASTER THESES</a>
     <a href="#" class="nav-link" class:active={activeSection === 'findings'} on:click|preventDefault={() => setSection('findings')}> > FINDINGS</a>
+    <a href="#" class="nav-link" class:active={activeSection === 'choreography'} on:click|preventDefault={() => setSection('choreography')}> > CHOREOGRAPHY VS ORCHESTRATION</a>
   </div>
 
   <!-- Content Area -->
@@ -42,6 +43,14 @@
       <div class="content">
         <h2>[ FINDINGS ]</h2>
         <p>Lab-fresh insights. No BS, just the real deal from our grind.</p>
+      </div>
+    {:else if activeSection === 'choreography'}
+      <div class="content">
+        <img src="https://res.cloudinary.com/grand-canyon-university/image/fetch/w_750,h_564,c_fill,g_faces,q_auto/https://www.gcu.edu/sites/default/files/2020-11/GettyImages-sb10063090k-001.jpg" 
+             alt="Choreography vs Orchestration Header" 
+             class="section-header">
+        <h2>[ CHOREOGRAPHY VS ORCHESTRATION ]</h2>
+        <p>Exploring the dance between distributed systems and centralized control. How do autonomous agents coordinate vs. being directed in tech ecosystems?</p>
       </div>
     {/if}
   </div>
@@ -148,5 +157,15 @@
 
   .content li {
     margin: 10px 0;
+  }
+
+  .section-header {
+    width: 100%;
+    max-width: 750px;
+    height: auto;
+    margin: 0 auto 20px auto;
+    display: block;
+    border: 2px solid #333;
+    box-shadow: 4px 4px 0 #1a1a1a;
   }
 </style>
