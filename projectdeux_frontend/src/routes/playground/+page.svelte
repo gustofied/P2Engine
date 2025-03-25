@@ -112,9 +112,13 @@
   <div class="background-container">
     <div class="background-right"></div>
     <div class="background-left"></div>
+    <svg class="border-line" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <path d="M60 0 L55 50 L60 100" stroke="white" stroke-width="0.2" fill="none" />
+    </svg>
   </div>
   <div class="left-container">
     <div class="terminal-container">
+      <p style="color: aliceblue;"> The Observer</p>
       <div class="terminal-text-box" class:paused={$isPaused1} on:click={togglePause1} bind:this={textBox1}>
         <p>
           {#each $textChars1 as char, i (i)}
@@ -183,6 +187,15 @@
     background-size: cover;
     background-position: center;
     clip-path: polygon(0% 0%, 60% 0%, 55% 50%, 60% 100%, 0% 100%);
+  }
+
+  /* Border line SVG */
+  .border-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 
   /* Left container (60% width) */
