@@ -1,386 +1,851 @@
 <script>
-  import { onMount } from 'svelte';
-  import Chart from 'chart.js/auto';
+  import { onMount, tick } from 'svelte';
 
-  // Navigation state
-  let activeSection = 'dashboard'; // Default section
+  // Mock data for p2mas
+  let agents = [
+    { id: '1', type: 'llm_agent', state: 'Idle', capabilities: ['math', 'text_analysis'] },
+    { id: '2', type: 'human_agent', state: 'Processing', capabilities: ['review'] },
+    { id: '3', type: 'dummy_agent', state: 'Error', capabilities: ['testing'] },
+  ];
 
-  function setSection(section) {
-    activeSection = section;
+  let tasks = [
+    { id: 't1', agent: '1', data: 'Calculate something', status: 'Pending' },
+    { id: 't2', agent: '2', data: 'Review this', status: 'Completed' },
+  ];
+
+  let workflows = [
+    { name: 'plan_a_party', status: 'Not Started', steps: ['Step 1: Budget', 'Step 2: Plan'] },
+    { name: 'tell_a_joke', status: 'Completed', steps: ['Step 1: Tell joke'] },
+  ];
+
+  let expandedWorkflow = null;
+
+  // Tab management
+  let currentTab = 'Agents';
+
+  function setTab(tab) {
+    currentTab = tab;
   }
 
-  // Chart References
-  let networkTPSCanvas;
-  let solPriceCanvas;
-  let clientDistCanvas;
-  let nodeVersionCanvas;
+  // Sidebar collapse
+  let collapsed = false;
 
-  // Chart Data
-  const networkTPSData = {
-    labels: ['Time 1', 'Time 2', 'Time 3', 'Time 4', 'Time 5'],
-    datasets: [{ label: 'TPS', data: [800, 900, 1000, 950, 850], backgroundColor: '#FF6200' }],
-  };
-  const solPriceData = {
-    labels: ['8:00 PM', '9:00 PM', '10:00 PM', '11:00 PM', '12:00 AM'],
-    datasets: [{ label: 'SOL Price', data: [122.1, 122.15, 122.2, 122.25, 122.3], borderColor: '#FF6200', fill: false }],
-  };
-  const clientDistData = {
-    labels: ['Agave', 'Jito', 'Firedancer'],
-    datasets: [{ label: 'Distribution', data: [100, 0, 0], backgroundColor: ['#FF6200', '#A0A0A0', '#A0A0A0'] }],
-  };
-  const nodeVersionData = {
-    labels: ['Jito 2.1.14', 'Agave 2.1.14'],
-    datasets: [{ data: [81, 19], backgroundColor: ['#FF6200', '#A0A0A0'] }],
-  };
+  function toggleSidebar() {
+    collapsed = !collapsed;
+  }
 
-  // Chart Options
-  const chartOptions = {
-    scales: { y: { beginAtZero: true, ticks: { color: '#FFFFFF' } }, x: { ticks: { color: '#FFFFFF' } } },
-    plugins: { legend: { display: false } },
-  };
-  const clientDistOptions = { ...chartOptions, indexAxis: 'y' };
-  const nodeVersionOptions = { plugins: { legend: { display: true, position: 'bottom', labels: { color: '#FFFFFF' } } } };
+  // Mock functions for interactivity
+  function createTask(taskData, targetAgent, requiredCapability, simulateFailure) {
+    tasks = [...tasks, {
+      id: `t${tasks.length + 1}`,
+      agent: targetAgent || 'N/A',
+      data: taskData,
+      status: 'Pending'
+    }];
+  }
 
-  // Initialize Charts on Mount
+  function startWorkflow(workflowName) {
+    workflows = workflows.map(w => w.name === workflowName ? { ...w, status: 'Running' } : w);
+  }
+
+  // Window dragging
+  let isDragging = false;
+  let windowPos = { x: 0, y: 0 };
+  let offset = { x: 0, y: 0 };
+
+  function startDragging(event) {
+    isDragging = true;
+    offset.x = event.clientX - windowPos.x;
+    offset.y = event.clientY - windowPos.y;
+  }
+
+  function stopDragging() {
+    isDragging = false;
+  }
+
+  function dragWindow(event) {
+    if (isDragging) {
+      windowPos.x = Math.max(0, Math.min(event.clientX - offset.x, window.innerWidth - 800));
+      windowPos.y = Math.max(0, Math.min(event.clientY - offset.y, window.innerHeight - 600));
+    }
+  }
+
+  // Clock in status bar
+  let currentTime = new Date().toLocaleTimeString();
+
+  function updateTime() {
+    currentTime = new Date().toLocaleTimeString();
+    tick();
+  }
+
+  // Live events for upper right window
+  let events = [
+    { time: '12:00:00', message: 'Agent 1 started task t1' },
+    { time: '12:00:05', message: 'Agent 2 completed task t2' },
+  ];
+
+  function addEvent() {
+    const newEvent = {
+      time: new Date().toLocaleTimeString(),
+      message: `Agent ${Math.floor(Math.random() * 3) + 1} performed an action`
+    };
+    events = [...events, newEvent].slice(-10);
+  }
+
+  // Designer view state
+  let canvasElements = [];
+  let connections = [];
+  let nextId = 0;
+  let connectMode = false;
+  let selectedSource = null;
+  let draggingElement = null;
+  let dragOffset = { x: 0, y: 0 };
+  let canvas;
+
+  function addElement(type) {
+    const newElement = {
+      id: nextId++,
+      type,
+      x: 50,
+      y: 50,
+    };
+    canvasElements = [...canvasElements, newElement];
+  }
+
+  function enterConnectMode() {
+    connectMode = true;
+    selectedSource = null;
+  }
+
+  function getCenter(id) {
+    const element = canvasElements.find(el => el.id === id);
+    return element ? { x: element.x + 50, y: element.y + 25 } : { x: 0, y: 0 };
+  }
+
+  function startDrag(event, id) {
+    event.stopPropagation();
+    if (connectMode) {
+      if (selectedSource === null) {
+        selectedSource = id;
+      } else {
+        connections = [...connections, [selectedSource, id]];
+        connectMode = false;
+        selectedSource = null;
+      }
+    } else {
+      draggingElement = id;
+      const rect = canvas.getBoundingClientRect();
+      const element = canvasElements.find(el => el.id === id);
+      dragOffset.x = event.clientX - rect.left - element.x;
+      dragOffset.y = event.clientY - rect.top - element.y;
+    }
+  }
+
+  function onMouseMove(event) {
+    if (draggingElement !== null) {
+      const rect = canvas.getBoundingClientRect();
+      const element = canvasElements.find(el => el.id === draggingElement);
+      if (element) {
+        element.x = event.clientX - rect.left - dragOffset.x;
+        element.y = event.clientY - rect.top - dragOffset.y;
+        canvasElements = canvasElements;
+      }
+    } else {
+      dragWindow(event);
+    }
+  }
+
+  function onMouseUp() {
+    draggingElement = null;
+    stopDragging();
+  }
+
   onMount(() => {
-    // Network TPS (Bar Chart)
-    new Chart(networkTPSCanvas, {
-      type: 'bar',
-      data: networkTPSData,
-      options: chartOptions,
-    });
+    const windowWidth = 800;
+    const windowHeight = 600;
+    windowPos.x = (window.innerWidth - windowWidth) / 2;
+    windowPos.y = (window.innerHeight - windowHeight) / 2;
 
-    // SOL Price (Line Chart)
-    new Chart(solPriceCanvas, {
-      type: 'line',
-      data: solPriceData,
-      options: chartOptions,
-    });
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
 
-    // Client Distribution (Horizontal Bar Chart)
-    new Chart(clientDistCanvas, {
-      type: 'bar',
-      data: clientDistData,
-      options: clientDistOptions,
-    });
+    const timeInterval = setInterval(updateTime, 1000);
+    const eventInterval = setInterval(addEvent, 5000);
 
-    // Node Versions (Doughnut Chart)
-    new Chart(nodeVersionCanvas, {
-      type: 'doughnut',
-      data: nodeVersionData,
-      options: nodeVersionOptions,
-    });
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      clearInterval(timeInterval);
+      clearInterval(eventInterval);
+    };
   });
 </script>
 
-<svelte:head>
-  <title>Solana Dashboard</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-</svelte:head>
+<div class="desktop">
+  <!-- Main Window -->
+  <div class="mac-window main-window" style="transform: translate({windowPos.x}px, {windowPos.y}px);">
+    <!-- Menu Bar -->
+    <div class="menu-bar">
+      <div class="apple-menu"></div>
+      <div class="menu-item">File</div>
+      <div class="menu-item">Edit</div>
+      <div class="menu-item">Agents</div>
+      <div class="menu-item">Workflows</div>
+      <div class="menu-item">Tools</div>
+      <div class="menu-item">Help</div>
+    </div>
 
-<div class="page-wrapper">
-  <!-- Right Sidebar with Background Image -->
-  <div class="sidebar">
-    <div class="sidebar-text">Solana</div>
-  </div>
+    <!-- Title Bar -->
+    <div class="title-bar" on:mousedown={startDragging}>
+      <div class="window-controls">
+        <div class="close-btn"></div>
+        <div class="minimize-btn"></div>
+        <div class="maximize-btn"></div>
+      </div>
+      <div class="title">p2mas - Control Panel</div>
+    </div>
 
-  <!-- Navigation Buttons (Left of Sidebar, Vertical) -->
-  <div class="nav-buttons">
-    <a href="/" class="nav-button">Back Home</a>
-    <button class:active={activeSection === 'dashboard'} on:click={() => setSection('dashboard')}>Dashboard</button>
-    <button class:active={activeSection === 'validators'} on:click={() => setSection('validators')}>Validators</button>
-    <button class:active={activeSection === 'stats'} on:click={() => setSection('stats')}>Stats</button>
-  </div>
+    <!-- Main Content -->
+    <div class="content">
+      <!-- Sidebar -->
+      <div class="sidebar" class:collapsed>
+        <button on:click={toggleSidebar} class="toggle-btn">{collapsed ? '>' : '<'}</button>
+        {#if !collapsed}
+          <h3>Agents</h3>
+          <ul>
+            {#each agents as agent}
+              <li class="sidebar-item">{agent.id} - {agent.type}</li>
+            {/each}
+          </ul>
+        {/if}
+      </div>
 
-  <!-- Content Area -->
-  <div class="content-area">
-    {#if activeSection === 'dashboard'}
-      <div class="content fade-in">
-        <h2>Solana Dashboard</h2>
-        <div class="grid">
-          <!-- Progress -->
-          <div class="card">
-            <h3>EPOCH 578</h3>
-            <div class="progress-bar">
-              <div class="progress" style="width: 28.8%;"></div>
+      <!-- Tabbed Interface -->
+      <div class="main-area">
+        <div class="tabs">
+          <button on:click={() => setTab('Agents')} class:active={currentTab === 'Agents'}>
+            Agents <span class="badge">{agents.length}</span>
+          </button>
+          <button on:click={() => setTab('Tasks')} class:active={currentTab === 'Tasks'}>
+            Tasks <span class="badge">{tasks.filter(t => t.status === 'Pending').length}</span>
+          </button>
+          <button on:click={() => setTab('Workflows')} class:active={currentTab === 'Workflows'}>
+            Workflows <span class="badge">{workflows.filter(w => w.status === 'Running').length}</span>
+          </button>
+          <button on:click={() => setTab('Monitoring')} class:active={currentTab === 'Monitoring'}>
+            Monitoring
+          </button>
+          <button on:click={() => setTab('Designer')} class:active={currentTab === 'Designer'}>Designer</button>
+        </div>
+        <div class="tab-content">
+          {#if currentTab === 'Agents'}
+            <div class="agent-list">
+              <h2>Agents</h2>
+              <ul>
+                {#each agents as agent}
+                  <li class="agent-item">
+                    <span class="state-indicator {agent.state.toLowerCase()}"></span>
+                    <strong>{agent.id}</strong> - {agent.type} - {agent.state}
+                    <span class="capabilities">Capabilities: {agent.capabilities.join(', ')}</span>
+                  </li>
+                {/each}
+              </ul>
+              <button class="action-btn" on:click={() => console.log('Create New Agent')}>Create New Agent</button>
             </div>
-            <p>28.8%</p>
-            <p>13 d elapsed</p>
-            <p>Start: May 18, 2023, 05:39 AM GMT+4</p>
-            <p>End: May 31, 2023, 05:39 AM GMT+4</p>
-            <p>Id: 29 62N</p>
-          </div>
-          <!-- Slot Info -->
-          <div class="card">
-            <h3>Slot Information</h3>
-            <p>Slot: 327,406,000</p>
-            <p>Block Time: 0.4s</p>
-            <p>Epoch Time: 432,000</p>
-            <p>Epoch Progress: 123,434</p>
-          </div>
-          <!-- Epoch Stats -->
-          <div class="card">
-            <h3>Epoch Stats</h3>
-            <p>Epoch Fee: 0.000</p>
-            <p>Epoch Time: 432,000</p>
-            <p>Slot Time: 0.4s</p>
-          </div>
-          <!-- Network TPS -->
-          <div class="card">
-            <h3>Network TPS</h3>
-            <p>T1: True TPS</p>
-            <canvas bind:this={networkTPSCanvas}></canvas>
-          </div>
-          <!-- SOL Price -->
-          <div class="card">
-            <h3>SOL Price: <span class="text-orange">$122.07</span></h3>
-            <canvas bind:this={solPriceCanvas}></canvas>
-          </div>
-          <!-- Validators -->
-          <div class="card">
-            <h3>Validators: <span class="text-orange">1,504</span></h3>
-            <p>20 validators (33% of stake)</p>
-          </div>
-          <!-- Client Distribution -->
-          <div class="card">
-            <h3>Client Distribution</h3>
-            <canvas bind:this={clientDistCanvas}></canvas>
-          </div>
-          <!-- Node Versions -->
-          <div class="card">
-            <h3>Node Versions</h3>
-            <canvas bind:this={nodeVersionCanvas}></canvas>
-          </div>
+          {:else if currentTab === 'Tasks'}
+            <div class="task-section">
+              <div class="task-creator">
+                <h2>Create Task</h2>
+                <form on:submit|preventDefault={e => {
+                  const formData = new FormData(e.target);
+                  createTask(
+                    formData.get('taskData'),
+                    formData.get('targetAgent'),
+                    formData.get('requiredCapability'),
+                    formData.get('simulateFailure') === 'on'
+                  );
+                  e.target.reset();
+                }}>
+                  <label>
+                    Task Data:
+                    <input type="text" name="taskData" required placeholder="Enter task description" />
+                  </label>
+                  <label>
+                    Target Agent:
+                    <select name="targetAgent">
+                      <option value="">Select Agent</option>
+                      {#each agents as agent}
+                        <option value={agent.id}>{agent.id} - {agent.type}</option>
+                      {/each}
+                    </select>
+                  </label>
+                  <label>
+                    Required Capability:
+                    <select name="requiredCapability">
+                      <option value="">Select Capability</option>
+                      <option value="math">Math</option>
+                      <option value="text_analysis">Text Analysis</option>
+                      <option value="review">Review</option>
+                      <option value="testing">Testing</option>
+                    </select>
+                  </label>
+                  <label>
+                    Simulate Failure:
+                    <input type="checkbox" name="simulateFailure" />
+                  </label>
+                  <button type="submit" class="action-btn">Create Task</button>
+                </form>
+              </div>
+              <div class="task-list">
+                <h2>Tasks</h2>
+                <ul>
+                  {#each tasks as task}
+                    <li class="task-item">{task.id} - Agent: {task.agent} - {task.data} - <span class="status">{task.status}</span></li>
+                  {/each}
+                </ul>
+              </div>
+            </div>
+          {:else if currentTab === 'Workflows'}
+            <div class="workflow-manager">
+              <h2>Workflows</h2>
+              <ul>
+                {#each workflows as workflow}
+                  <li class="workflow-item">
+                    <button class="workflow-toggle" on:click={() => expandedWorkflow = expandedWorkflow === workflow.name ? null : workflow.name}>
+                      {workflow.name} - {workflow.status}
+                    </button>
+                    {#if expandedWorkflow === workflow.name}
+                      <ul class="workflow-steps">
+                        {#each workflow.steps as step}
+                          <li>{step}</li>
+                        {/each}
+                      </ul>
+                    {/if}
+                    <button class="action-btn" on:click={() => startWorkflow(workflow.name)}>Start Workflow</button>
+                  </li>
+                {/each}
+              </ul>
+            </div>
+          {:else if currentTab === 'Monitoring'}
+            <div class="monitoring-panel">
+              <h2>Monitoring</h2>
+              <div class="metrics">
+                <h3>Agent States</h3>
+                <ul>
+                  {#each agents as agent}
+                    <li>{agent.id}: {agent.state}</li>
+                  {/each}
+                </ul>
+              </div>
+              <div class="metrics">
+                <h3>Task Queues</h3>
+                <ul>
+                  {#each tasks as task}
+                    <li>{task.id}: {task.status}</li>
+                  {/each}
+                </ul>
+              </div>
+              <div class="metrics">
+                <h3>System Metrics</h3>
+                <p>Average Task Completion Time: 5s</p>
+                <p>Errors in Last Hour: 2</p>
+                <div class="graph">
+                  <div class="bar" style="width: 50%;"></div>
+                  <div class="bar" style="width: 30%;"></div>
+                  <div class="bar" style="width: 70%;"></div>
+                </div>
+              </div>
+            </div>
+          {:else if currentTab === 'Designer'}
+            <div class="designer">
+              <div class="toolbar">
+                <button on:click={() => addElement('agent')}>Add Agent</button>
+                <button on:click={() => addElement('task')}>Add Task</button>
+                <button on:click={enterConnectMode}>Connect</button>
+              </div>
+              <svg bind:this={canvas} class="canvas" width="100%" height="100%">
+                {#each canvasElements as element (element.id)}
+                  <rect
+                    x={element.x}
+                    y={element.y}
+                    width="100"
+                    height="50"
+                    fill="#fff"
+                    stroke="#000"
+                    stroke-width="2"
+                    on:mousedown={e => startDrag(e, element.id)}
+                    on:dblclick={() => console.log(`Edit element ${element.id}`)}
+                  />
+                  <text x={element.x + 10} y={element.y + 30} font-size="12">{element.type}</text>
+                {/each}
+                {#each connections as conn}
+                  <line
+                    x1={getCenter(conn[0]).x}
+                    y1={getCenter(conn[0]).y}
+                    x2={getCenter(conn[1]).x}
+                    y2={getCenter(conn[1]).y}
+                    stroke="#000"
+                    stroke-width="2"
+                  />
+                {/each}
+              </svg>
+            </div>
+          {/if}
         </div>
       </div>
-    {:else if activeSection === 'validators'}
-      <div class="content fade-in">
-        <h2>Active Validators</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Validator</th>
-              <th>Active Stake (SOL)</th>
-              <th>Stake Weight</th>
-              <th>Commission</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>mSOL</td>
-              <td>13,214,307.009</td>
-              <td>3.47%</td>
-              <td>0%</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Galaxy</td>
-              <td>10,804,102.008</td>
-              <td>2.84%</td>
-              <td>0%</td>
-            </tr>
-          </tbody>
-        </table>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>System Status: Running</span>
+      <span>Agents: {agents.length}</span>
+      <span>{currentTime}</span>
+    </div>
+  </div>
+
+  <!-- Upper Right Window: Live Environment View -->
+  <div class="mac-window upper-right" style="transform: translate({windowPos.x + 800 + 10}px, {windowPos.y}px);">
+    <div class="title-bar">
+      <div class="title">Live Environment View</div>
+    </div>
+    <div class="content">
+      <ul class="event-list">
+        {#each events as event}
+          <li>{event.time} - {event.message}</li>
+        {/each}
+      </ul>
+    </div>
+  </div>
+
+  <!-- Lower Right Window: Report Viewer -->
+  <div class="mac-window lower-right" style="transform: translate({windowPos.x + 800 + 10}px, {windowPos.y + 210 + 10}px);">
+    <div class="title-bar">
+      <div class="title">Report Viewer</div>
+    </div>
+    <div class="content">
+      <div class="report-placeholder">
+        <p>Here will be the report, possibly using D3.js for visualization.</p>
+        <p>For now, imagine a beautiful bar chart showing task completion rates.</p>
       </div>
-    {:else if activeSection === 'stats'}
-      <div class="content fade-in">
-        <h2>Network Stats</h2>
-        <p>[Insert additional stats here]</p>
-      </div>
-    {/if}
+    </div>
   </div>
 </div>
 
 <style>
-  :global(html),
   :global(body) {
     margin: 0;
     padding: 0;
-    height: 100%;
-    background: #000000;
-    font-family: 'Roboto', sans-serif;
+    background: #d3d3d3;
+    font-family: 'Courier New', monospace;
+    overflow: hidden;
+    user-select: none;
   }
 
-  .page-wrapper {
-    width: 100%;
-    height: 100vh;
-    position: relative;
-  }
-
-  .sidebar {
+  .desktop {
     position: fixed;
-    right: 10%;
     top: 0;
-    bottom: 0;
-    width: 15%;
-    background: linear-gradient(to bottom, #1C2526, #0A0F11);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-left: 2px solid #FF6200;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
-    z-index: 10;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #d3d3d3;
+    background-image: repeating-linear-gradient(45deg, #d3d3d3 0px, #d3d3d3 2px, #c0c0c0 2px, #c0c0c0 4px);
   }
 
-  .sidebar-text {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    font-size: 40px;
-    color: #FFFFFF;
-    transform: rotate(180deg);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
-  }
-
-  .nav-buttons {
-    position: fixed;
-    right: 25%;
-    top: 40px;
+  .mac-window {
+    position: absolute;
+    background: #fff;
+    border: 2px solid #000;
+    box-shadow: 4px 4px 0 #000;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    width: 200px;
-    z-index: 12;
   }
 
-  .nav-buttons a.nav-button,
-  .nav-buttons button {
-    padding: 14px 28px;
-    font-size: 20px;
-    color: #FFFFFF;
-    background: linear-gradient(135deg, #1C2526, #0A0F11);
-    border: 2px solid #FF6200;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.3s ease;
-    text-align: left;
-    position: relative;
+  .main-window {
+    width: 800px;
+    height: 600px;
   }
 
-  .nav-buttons button.active {
-    background: linear-gradient(135deg, #FF6200, #CC4D00);
-    transform: scale(1.05);
+  .upper-right {
+    width: 240px;
+    height: 210px;
   }
 
-  .nav-buttons a.nav-button:hover,
-  .nav-buttons button:hover:not(.active) {
-    background: linear-gradient(135deg, #CC4D00, #FF6200);
-    transform: translateX(-3px);
+  .lower-right {
+    width: 240px;
+    height: 390px;
   }
 
-  .nav-buttons a.nav-button:not(:last-child)::after,
-  .nav-buttons button:not(:last-child)::after {
-    content: '····················';
-    position: absolute;
-    bottom: -10px;
-    left: 28px;
-    color: #FF6200;
+  .menu-bar {
+    height: 24px;
+    background: #fff;
+    border-bottom: 1px solid #000;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
     font-size: 12px;
-    letter-spacing: 2px;
   }
 
-  .content-area {
-    position: absolute;
-    left: 0;
-    top: 40px;
-    right: 45%;
-    bottom: 0;
-    padding: 30px 50px;
-    overflow-y: auto;
-    background: #1C2526;
-    z-index: 5;
+  .apple-menu {
+    margin-right: 12px;
+    font-size: 16px;
+    color: #000;
+    filter: brightness(0);
+  }
+
+  .menu-item {
+    margin-right: 12px;
+    padding: 2px 4px;
+    cursor: pointer;
+  }
+
+  .menu-item:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  .title-bar {
+    height: 24px;
+    background: repeating-linear-gradient(90deg, #fff 0px, #fff 4px, #000 4px, #000 8px);
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    border-bottom: 1px solid #000;
+  }
+
+  .main-window .title-bar {
+    cursor: move;
+  }
+
+  .upper-right .title-bar,
+  .lower-right .title-bar {
+    cursor: default;
+  }
+
+  .window-controls {
+    display: flex;
+    gap: 6px;
+  }
+
+  .close-btn, .minimize-btn, .maximize-btn {
+    width: 12px;
+    height: 12px;
+    border: 1px solid #000;
+    background: #fff;
+  }
+
+  .close-btn:hover, .minimize-btn:hover, .maximize-btn:hover {
+    background: #000;
+  }
+
+  .title {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 14px;
   }
 
   .content {
-    color: #FFFFFF;
+    display: flex;
+    flex-grow: 1;
   }
 
-  .content h2 {
-    font-size: 32px;
-    letter-spacing: 1.5px;
-    margin: 0 0 25px 0;
-    color: #FF6200;
+  .upper-right .content,
+  .lower-right .content {
+    height: calc(100% - 24px);
+    background: #fff;
+    overflow: hidden;
   }
 
-  .content h3 {
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: #FFFFFF;
-  }
-
-  .content p {
-    font-size: 16px;
-    line-height: 1.6;
-    margin: 5px 0;
-  }
-
-  .text-orange {
-    color: #FF6200;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-  }
-
-  .card {
-    background: #0A0F11;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #FF6200;
-  }
-
-  .progress-bar {
-    width: 100%;
-    background: #2D3748;
-    border-radius: 5px;
-    height: 15px;
-    margin: 10px 0;
-  }
-
-  .progress {
+  .event-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     height: 100%;
-    background: #FF6200;
-    border-radius: 5px;
+    overflow-y: auto;
+    font-size: 12px;
   }
 
-  canvas {
-    max-width: 100%;
-    height: 200px;
+  .event-list li {
+    padding: 4px;
+    border-bottom: 1px solid #ccc;
   }
 
-  table {
+  .report-placeholder {
+    padding: 16px;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .sidebar {
+    width: 150px;
+    background: #fff;
+    border-right: 1px solid #000;
+    padding: 8px;
+    transition: width 0.3s ease;
+  }
+
+  .sidebar.collapsed {
+    width: 40px;
+  }
+
+  .toggle-btn {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+    background: #fff;
+    border: 1px solid #000;
+    padding: 2px;
+    cursor: pointer;
+    font-size: 12px;
   }
 
-  th, td {
-    padding: 10px;
-    border-bottom: 1px solid #FF6200;
+  .toggle-btn:hover {
+    background: #000;
+    color: #fff;
   }
 
-  th {
+  .sidebar-item {
+    padding: 4px;
+    font-size: 12px;
+  }
+
+  .sidebar-item:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  .main-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tabs {
+    display: flex;
+    justify-content: flex-start;
+    background: #fff;
+    border-bottom: 1px solid #000;
+    padding: 4px;
+  }
+
+  .tabs button {
+    padding: 4px 8px;
+    border: 1px solid #000;
+    background: #fff;
+    margin-right: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.2s;
+  }
+
+  .tabs button.active {
+    background: #000;
+    color: #fff;
+  }
+
+  .tabs button:hover:not(.active) {
+    background: #e0e0e0;
+  }
+
+  .badge {
+    background: #000;
+    color: #fff;
+    padding: 2px 4px;
+    font-size: 10px;
+    border-radius: 50%;
+    margin-left: 4px;
+  }
+
+  .tab-content {
+    flex-grow: 1;
+    padding: 16px;
+    background: #fff;
+    overflow-y: auto;
+    font-size: 12px;
+  }
+
+  h2 {
+    font-size: 16px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #000;
+  }
+
+  h3 {
+    font-size: 14px;
+    margin: 8px 0;
+  }
+
+  .agent-list ul, .task-list ul, .workflow-manager ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .agent-item, .task-item, .workflow-item {
+    padding: 8px;
+    border-bottom: 1px solid #000;
+    transition: background 0.2s;
+  }
+
+  .agent-item:hover, .task-item:hover, .workflow-item:hover {
+    background: #f0f0f0;
+  }
+
+  .state-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+    border: 1px solid #000;
+  }
+
+  .state-indicator.idle {
+    background: #fff;
+  }
+
+  .state-indicator.processing {
+    background: repeating-linear-gradient(45deg, #fff 0px, #fff 2px, #000 2px, #000 4px);
+  }
+
+  .state-indicator.error {
+    background: #000;
+  }
+
+  .capabilities {
+    display: block;
+    font-size: 10px;
+    color: #666;
+  }
+
+  .task-section {
+    display: flex;
+    gap: 16px;
+  }
+
+  .task-creator, .task-list {
+    flex: 1;
+  }
+
+  .task-creator form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .task-creator label {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+  }
+
+  .task-creator input, .task-creator select {
+    margin-top: 4px;
+    padding: 4px;
+    border: 1px solid #000;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+  }
+
+  .status {
+    font-weight: bold;
+  }
+
+  .workflow-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 12px;
+    cursor: pointer;
     text-align: left;
-    color: #A0A0A0;
   }
 
-  td {
-    color: #FFFFFF;
+  .workflow-steps {
+    margin: 8px 0 0 16px;
+    list-style: square;
   }
 
-  .fade-in {
-    animation: fadeIn 0.5s ease-in;
+  .monitoring-panel {
+    display: flex;
+    gap: 16px;
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  .metrics {
+    flex: 1;
+  }
+
+  .graph {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+  }
+
+  .bar {
+    height: 20px;
+    background: #000;
+    transition: width 0.3s ease;
+  }
+
+  .action-btn {
+    padding: 4px 8px;
+    border: 1px solid #000;
+    background: #fff;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.2s;
+  }
+
+  .action-btn:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  .status-bar {
+    height: 24px;
+    background: #fff;
+    border-top: 1px solid #000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
+  .designer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .toolbar {
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    background: #fff;
+    border-bottom: 1px solid #000;
+  }
+
+  .toolbar button {
+    padding: 4px 8px;
+    border: 1px solid #000;
+    background: #fff;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .toolbar button:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  .canvas {
+    flex-grow: 1;
+    background: repeating-linear-gradient(
+      0deg,
+      #e0e0e0 0px,
+      #e0e0e0 2px,
+      #f0f0f0 2px,
+      #f0f0f0 4px
+    );
+  }
+
+  svg text {
+    font-family: 'Courier New', monospace;
+    fill: #000;
   }
 </style>
