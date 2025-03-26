@@ -1,449 +1,823 @@
 <script>
-  import { goto } from '$app/navigation';
-  import { onMount, afterUpdate } from 'svelte';
-  import * as d3 from 'd3';
+  import { onMount, tick } from 'svelte';
 
-  let scenarioName = '';
-  let htmlSummary = '';
-  let isLoading = false;
-  let errorMessage = '';
-  let status = 'Ready';
-  let scenarios = [];
-  let activeTab = 'simulation';
+  // Mock data for p2mas
+  let agents = [
+    { id: '1', type: 'llm_agent', state: 'Idle', capabilities: ['math', 'text_analysis'] },
+    { id: '2', type: 'human_agent', state: 'Processing', capabilities: ['review'] },
+    { id: '3', type: 'dummy_agent', state: 'Error', capabilities: ['testing'] },
+  ];
 
-  onMount(async () => {
-    try {
-      const response = await fetch('http://localhost:8001/list-scenarios');
-      if (!response.ok) {
-        throw new Error(`Failed to fetch scenarios: ${response.status}`);
-      }
-      const data = await response.json();
-      scenarios = data.scenarios;
-      if (scenarios.length > 0) {
-        scenarioName = scenarios[0];
-      }
-    } catch (error) {
-      errorMessage = `Error loading scenarios: ${error.message}`;
+  let tasks = [
+    { id: 't1', agent: '1', data: 'Calculate something', status: 'Pending' },
+    { id: 't2', agent: '2', data: 'Review this', status: 'Completed' },
+  ];
+
+  let workflows = [
+    { name: 'plan_a_party', status: 'Not Started', steps: ['Step 1: Budget', 'Step 2: Plan'] },
+    { name: 'tell_a_joke', status: 'Completed', steps: ['Step 1: Tell joke'] },
+  ];
+
+  let expandedWorkflow = null;
+
+  // Tab management
+  let currentTab = 'Agents';
+
+  function setTab(tab) {
+    currentTab = tab;
+  }
+
+  // Sidebar collapse
+  let collapsed = false;
+
+  function toggleSidebar() {
+    collapsed = !collapsed;
+  }
+
+  // Mock functions for interactivity
+  function createTask(taskData, targetAgent, requiredCapability, simulateFailure) {
+    tasks = [...tasks, {
+      id: `t${tasks.length + 1}`,
+      agent: targetAgent || 'N/A',
+      data: taskData,
+      status: 'Pending'
+    }];
+  }
+
+  function startWorkflow(workflowName) {
+    workflows = workflows.map(w => w.name === workflowName ? { ...w, status: 'Running' } : w);
+  }
+
+  // Window dragging
+  let isDragging = false;
+  let windowPos = { x: 0, y: 0 };
+  let offset = { x: 0, y: 0 };
+
+  function startDragging(event) {
+    isDragging = true;
+    offset.x = event.clientX - windowPos.x;
+    offset.y = event.clientY - windowPos.y;
+  }
+
+  function stopDragging() {
+    isDragging = false;
+  }
+
+  function dragWindow(event) {
+    if (isDragging) {
+      windowPos.x = Math.max(0, Math.min(event.clientX - offset.x, window.innerWidth - 800));
+      windowPos.y = Math.max(0, Math.min(event.clientY - offset.y, window.innerHeight - 600));
     }
+  }
+
+  // Clock in status bar
+  let currentTime = new Date().toLocaleTimeString();
+
+  function updateTime() {
+    currentTime = new Date().toLocaleTimeString();
+    tick();
+  }
+
+  // Live events for upper right window
+  let events = [
+    { time: '12:00:00', message: 'Agent 1 started task t1' },
+    { time: '12:00:05', message: 'Agent 2 completed task t2' },
+  ];
+
+  function addEvent() {
+    const newEvent = {
+      time: new Date().toLocaleTimeString(),
+      message: `Agent ${Math.floor(Math.random() * 3) + 1} performed an action`
+    };
+    events = [...events, newEvent].slice(-10);
+  }
+
+  // Designer view state
+  let canvasElements = [];
+  let connections = [];
+  let nextId = 0;
+  let connectMode = false;
+  let selectedSource = null;
+  let draggingElement = null;
+  let dragOffset = { x: 0, y: 0 };
+  let canvas;
+
+  function addElement(type) {
+    const newElement = {
+      id: nextId++,
+      type,
+      x: 50,
+      y: 50,
+    };
+    canvasElements = [...canvasElements, newElement];
+  }
+
+  function enterConnectMode() {
+    connectMode = true;
+    selectedSource = null;
+  }
+
+  function getCenter(id) {
+    const element = canvasElements.find(el => el.id === id);
+    return element ? { x: element.x + 50, y: element.y + 25 } : { x: 0, y: 0 };
+  }
+
+  function startDrag(event, id) {
+    event.stopPropagation();
+    if (connectMode) {
+      if (selectedSource === null) {
+        selectedSource = id;
+      } else {
+        connections = [...connections, [selectedSource, id]];
+        connectMode = false;
+        selectedSource = null;
+      }
+    } else {
+      draggingElement = id;
+      const rect = canvas.getBoundingClientRect();
+      const element = canvasElements.find(el => el.id === id);
+      dragOffset.x = event.clientX - rect.left - element.x;
+      dragOffset.y = event.clientY - rect.top - element.y;
+    }
+  }
+
+  function onMouseMove(event) {
+    if (draggingElement !== null) {
+      const rect = canvas.getBoundingClientRect();
+      const element = canvasElements.find(el => el.id === draggingElement);
+      if (element) {
+        element.x = event.clientX - rect.left - dragOffset.x;
+        element.y = event.clientY - rect.top - dragOffset.y;
+        canvasElements = canvasElements;
+      }
+    } else {
+      dragWindow(event);
+    }
+  }
+
+  function onMouseUp() {
+    draggingElement = null;
+    stopDragging();
+  }
+
+  onMount(() => {
+    const windowWidth = 800;
+    const windowHeight = 600;
+    windowPos.x = (window.innerWidth - windowWidth) / 2;
+    windowPos.y = (window.innerHeight - windowHeight) / 2;
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+
+    const timeInterval = setInterval(updateTime, 1000);
+    const eventInterval = setInterval(addEvent, 5000);
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      clearInterval(timeInterval);
+      clearInterval(eventInterval);
+    };
   });
-
-  afterUpdate(() => {
-    if (htmlSummary) {
-      const scripts = document.querySelectorAll('.playground-content script');
-      scripts.forEach((script) => {
-        const newScript = document.createElement('script');
-        newScript.textContent = script.textContent;
-        document.body.appendChild(newScript);
-        document.body.removeChild(newScript);
-      });
-    }
-  });
-
-  async function runScenario() {
-    if (!scenarioName) {
-      errorMessage = 'Please select a scenario.';
-      return;
-    }
-    isLoading = true;
-    errorMessage = '';
-    status = 'Loading';
-    try {
-      const response = await fetch('http://localhost:8001/run-scenario', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ scenario_name: scenarioName }),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      htmlSummary = data.html_summary;
-      status = 'Success';
-    } catch (error) {
-      errorMessage = `Error: ${error.message}`;
-      status = 'Error';
-    } finally {
-      isLoading = false;
-    }
-  }
-
-  function goHome() {
-    goto('/');
-  }
-
-  function setActiveTab(tab) {
-    activeTab = tab;
-  }
 </script>
 
-<svelte:head>
-  <title>Project Deux Playground</title>
-</svelte:head>
-
-<div class="home-button" on:click={goHome}>Home</div>
-
-<div class="playground-wrapper">
-  <div class="navbar">
-    <div class="playground-label">Playground</div>
-    <div class="status">{status}</div>
-  </div>
-
-  <div class="tab-navigation">
-    <button class={activeTab === 'configuration' ? 'active' : ''} on:click={() => setActiveTab('configuration')}>Configuration</button>
-    <button class={activeTab === 'simulation' ? 'active' : ''} on:click={() => setActiveTab('simulation')}>Simulation/Scenario</button>
-    <button class={activeTab === 'result' ? 'active' : ''} on:click={() => setActiveTab('result')}>Result</button>
-  </div>
-
-  {#if activeTab === 'configuration'}
-    <div class="tab-content">Configuration tab coming soon...</div>
-  {:else if activeTab === 'simulation'}
-    <div class="tab-content">
-      {#if htmlSummary}
-        <div class="playground-content">{@html htmlSummary}</div>
-      {:else if !isLoading}
-        <div class="placeholder">Select a scenario from the dropdown and click "Run Scenario" to view the results.</div>
-      {/if}
+<div class="desktop">
+  <!-- Main Window -->
+  <div class="main-window" style="transform: translate({windowPos.x}px, {windowPos.y}px);">
+    <!-- Title Bar -->
+    <div class="title-bar" on:mousedown={startDragging}>
+      <div class="title">p2mas - Control Panel</div>
     </div>
-  {:else if activeTab === 'result'}
-    <div class="tab-content">Result tab coming soon...</div>
-  {/if}
 
-  {#if isLoading}
-    <div class="loading-overlay">
-      <div class="mosaic-grid">
-        {#each Array(25) as _, i}
-          <!-- Compute background-position: each tile shows its part of the image -->
-          <div 
-            class="mosaic-tile" 
-            style="animation-delay: {i * 0.1}s; background-position: {(i % 5) * 25}% {(Math.floor(i / 5)) * 25}%;">
-          </div>
-        {/each}
+    <!-- Main Content -->
+    <div class="content">
+      <!-- Sidebar -->
+      <div class="sidebar" class:collapsed>
+        <button on:click={toggleSidebar} class="toggle-btn">{collapsed ? '>' : '<'}</button>
+        {#if !collapsed}
+          <h3>Agents</h3>
+          <ul>
+            {#each agents as agent}
+              <li class="sidebar-item">{agent.id} - {agent.type}</li>
+            {/each}
+          </ul>
+        {/if}
+      </div>
+
+      <!-- Tabbed Interface -->
+      <div class="main-area">
+        <div class="tabs">
+          <button on:click={() => setTab('Agents')} class:active={currentTab === 'Agents'}>
+            Agents <span class="badge">{agents.length}</span>
+          </button>
+          <button on:click={() => setTab('Tasks')} class:active={currentTab === 'Tasks'}>
+            Tasks <span class="badge">{tasks.filter(t => t.status === 'Pending').length}</span>
+          </button>
+          <button on:click={() => setTab('Workflows')} class:active={currentTab === 'Workflows'}>
+            Workflows <span class="badge">{workflows.filter(w => w.status === 'Running').length}</span>
+          </button>
+          <button on:click={() => setTab('Monitoring')} class:active={currentTab === 'Monitoring'}>
+            Monitoring
+          </button>
+          <button on:click={() => setTab('Designer')} class:active={currentTab === 'Designer'}>Designer</button>
+        </div>
+        <div class="tab-content">
+          {#if currentTab === 'Agents'}
+            <div class="agent-list">
+              <h2>Agents</h2>
+              <ul>
+                {#each agents as agent}
+                  <li class="agent-item">
+                    <span class="state-indicator {agent.state.toLowerCase()}"></span>
+                    <strong>{agent.id}</strong> - {agent.type} - {agent.state}
+                    <span class="capabilities">Capabilities: {agent.capabilities.join(', ')}</span>
+                  </li>
+                {/each}
+              </ul>
+              <button class="action-btn" on:click={() => console.log('Create New Agent')}>Create New Agent</button>
+            </div>
+          {:else if currentTab === 'Tasks'}
+            <div class="task-section">
+              <div class="task-creator">
+                <h2>Create Task</h2>
+                <form on:submit|preventDefault={e => {
+                  const formData = new FormData(e.target);
+                  createTask(
+                    formData.get('taskData'),
+                    formData.get('targetAgent'),
+                    formData.get('requiredCapability'),
+                    formData.get('simulateFailure') === 'on'
+                  );
+                  e.target.reset();
+                }}>
+                  <label>
+                    Task Data:
+                    <input type="text" name="taskData" required placeholder="Enter task description" />
+                  </label>
+                  <label>
+                    Target Agent:
+                    <select name="targetAgent">
+                      <option value="">Select Agent</option>
+                      {#each agents as agent}
+                        <option value={agent.id}>{agent.id} - {agent.type}</option>
+                      {/each}
+                    </select>
+                  </label>
+                  <label>
+                    Required Capability:
+                    <select name="requiredCapability">
+                      <option value="">Select Capability</option>
+                      <option value="math">Math</option>
+                      <option value="text_analysis">Text Analysis</option>
+                      <option value="review">Review</option>
+                      <option value="testing">Testing</option>
+                    </select>
+                  </label>
+                  <label>
+                    Simulate Failure:
+                    <input type="checkbox" name="simulateFailure" />
+                  </label>
+                  <button type="submit" class="action-btn">Create Task</button>
+                </form>
+              </div>
+              <div class="task-list">
+                <h2>Tasks</h2>
+                <ul>
+                  {#each tasks as task}
+                    <li class="task-item">{task.id} - Agent: {task.agent} - {task.data} - <span class="status">{task.status}</span></li>
+                  {/each}
+                </ul>
+              </div>
+            </div>
+          {:else if currentTab === 'Workflows'}
+            <div class="workflow-manager">
+              <h2>Workflows</h2>
+              <ul>
+                {#each workflows as workflow}
+                  <li class="workflow-item">
+                    <button class="workflow-toggle" on:click={() => expandedWorkflow = expandedWorkflow === workflow.name ? null : workflow.name}>
+                      {workflow.name} - {workflow.status}
+                    </button>
+                    {#if expandedWorkflow === workflow.name}
+                      <ul class="workflow-steps">
+                        {#each workflow.steps as step}
+                          <li>{step}</li>
+                        {/each}
+                      </ul>
+                    {/if}
+                    <button class="action-btn" on:click={() => startWorkflow(workflow.name)}>Start Workflow</button>
+                  </li>
+                {/each}
+              </ul>
+            </div>
+          {:else if currentTab === 'Monitoring'}
+            <div class="monitoring-panel">
+              <h2>Monitoring</h2>
+              <div class="metrics">
+                <h3>Agent States</h3>
+                <ul>
+                  {#each agents as agent}
+                    <li>{agent.id}: {agent.state}</li>
+                  {/each}
+                </ul>
+              </div>
+              <div class="metrics">
+                <h3>Task Queues</h3>
+                <ul>
+                  {#each tasks as task}
+                    <li>{task.id}: {task.status}</li>
+                  {/each}
+                </ul>
+              </div>
+              <div class="metrics">
+                <h3>System Metrics</h3>
+                <p>Average Task Completion Time: 5s</p>
+                <p>Errors in Last Hour: 2</p>
+                <div class="graph">
+                  <div class="bar" style="width: 50%;"></div>
+                  <div class="bar" style="width: 30%;"></div>
+                  <div class="bar" style="width: 70%;"></div>
+                </div>
+              </div>
+            </div>
+          {:else if currentTab === 'Designer'}
+            <div class="designer">
+              <div class="toolbar">
+                <button on:click={() => addElement('agent')}>Add Agent</button>
+                <button on:click={() => addElement('task')}>Add Task</button>
+                <button on:click={enterConnectMode}>Connect</button>
+              </div>
+              <svg bind:this={canvas} class="canvas" width="100%" height="100%">
+                {#each canvasElements as element (element.id)}
+                  <rect
+                    x={element.x}
+                    y={element.y}
+                    width="100"
+                    height="50"
+                    fill="#fffbe6"
+                    stroke="#000"
+                    stroke-width="2"
+                    rx="8"
+                    ry="8"
+                    on:mousedown={e => startDrag(e, element.id)}
+                    on:dblclick={() => console.log(`Edit element ${element.id}`)}
+                  />
+                  <text x={element.x + 10} y={element.y + 30} font-size="12">{element.type}</text>
+                {/each}
+                {#each connections as conn}
+                  <line
+                    x1={getCenter(conn[0]).x}
+                    y1={getCenter(conn[0]).y}
+                    x2={getCenter(conn[1]).x}
+                    y2={getCenter(conn[1]).y}
+                    stroke="#000"
+                    stroke-width="2"
+                  />
+                {/each}
+              </svg>
+            </div>
+          {/if}
+        </div>
       </div>
     </div>
-  {/if}
 
-  <div class="controls">
-    <div class="select-wrapper">
-      <select bind:value={scenarioName} disabled={isLoading} class="scenario-select">
-        {#each scenarios as scenario}
-          <option value={scenario}>{scenario}</option>
-        {/each}
-        {#if scenarios.length === 0}
-          <option value="" disabled>No scenarios available</option>
-        {/if}
-      </select>
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>System Status: Running</span>
+      <span>Agents: {agents.length}</span>
+      <span>{currentTime}</span>
     </div>
-    <button on:click={runScenario} disabled={isLoading} class="run-button">
-      {isLoading ? 'Running...' : 'Run Scenario'}
-    </button>
   </div>
 
-  {#if errorMessage}
-    <p class="error-message">{errorMessage}</p>
-  {/if}
+  <!-- Upper Right Window: Live Environment View -->
+  <div class="upper-right" style="transform: translate({windowPos.x + 800 + 10}px, {windowPos.y}px);">
+    <div class="title-bar">
+      <div class="title">Live Environment View</div>
+    </div>
+    <div class="content">
+      <ul class="event-list">
+        {#each events as event}
+          <li>{event.time} - {event.message}</li>
+        {/each}
+      </ul>
+    </div>
+  </div>
+
+  <!-- Lower Right Window: Report Viewer -->
+  <div class="lower-right" style="transform: translate({windowPos.x + 800 + 10}px, {windowPos.y + 210 + 10}px);">
+    <div class="title-bar">
+      <div class="title">Report Viewer</div>
+    </div>
+    <div class="content">
+      <div class="report-placeholder">
+        <p>Here will be the report, possibly using D3.js for visualization.</p>
+        <p>For now, imagine a beautiful bar chart showing task completion rates.</p>
+      </div>
+    </div>
+  </div>
 </div>
+
 <style>
-  :global(html),
   :global(body) {
     margin: 0;
     padding: 0;
-    height: 100%;
-    background: #f5e8c7; /* Cream background for warmth */
-    font-family: 'Playfair Display', 'Cinzel', serif; /* Art Deco elegance */
+    background: #f5f0e1; /* Light beige */
+    background-image: url('path-to-watercolor-texture.png'); /* Subtle watercolor texture */
+    background-size: cover;
+    font-family: 'Handwritten', sans-serif; /* Replace with an actual handwritten font */
+    overflow: hidden;
+    user-select: none;
   }
 
-  .home-button {
+  /* Define the handwritten font (replace with your font file) */
+  @font-face {
+    font-family: 'Handwritten';
+    src: url('path-to-handwritten-font.woff2') format('woff2');
+  }
+
+  .desktop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #f5f0e1;
+    background-image: url('path-to-watercolor-texture.png');
+    background-size: cover;
+  }
+
+  .main-window, .upper-right, .lower-right {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    font-size: 14px;
-    color: #f5e8c7;
-    padding: 6px 12px;
-    background: #3b2f2b; /* Dark walnut */
-    border: 1px solid #b8975b; /* Aged gold border */
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .home-button:hover {
-    background: #4a2c2a; /* Deep burgundy */
-    transform: scale(1.05);
-  }
-
-  .playground-wrapper {
-    position: absolute;
-    top: 5%;
-    left: 5%;
-    right: 5%;
-    bottom: 5%;
-    background: linear-gradient(135deg, #ffffff 0%, #f5e8c7 100%); /* Subtle cream gradient */
-    border: 1px solid #b8975b;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: #fffbe6; /* Slightly off-white beige */
+    border: 2px solid #000;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
   }
 
-  .navbar {
+  .main-window {
+    width: 800px;
+    height: 600px;
+  }
+
+  .upper-right {
+    width: 240px;
+    height: 210px;
+  }
+
+  .lower-right {
+    width: 240px;
+    height: 390px;
+  }
+
+  .title-bar {
+    height: 30px;
+    background: #fffbe6;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 12px 20px;
-    background: #3b2f2b; /* Dark walnut */
-    color: #f5e8c7;
-    border-bottom: 2px solid #b8975b;
+    padding: 0 12px;
+    border-bottom: 2px solid #000;
+    border-radius: 10px 10px 0 0;
+    cursor: move;
   }
 
-  .playground-label {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
+  .title {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 16px;
+    color: #000;
   }
 
-  .status {
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 12px;
-    background: #4a2c2a; /* Burgundy */
-    border: 1px solid #b8975b;
-  }
-
-  .tab-navigation {
+  .content {
     display: flex;
-    justify-content: center;
-    padding: 10px 0;
-    background: #f5e8c7;
-    border-bottom: 1px solid #b8975b;
+    flex-grow: 1;
+    background: #fffbe6;
+    border-radius: 0 0 10px 10px;
   }
 
-  .tab-navigation button {
-    padding: 8px 16px;
-    font-size: 14px;
-    color: #3b2f2b;
-    background: none;
-    border: none;
+  .upper-right .content,
+  .lower-right .content {
+    height: calc(100% - 30px);
+    background: #fffbe6;
+    overflow: hidden;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .event-list {
+    list-style: none;
+    padding: 8px;
+    margin: 0;
+    height: 100%;
+    overflow-y: auto;
+    font-size: 12px;
+    color: #000;
+  }
+
+  .event-list li {
+    padding: 6px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .report-placeholder {
+    padding: 20px;
+    font-size: 12px;
+    text-align: center;
+    color: #000;
+  }
+
+  .sidebar {
+    width: 150px;
+    background: #f5e8c7; /* Slightly darker beige */
+    border-right: 2px solid #000;
+    padding: 12px;
+    transition: width 0.3s ease;
+    border-radius: 0 10px 10px 0;
+  }
+
+  .sidebar.collapsed {
+    width: 40px;
+  }
+
+  .toggle-btn {
+    width: 100%;
+    background: #d3c7e5; /* Light purple */
+    border: 2px solid #000;
+    border-radius: 8px;
+    padding: 4px;
     cursor: pointer;
-    transition: color 0.2s ease, border-bottom 0.2s ease;
-    border-bottom: 2px solid transparent;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-size: 14px;
+    color: #000;
   }
 
-  .tab-navigation button.active {
-    color: #b8975b; /* Aged gold */
-    border-bottom: 2px solid #b8975b;
+  .toggle-btn:hover {
+    background: #b8a9d1; /* Darker purple */
   }
 
-  .tab-navigation button:hover:not(.active) {
-    color: #4a2c2a; /* Burgundy hover */
+  .sidebar h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #000;
+    color: #000;
+  }
+
+  .sidebar-item {
+    padding: 6px;
+    font-size: 12px;
+    color: #000;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .sidebar-item:hover {
+    background: #e8d9a9; /* Light yellow */
+  }
+
+  .main-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tabs {
+    display: flex;
+    justify-content: flex-start;
+    background: #fffbe6;
+    padding: 8px;
+    border-bottom: 2px solid #000;
+  }
+
+  .tabs button {
+    padding: 6px 12px;
+    border: 2px solid #000;
+    background: #d3e5c7; /* Light green */
+    margin-right: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #000;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+
+  .tabs button.active {
+    background: #b8d1a9; /* Darker green */
+  }
+
+  .tabs button:hover:not(.active) {
+    background: #c7d9b8; /* Slightly darker green */
+  }
+
+  .badge {
+    background: #a9c7d1; /* Light teal */
+    color: #000;
+    padding: 2px 6px;
+    font-size: 10px;
+    border-radius: 50%;
+    margin-left: 6px;
   }
 
   .tab-content {
-    flex: 1;               /* allow this area to grow/shrink in flex layout */
+    flex-grow: 1;
     padding: 20px;
-    overflow-y: auto;      /* enable vertical scrolling */
-    background: #ffffff;
-    min-height: 0;         /* important in flex layouts to allow scrolling */
-}
-
-  .playground-content {
-    padding: 20px;
+    background: #fffbe6;
     overflow-y: auto;
-    flex: 1;
-    font-size: 16px;
-    line-height: 1.6;
-    color: #3b2f2b;
-    background: #f5e8c7;
-    border: 1px solid #b8975b;
-    border-radius: 6px;
+    font-size: 12px;
+    color: #000;
   }
 
-  .placeholder {
-    padding: 20px;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    color: #4a2c2a;
-    text-align: center;
-    font-style: italic;
+  h2 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #000;
+    color: #000;
   }
 
-  .loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(59, 47, 43, 0.4); /* Dark walnut overlay */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 5;
-  }
-
-  .mosaic-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 4px;
-    width: 150px;
-    height: 150px;
-  }
-
-  .mosaic-tile {
-    width: 30px;
-    height: 30px;
-    background-image: url("/mosaique.png"); /* Reintroduced image */
-    background-size: 500% 500%;
-    background-position: calc(var(--i) % 5 * 25%) calc(var(--i) / 5 * 25%);
-    animation: reveal 1.2s infinite;
-    animation-delay: calc(var(--i) * 0.1s);
-  }
-
-  /* Define --i for each tile using a CSS custom property */
-  .mosaic-tile:nth-child(1) { --i: 0; }
-  .mosaic-tile:nth-child(2) { --i: 1; }
-  .mosaic-tile:nth-child(3) { --i: 2; }
-  .mosaic-tile:nth-child(4) { --i: 3; }
-  .mosaic-tile:nth-child(5) { --i: 4; }
-  .mosaic-tile:nth-child(6) { --i: 5; }
-  .mosaic-tile:nth-child(7) { --i: 6; }
-  .mosaic-tile:nth-child(8) { --i: 7; }
-  .mosaic-tile:nth-child(9) { --i: 8; }
-  .mosaic-tile:nth-child(10) { --i: 9; }
-  .mosaic-tile:nth-child(11) { --i: 10; }
-  .mosaic-tile:nth-child(12) { --i: 11; }
-  .mosaic-tile:nth-child(13) { --i: 12; }
-  .mosaic-tile:nth-child(14) { --i: 13; }
-  .mosaic-tile:nth-child(15) { --i: 14; }
-  .mosaic-tile:nth-child(16) { --i: 15; }
-  .mosaic-tile:nth-child(17) { --i: 16; }
-  .mosaic-tile:nth-child(18) { --i: 17; }
-  .mosaic-tile:nth-child(19) { --i: 18; }
-  .mosaic-tile:nth-child(20) { --i: 19; }
-  .mosaic-tile:nth-child(21) { --i: 20; }
-  .mosaic-tile:nth-child(22) { --i: 21; }
-  .mosaic-tile:nth-child(23) { --i: 22; }
-  .mosaic-tile:nth-child(24) { --i: 23; }
-  .mosaic-tile:nth-child(25) { --i: 24; }
-
-  @keyframes reveal {
-    0% { opacity: 0.3; }
-    50% { opacity: 1; }
-    100% { opacity: 0.3; }
-  }
-
-  .controls {
-    padding: 20px;
-    border-top: 1px solid #b8975b;
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    background: #f5e8c7;
-  }
-
-  .select-wrapper {
-    flex: 1;
-    position: relative;
-  }
-
-  .scenario-select {
-    width: 100%;
-    padding: 10px 14px;
+  h3 {
     font-size: 14px;
-    border: 1px solid #b8975b;
-    border-radius: 4px;
-    background: #ffffff;
-    color: #3b2f2b;
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.2s ease;
-    font-family: 'Playfair Display', serif;
+    margin: 12px 0;
+    color: #000;
   }
 
-  .scenario-select:focus {
-    border-color: #4a2c2a; /* Burgundy focus */
+  .agent-list ul, .task-list ul, .workflow-manager ul {
+    list-style: none;
+    padding: 0;
   }
 
-  .scenario-select:disabled {
-    background: #f5e8c7;
-    color: #7f6a5e;
-    cursor: not-allowed;
-  }
-
-  .select-wrapper::after {
-    content: '▼';
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 10px;
-    color: #b8975b;
-    pointer-events: none;
-  }
-
-  .run-button {
-    padding: 10px 20px;
-    font-size: 14px;
-    color: #f5e8c7;
-    background: #4a2c2a; /* Burgundy */
-    border: 1px solid #b8975b;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .run-button:hover:not(:disabled) {
-    background: #5e3a36;
-    transform: scale(1.02);
-  }
-
-  .run-button:disabled {
-    background: #7f6a5e;
-    cursor: not-allowed;
-  }
-
-  .error-message {
-    margin: 15px 20px 0;
+  .agent-item, .task-item, .workflow-item {
     padding: 10px;
-    background: #f8d7da;
-    color: #4a2c2a;
-    border: 1px solid #b8975b;
-    border-radius: 4px;
-    font-size: 14px;
+    border-bottom: 1px solid #ccc;
+    transition: background 0.2s;
   }
 
-  @media (max-width: 600px) {
-    .playground-wrapper {
-      top: 2%;
-      left: 2%;
-      right: 2%;
-      bottom: 2%;
-    }
+  .agent-item:hover, .task-item:hover, .workflow-item:hover {
+    background: #e8d9a9; /* Light yellow */
+  }
 
-    .navbar {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-    }
+  .state-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 10px;
+    border: 2px solid #000;
+    border-radius: 50%;
+  }
 
-    .controls {
-      flex-direction: column;
-      gap: 10px;
-    }
+  .state-indicator.idle {
+    background: #fffbe6; /* Off-white */
+  }
 
-    .scenario-select,
-    .run-button {
-      width: 100%;
-    }
+  .state-indicator.processing {
+    background: #d3e5c7; /* Light green */
+  }
+
+  .state-indicator.error {
+    background: #a9c7d1; /* Light teal */
+  }
+
+  .capabilities {
+    display: block;
+    font-size: 10px;
+    color: #666;
+  }
+
+  .task-section {
+    display: flex;
+    gap: 20px;
+  }
+
+  .task-creator, .task-list {
+    flex: 1;
+  }
+
+  .task-creator form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .task-creator label {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    color: #000;
+  }
+
+  .task-creator input, .task-creator select {
+    margin-top: 6px;
+    padding: 6px;
+    border: 2px solid #000;
+    border-radius: 8px;
+    font-family: 'Handwritten', sans-serif;
+    font-size: 12px;
+    background: #fffbe6;
+    color: #000;
+  }
+
+  .status {
+    font-weight: bold;
+    color: #000;
+  }
+
+  .workflow-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: left;
+    color: #000;
+  }
+
+  .workflow-steps {
+    margin: 12px 0 0 20px;
+    list-style: square;
+    color: #000;
+  }
+
+  .monitoring-panel {
+    display: flex;
+    gap: 20px;
+  }
+
+  .metrics {
+    flex: 1;
+  }
+
+  .graph {
+    display: flex;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .bar {
+    height: 24px;
+    background: #a9c7d1; /* Light teal */
+    border: 2px solid #000;
+    border-radius: 6px;
+    transition: width 0.3s ease;
+  }
+
+  .action-btn {
+    padding: 6px 12px;
+    border: 2px solid #000;
+    background: #d3c7e5; /* Light purple */
+    cursor: pointer;
+    font-size: 12px;
+    color: #000;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+
+  .action-btn:hover {
+    background: #b8a9d1; /* Darker purple */
+  }
+
+  .status-bar {
+    height: 30px;
+    background: #f5e8c7; /* Slightly darker beige */
+    border-top: 2px solid #000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 12px;
+    color: #000;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .designer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: #f5e8c7;
+    border-bottom: 2px solid #000;
+  }
+
+  .toolbar button {
+    padding: 6px 12px;
+    border: 2px solid #000;
+    background: #d3e5c7; /* Light green */
+    cursor: pointer;
+    font-size: 12px;
+    color: #000;
+    border-radius: 8px;
+  }
+
+  .toolbar button:hover {
+    background: #b8d1a9; /* Darker green */
+  }
+
+  .canvas {
+    flex-grow: 1;
+    background: #e8d9a9; /* Light yellow */
+  }
+
+  svg text {
+    font-family: 'Handwritten', sans-serif;
+    fill: #000;
   }
 </style>

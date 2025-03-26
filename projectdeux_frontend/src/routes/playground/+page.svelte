@@ -28,7 +28,7 @@
   // Text generation function
   async function startTextGeneration(textChars, textBox, isPaused, pauseControl, isColorful) {
     const sentences = [
-      'Hey there sexy ',
+      'Hey there human',
       'Smooth vibes only ',
       'Text that flows ',
       'Pure eye candy '
