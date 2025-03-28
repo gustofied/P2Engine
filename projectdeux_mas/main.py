@@ -59,6 +59,58 @@ if __name__ == "__main__":
         agent_thread.join()
     except KeyboardInterrupt:
         print("Shutting down...")
-        worker_process.terminate()
+        worker_process.teaimport sys
+import asyncio
+import threading
+from p2mas.systems.ops.logging import setup_logging
+from p2mas.config import load_simulation_config
+from p2mas.di import DependencyContainer
+from p2mas.engine.simulations.base import GenericSimulation
+from p2mas.systems.core.orchestration.flow_orchestrator import FlowOrchestrator
+from p2mas.utils.event_listeners import CompletionListener
+
+async def run_simulation(container, config):
+    loop = asyncio.get_running_loop()
+    simulation = GenericSimulation(container, config)
+    
+    # Setup agents and start their consumption tasks
+    await simulation.setup()
+    
+    # Start the orchestrator as an asyncio task
+    orchestrator = FlowOrchestrator(container, config)
+    orchestrator_task = asyncio.create_task(orchestrator.run())
+    
+    # Run the simulation to initiate steps
+    expected_completions = await simulation.run()
+    
+    # Set up completion listener in a separate thread
+    completion_event = asyncio.Event()
+    listener = CompletionListener(container, set(expected_completions), timeout=120)
+    
+    def on_completion(_):
+        loop.call_soon_threadsafe(completion_event.set)
+    
+    listener_thread = threading.Thread(target=listener.listen, args=(on_completion,))
+    listener_thread.start()
+    
+    # Wait for completion
+    await completion_event.wait()
+    
+    # Cleanup
+    await simulation.teardown()
+    orchestrator_task.cancel()
+    listener_thread.join()
+
+def main():
+    log_dir = sys.argv[1] if len(sys.argv) > 1 else 'logs'
+    setup_logging(log_dir=log_dir)
+    container = DependencyContainer()
+    config = load_simulation_config()
+    from p2mas.engine.systems import start_background_systems
+    start_background_systems(container)
+    asyncio.run(run_simulation(container, config))
+
+if __name__ == "__main__":
+    main()rminate()
         purge_queues()
         print("Stopped.")
