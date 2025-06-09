@@ -1,4 +1,4 @@
-# Autonomous Systems via Multi Agent Systems and Verifiable Infrastructure
+# Autonomous Systems with Verifiable Infrastructure and Feedback Adaptation
 
 **Master's Thesis**  
 _[Your Name]_  
