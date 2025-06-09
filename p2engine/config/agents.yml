@@ -1,0 +1,40 @@
+agents:
+  - id: agent_alpha
+    type: llm
+    llm_model: "openai/gpt-4o"
+    behavior_template: null
+    tools:
+      [
+        "get_weather",
+        "delegate",
+        "check_balance",
+        "transfer_funds",
+        "reward_agent",
+      ]
+
+  - id: agent_beta
+    type: llm
+    llm_model: "openai/gpt-4o"
+    tools: ["check_balance", "transfer_funds", "transaction_history"]
+
+  - id: agent_helper
+    type: llm
+    llm_model: "openai/gpt-4o"
+    tools: ["get_weather", "check_balance", "transaction_history"]
+
+  - id: treasurer
+    type: llm
+    llm_model: "openai/gpt-4o"
+    behavior_template: null
+    tools:
+      ["check_balance", "transfer_funds", "transaction_history", "reward_agent"]
+
+  - id: agent_lemy
+    type: llm
+    llm_model: "openai/gpt-4o"
+    tools: ["check_balance"]
+
+  - id: child
+    type: llm
+    llm_model: "openai/gpt-4o"
+    tools: ["check_balance", "transaction_history"]

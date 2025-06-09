@@ -1,0 +1,33 @@
+{
+  "redis": {
+    "host": "localhost",
+    "port": 6379,
+    "db": 0
+  },
+  "llm": {
+    "api_base": "https://api.openai.com/v1",
+    "models": {
+      "supported_models": {
+        "openai/gpt-4o": {
+          "provider": "openai"
+        }
+      },
+      "default_model": "openai/gpt-4o"
+    }
+  },
+  "logging": {
+    "log_dir": "logs",
+    "log_file": "main.log"
+  },
+  "mode": "development",
+  "agent": {
+    "technical_failure_message": "Sorry, I'm experiencing technical difficulties. Please try again later."
+  },
+  "ledger": {
+    "enabled": true,
+    "json_api_url": "http://localhost:7575",
+    "party_id": "p2engine::default",
+    "initial_balance": 100.0,
+    "cache_ttl": 60
+  }
+}

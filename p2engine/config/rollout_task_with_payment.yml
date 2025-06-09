@@ -1,0 +1,50 @@
+teams:
+  weather_service:
+    base:
+      agent_id: agent_helper
+      model: openai/gpt-4o
+      tools: ["get_weather", "check_balance"]
+    variants:
+      - id: weather_provider
+        initial_message: |
+          Provide weather information for Paris, Tokyo, and San Francisco.
+          Use the get_weather tool for each city.
+    eval:
+      evaluator_id: gpt4_judge
+      metric: score
+      rubric: |
+        Score based on:
+        - Weather provided for all 3 cities (1.0)
+        - Missing any city reduces score proportionally
+
+  payment_coordinator:
+    initial_message: |
+      You are coordinating payment for weather services.
+      Agent_helper has just provided weather information.
+      Your task is to compensate them for their work.
+    base:
+      agent_id: agent_alpha
+      model: openai/gpt-4o
+      tools: ["check_balance", "transfer_funds"]
+    variants:
+      - id: service_payment
+        initial_message: |
+          PAYMENT COORDINATOR TASK:
+
+          1. Check your own balance
+          2. Check agent_helper's balance
+          3. Transfer 15 units to agent_helper
+
+          Reason: "Payment for weather information services"
+
+          You MUST complete the transfer to finish this task.
+    eval:
+      evaluator_id: gpt4_judge
+      metric: score
+      rubric: |
+        Score based on:
+        - Checked own balance (0.2)
+        - Checked agent_helper balance (0.2)
+        - Transferred exactly 15 units to agent_helper (0.6)
+
+        Full score ONLY if payment was transferred.

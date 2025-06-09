@@ -1,0 +1,78 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  jokes_rollout.yml   (two-team version)
+# ─────────────────────────────────────────────────────────────────────────────
+teams:
+  # ────────────── TEAM 1 ─────────────────────────────────────────────────────
+  joke_team:
+    base:
+      agent_id: agent_alpha
+
+    eval:
+      evaluator_id: gpt4_judge
+      rubric: joke_quality
+      metric: score # judge looks at meta.eval_metrics.score
+
+    variants:
+      # GOOD — strongest model, balanced creativity
+      - id: good
+        model: openai/gpt-4o
+        temperature: 0.3
+        top_p: 0.9
+        initial_message: >
+          Write a hilarious 10-sentence story describing life on the ISS.
+          Finish with a clever pun as the final sentence.
+
+      # MEDIOCRE — mid-tier model, looser sampling, may truncate ending
+      - id: mediocre
+        model: openai/gpt-3.5-turbo
+        temperature: 0.7
+        top_p: 0.95
+        max_tokens: 120
+        initial_message: >
+          In **exactly eight sentences**, tell a funny anecdote about
+          zero-gravity hiccups, ending with a joke.
+
+      # BAD — sabotaged: low diversity and negative presence penalty
+      - id: bad
+        model: openai/gpt-4o
+        temperature: 0.3
+        top_p: 0.9
+        initial_message: >
+          Draft a serious technical memo about waste-management on the ISS.
+          Do **not** use any humour or jokes.
+
+  # ────────────── TEAM 2 ─────────────────────────────────────────────────────
+  pun_team:
+    base:
+      agent_id: agent_alpha
+
+    eval:
+      evaluator_id: gpt4_judge
+      rubric: joke_quality
+      metric: score
+
+    variants:
+      # GOOD — space-themed puns, strongest model
+      - id: good
+        model: openai/gpt-4o
+        temperature: 0.5
+        top_p: 0.92
+        initial_message: >
+          Produce five original space-themed puns, each on a new line.
+          Finish with the cheesiest one last.
+
+      # MEDIOCRE — higher randomness, mid-tier model
+      - id: mediocre
+        model: openai/gpt-3.5-turbo
+        temperature: 0.8
+        top_p: 0.9
+        initial_message: >
+          Give me six random space puns in bullet points.
+
+      # BAD — forced to be factual: suppresses humour
+      - id: bad
+        model: openai/gpt-4o
+        temperature: 0.3
+        top_p: 0.9
+        initial_message: >
+          List six facts about the International Space Station. No jokes.

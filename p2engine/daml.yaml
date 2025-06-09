@@ -1,0 +1,11 @@
+sdk-version: 2.10.0
+name: p2engine-ledger
+source: daml/src
+version: 0.1.0
+dependencies:
+  - daml-prim
+  - daml-stdlib
+  - daml-script
+start-navigator: false
+build-options:
+  - --target=1.15

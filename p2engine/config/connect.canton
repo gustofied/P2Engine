@@ -1,0 +1,6 @@
+// Connect the participant to the domain
+p2engine.domains.connect_local(local)
+
+// Upload the DAR file
+p2engine.dars.upload(".daml/dist/p2engine-ledger-0.1.0.dar")
+

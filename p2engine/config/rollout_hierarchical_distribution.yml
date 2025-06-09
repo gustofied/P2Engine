@@ -1,0 +1,36 @@
+# config/rollout_hierarchical_distribution.yml
+teams:
+  management_team:
+    initial_message: |
+      You are a project manager with a budget to distribute.
+      Distribute 50 units total to your team members.
+    base:
+      agent_id: agent_alpha
+      model: openai/gpt-4o
+      tools: ["check_balance", "transfer_funds", "delegate"]
+    variants:
+      - id: equal_distribution
+        initial_message: |
+          Project Manager Task:
+          1. Check balances for agent_helper and child
+          2. Transfer 25 units to agent_helper (reason: "Equal team distribution")
+          3. Transfer 25 units to child (reason: "Equal team distribution")
+
+          Complete all transfers to finish your management task.
+      - id: performance_based
+        initial_message: |
+          Project Manager Task:
+          1. Delegate to agent_helper: "What are your key skills?"
+          2. Delegate to child: "What are your key skills?"
+          3. After receiving both responses, distribute 50 units total based on merit
+          4. Use transfer_funds to give more to the stronger contributor
+
+          You must distribute the full 50 units. Complete all transfers.
+    eval:
+      evaluator_id: gpt4_judge
+      metric: score
+      rubric: |
+        Evaluate the management approach:
+        - Distributed full budget (0.5)
+        - Clear reasoning for distribution (0.3)
+        - Completed all required transfers (0.2)

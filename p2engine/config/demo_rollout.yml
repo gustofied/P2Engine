@@ -1,0 +1,22 @@
+# config/demo_rollout.yml  ➜  new schema
+teams:
+  demo_team: # ← wrap everything under here
+    initial_message: "What's the weather in Paris right now?"
+
+    base:
+      agent_id: agent_alpha
+      model: openai/gpt-4.1
+
+    variants:
+      - tools: ["get_weather"]
+      - tools: ["get_weather", "delegate"]
+
+    eval:
+      evaluator_id: gpt4_judge
+      judge_version: "0.4"
+      metric: score
+      timeout_sec: 1800
+      prompts:
+        - |
+          You are the judge. Give a score between 0–1 that reflects how helpful
+          and correct the assistant’s final answer is.
