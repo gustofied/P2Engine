@@ -22,9 +22,9 @@ This thesis presents **p2engine**, a modular framework for fully autonomous syst
 ```
 .
 ├── p2engine/          # Core framework implementation
-├── results/           # Experimental results, videos
 ├── diagrams/          # Architecture and flow diagrams
 ├── thesis/            # LaTeX source files
+├── demos/            # Vids showcase
 ```
 
 ## Quick Start
