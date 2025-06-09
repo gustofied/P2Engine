@@ -1,4 +1,4 @@
-# P2Engine - Multi-Agent Orchestration Framework
+# P2Engine: A Modular Framework for Autonomous Systems with Verifiable Infrastructure and Adaptive Feedback
 
 <div align="center">
 
@@ -8,23 +8,29 @@
 [![Celery](https://img.shields.io/badge/task%20queue-celery-green)](https://docs.celeryproject.org/)
 [![Daml](https://img.shields.io/badge/ledger-daml-blue)](https://www.digitalasset.com/developers)
 
-**Master's Thesis Project**
-_A production-ready framework for orchestrating conversational AI agents with distributed task execution, financial ledger integration, and comprehensive evaluation capabilities._
+**A Modular Framework for Fully Autonomous Systems**
+_Integrating FSM-based Multi-Agent Coordination with Verifiable Infrastructure_
 
 </div>
 
 ## 🌟 Overview
 
-P2Engine is a sophisticated multi-agent orchestration platform developed as a Master's thesis project. The system demonstrates advanced concepts in distributed AI systems:
+P2Engine is a research framework that realizes fully autonomous systems through the integration of multi-agent systems (MAS) with distributed ledger technology (DLT). The platform demonstrates how autonomous agents can operate with verifiable accountability while continuously adapting through learning-enabled architectures.
 
-- **Multi-Agent Conversations**: Agents can delegate tasks to each other, creating complex interaction hierarchies
-- **Financial Ledger Integration**: Built-in Canton/Daml ledger for agent wallet management and transactions
-- **Distributed Task Processing**: Celery-based task queue for scalable tool execution
-- **Evaluation Framework**: Automated quality assessment with configurable judges and metrics
-- **Rollout System**: A/B testing and variant comparison for agent configurations
-- **Tool Ecosystem**: Extensible tool system with caching, deduplication, and post-effects
+### Core Capabilities
 
-The entire system is orchestrated through a single entry point (`./scripts/run_project.sh`) that handles all the complexity of distributed system initialization.
+- **FSM-Orchestrated Multi-Agent Systems**: Finite-state machine coordination enabling precise, observable agent workflows
+- **Verifiable Infrastructure via DLT**: Canton/Daml integration providing immutable audit trails and privacy-aware operations
+- **Learning-Enabled Autonomy**: MCTS/RL-based reasoners with automated evaluation for continuous improvement
+- **Distributed Task Execution**: Celery-based architecture for scalable agent operations
+- **Effect System**: Controlled side-effect management ensuring system integrity
+- **Comprehensive Observability**: Real-time monitoring, tracing, and debugging capabilities
+
+The system addresses three fundamental challenges in autonomous systems:
+
+1. **Coordination** - How multiple agents collaborate through observable state transitions
+2. **Verification** - How every action becomes traceable and defendable
+3. **Adaptation** - How the system learns and improves through feedback loops
 
 ## 🏗️ Architecture
 
@@ -79,6 +85,15 @@ P2Engine is organized into several core modules, each with its own comprehensive
   - Configuration management
   - Conversation inspection
   - Rollout execution
+
+### System Flow
+
+1. **Agents** execute tasks based on FSM-defined workflows
+2. **Orchestrator** manages state transitions and coordination
+3. **Runtime** handles execution, effects, and learning feedback
+4. **DLT** provides verifiable infrastructure for all operations
+5. **Evaluators** assess quality and trigger adaptation
+6. **Reasoners** optimize future strategies based on outcomes
 
 ### Understanding the System
 
@@ -307,32 +322,37 @@ p2engine ledger history agent_alpha --limit 20
 p2engine ledger audit
 ```
 
-## 🧪 Rollout System
+## 🧪 Learning-Enabled System
 
-The rollout system enables A/B testing and evaluation of different agent configurations:
+The rollout system enables continuous improvement through evaluation and adaptation:
 
-### Example Rollout Configuration
+### Example Learning Configuration
 
 ```yaml
-# config/example_rollout.yml
+# config/learning_rollout.yml
 teams:
-  weather_team:
-    initial_message: "What's the weather in major cities?"
+  autonomous_team:
+    initial_message: "Solve this complex multi-step problem"
     base:
       agent_id: agent_alpha
       model: openai/gpt-4o
+      reasoning_policy: mcts_v1
     variants:
-      - tools: ["get_weather"]
+      - tools: ["analyze", "delegate", "verify"]
         temperature: 0.3
-      - tools: ["get_weather", "delegate"]
+        search_depth: 10
+      - tools: ["analyze", "delegate", "verify", "learn"]
         temperature: 0.7
+        search_depth: 20
     eval:
-      evaluator_id: gpt4_judge
-      metric: score
+      evaluator_id: comprehensive_judge
+      metrics: ["correctness", "efficiency", "collaboration"]
+      feedback_loop: true
       rubric: |
-        Score based on:
-        - Accuracy of weather information (0.5)
-        - Helpfulness and clarity (0.5)
+        Evaluate based on:
+        - Solution correctness (0.4)
+        - Execution efficiency (0.3)
+        - Effective delegation (0.3)
 ```
 
 ### Running Rollouts
@@ -617,7 +637,7 @@ tail -f logs/canton/*.log
 
 <div align="center">
 <strong>Master's Thesis Project</strong><br>
-<em>Multi-Agent Orchestration with Financial Ledger Integration</em><br>
+<em>Autonomous Systems via Multi-Agent Coordination and Verifiable Infrastructure</em><br>
 <br>
-© 2024 - Academic Use Only
+© 2025 - Academic Use Only
 </div>
