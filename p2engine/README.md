@@ -8,7 +8,7 @@
 [![Celery](https://img.shields.io/badge/task%20queue-celery-green)](https://docs.celeryproject.org/)
 [![Daml](https://img.shields.io/badge/ledger-daml-blue)](https://www.digitalasset.com/developers)
 
-**Master's Thesis Project**  
+**Master's Thesis Project**
 _A production-ready framework for orchestrating conversational AI agents with distributed task execution, financial ledger integration, and comprehensive evaluation capabilities._
 
 </div>
@@ -28,9 +28,67 @@ The entire system is orchestrated through a single entry point (`./scripts/run_p
 
 ## 🏗️ Architecture
 
-```
+P2Engine is organized into several core modules, each with its own comprehensive documentation:
 
-```
+### Core Modules
+
+- **[`/agents`](./agents/README.md)** - Agent implementations and framework
+
+  - LLM, rule-based, and human-in-loop agents
+  - Tool registration and decorators
+  - Persona system and templates
+  - Agent factory and plugin system
+
+- **[`/orchestrator`](./orchestrator/README.md)** - Conversation flow management
+
+  - Interaction stack with branching support
+  - State machine and transitions
+  - LLM-compatible message rendering
+  - Agent and tool registries
+
+- **[`/runtime`](./runtime/README.md)** - Execution engine and task processing
+
+  - Agent runtime and state handlers
+  - Effect system for side effects
+  - Celery-based task distribution
+  - Rollout and evaluation execution
+
+- **[`/infra`](./infra/README.md)** - Core infrastructure components
+
+  - Configuration management
+  - Artifact bus for event storage
+  - LLM client abstraction
+  - Evaluation framework
+  - Session management
+
+- **[`/tools`](./tools/README.md)** - Extensible tool system
+
+  - Tool creation guide
+  - Built-in tools (delegate, ledger, weather)
+  - Caching and deduplication
+  - Post-effects system
+
+- **[`/services`](./services/README.md)** - Service layer and DI container
+
+  - ServiceContainer for dependency injection
+  - Canton/Daml ledger integration
+  - Thread-safe service management
+
+- **[`/cli`](./cli/README.md)** - Command-line interface
+  - Interactive chat system
+  - Configuration management
+  - Conversation inspection
+  - Rollout execution
+
+### Understanding the System
+
+For a deep understanding of P2Engine:
+
+1. **Start with [`/agents/README.md`](./agents/README.md)** to understand how agents work
+2. **Read [`/orchestrator/README.md`](./orchestrator/README.md)** to learn about conversation flow
+3. **Study [`/runtime/README.md`](./runtime/README.md)** for execution details
+4. **Review [`/tools/README.md`](./tools/README.md)** to create custom tools
+5. **Check [`/infra/README.md`](./infra/README.md)** for infrastructure details
 
 ## 🚀 Quick Start
 
