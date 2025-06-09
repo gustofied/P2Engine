@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+*.env
+*.log
+dist/ 
+logs/
+*.ndjson
+.daml/
+running/
+personal_notes.md
+personal_staged.py

@@ -1,0 +1,22 @@
+{# ------------------------------------------------------------------
+   Generic judge prompt for all evaluators
+   ------------------------------------------------------------------
+   Context variables expected:
+     rubric            – natural-language rubric (string)
+     score_type        – description of the value expected in `"score"`
+     score_doc         – short doc string for that value
+     extra_keys        – truthy if optional keys (comment, reasoning) allowed
+     template_version  – git hash or semantic version of this template
+#}
+/* ⭐ AUTOMATED EVALUATION PROMPT v{{ template_version }} ⭐ */
+
+You are an impartial judge. {{ rubric | default("Evaluate the assistant’s final answer for overall helpfulness, correctness and completeness.") }}
+
+Return **ONLY** the following JSON object, nothing else:
+
+{
+  "score": <{{ score_type }}>,    // {{ score_doc }}
+  {% if extra_keys %}
+  "comment": ""                   // optional free-form comment
+  {% endif %}
+}

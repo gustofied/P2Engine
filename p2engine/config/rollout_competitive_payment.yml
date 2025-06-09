@@ -1,0 +1,57 @@
+# config/rollout_competitive_payment.yml
+teams:
+  problem_solvers:
+    base:
+      model: openai/gpt-4o
+      tools: ["check_balance"]
+    variants:
+      - id: solver_alpha
+        agent_id: agent_alpha
+        initial_message: |
+          Solve this: What's the optimal way to distribute 100 units
+          among 5 agents to maximize productivity? 
+          Consider that each agent has different skills and efficiency levels.
+          Provide a clear mathematical justification.
+      - id: solver_beta
+        agent_id: agent_beta
+        initial_message: |
+          Solve this: What's the optimal way to distribute 100 units
+          among 5 agents to maximize productivity?
+          Consider that each agent has different skills and efficiency levels.
+          Provide a clear mathematical justification.
+    eval:
+      evaluator_id: gpt4_judge
+      metric: score
+      rubric: |
+        Evaluate the quality of the solution based on:
+        - Mathematical correctness (0.4)
+        - Practical reasoning (0.4)
+        - Clear explanation (0.2)
+        Give a score between 0 and 1.
+
+  reward_distributor:
+    initial_message: |
+      You are the treasurer. Your task is to reward good performance.
+      1. Check agent_alpha's balance
+      2. Check agent_beta's balance  
+      3. Review their recent work (they just solved optimization problems)
+      4. Transfer 25 units to the agent you think performed better
+
+      You MUST make a transfer. If unsure who's better, pick randomly.
+    base:
+      agent_id: treasurer
+      model: openai/gpt-4o
+      tools: ["check_balance", "transfer_funds", "transaction_history"]
+    variants:
+      - id: merit_based_payment
+        initial_message: |
+          TREASURER DUTIES - MUST COMPLETE:
+
+          1. Use check_balance on agent_alpha
+          2. Use check_balance on agent_beta
+          3. Decide who deserves a reward (if unsure, choose randomly)
+          4. Use transfer_funds to send 25 units to your chosen agent
+
+          Reason: "Performance reward from treasurer"
+
+          This is a required task. You must transfer 25 units to either agent_alpha or agent_beta.
