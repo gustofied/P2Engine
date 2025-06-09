@@ -1,4 +1,4 @@
-# Multi-Agent Orchestration with Financial Ledger Integration
+# Autonomous Systems via Multi Agent Systems and Verifiable Infrastructure
 
 **Master's Thesis**  
 _[Your Name]_  
@@ -7,57 +7,68 @@ _[Year]_
 
 ## Abstract
 
-This thesis presents P2Engine, a production-ready framework for orchestrating conversational AI agents with distributed task execution and integrated financial ledger capabilities. The system demonstrates how multiple AI agents can collaborate through delegation hierarchies while maintaining transactional integrity through blockchain technology.
+This thesis presents **p2engine**, a modular framework for fully autonomous systems that integrates finite-state multi-agent coordination with distributed ledger technology (DLT). The system demonstrates how autonomous agents can operate with verifiable accountability while continuously adapting through learning-enabled architectures.
+
+## Core Contributions
+
+1. **FSM-Orchestrated Multi-Agent Systems**: Precise coordination with observable state transitions
+2. **DLT-Backed Verifiable Infrastructure**: Immutable audit trails ensuring accountability and defense against tampering
+3. **Learning-Enabled Autonomy**: Integrated evaluators and reasoners for continuous system improvement
+4. **Empirical Validation**: Demonstrated effectiveness across coordination, traceability, payments, and judgment scenarios
+5. **Open-Source Research Platform**: Reusable framework for future autonomous systems research
 
 ## Repository Structure
 
 ```
 .
-├── p2engine/           # Main implementation (see p2engine/README.md)
-├── results/            # Experimental results, images, and videos
-├── diagrams/           # Architecture and flow diagrams
-├── thesis/             # LaTeX source files for the thesis document
-├── presentations/      # Defense and progress presentations
-└── benchmarks/         # Performance evaluation data
+├── p2engine/          # Core framework implementation
+├── results/           # Experimental results, videos
+├── diagrams/          # Architecture and flow diagrams
+├── thesis/            # LaTeX source files
 ```
 
-## Quick Overview
+## Quick Start
 
-**P2Engine** is the core implementation of this thesis, featuring:
+**p2engine** realizes autonomous systems through:
 
-- Multi-agent conversation orchestration
-- Canton/Daml-based financial ledger integration
-- Distributed task processing with Celery
-- Comprehensive evaluation framework
-- A/B testing capabilities for agent configurations
+- **Agents**: Configurable skills, artifacts, and communication protocols
+- **Orchestration**: FSM-driven workflows ensuring precise coordination
+- **Infrastructure**: DLT integration for verifiable, privacy-aware operations
+- **Learning**: MCTS/RL-based reasoners with automated evaluation
 
-For detailed technical documentation, installation instructions, and usage examples, please refer to [`p2engine/README.md`](p2engine/README.md).
+For implementation details, see [`p2engine/README.md`](p2engine/README.md).
 
-## Results
+## Key Results
 
-The `results/` directory contains:
+The framework addresses three interrelated challenges:
 
-- **images/**: Screenshots of agent interactions and system outputs
-- **videos/**: Recorded simulation runs demonstrating multi-agent collaboration
-- **data/**: Raw experimental data from rollout evaluations
-- **analysis/**: Jupyter notebooks with performance analysis
+1. **Coordination**: FSM-based orchestration enables complex multi-agent workflows
+2. **Verification**: Every action is traceable and defendable via DLT
+3. **Adaptation**: Systematic feedback loops enable continuous improvement
 
-## Key Contributions
+Validated through simulations demonstrating:
 
-1. **Hierarchical Agent Delegation**: Novel approach to multi-agent task distribution
-2. **Ledger-Backed Agent Economy**: Integration of blockchain for agent financial transactions
-3. **Scalable Evaluation Framework**: Automated quality assessment of agent interactions
-4. **Production-Ready Architecture**: Distributed system design suitable for real-world deployment
+- Effective agent collaboration
+- Complete action traceability
+- Automated payment processing
+- Performance-based judgment and learning
+
+## Future Directions
+
+- Self-optimizing coordination via reinforcement learning
+- Scalable ecosystems with cross-MAS interoperability
+- Formal verification of system correctness
+- Enterprise deployment considerations
 
 ## Access & Rights
 
-This is a closed academic work. Code access is restricted to:
+This is a closed academic work. Code access restricted to:
 
 - Thesis supervisor
 - Student author
-- Designated examiners during the evaluation period
+- Designated examiners (evaluation period only)
 
-**Note**: After the examination period, all access must be revoked. The ideas and implementations may not be redistributed without explicit permission.
+**Note**: Ideas and implementations require explicit permission for redistribution.
 
 ## Contact
 
@@ -67,4 +78,4 @@ _[Department/Institution]_
 
 ---
 
-© 2024 - Academic Use Only
+© 2025 - Academic Use Only
