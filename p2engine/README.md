@@ -8,13 +8,14 @@
 [![Celery](https://img.shields.io/badge/task%20queue-celery-green)](https://docs.celeryproject.org/)
 [![Daml](https://img.shields.io/badge/ledger-daml-blue)](https://www.digitalasset.com/developers)
 
+**Master's Thesis Project**  
 _A production-ready framework for orchestrating conversational AI agents with distributed task execution, financial ledger integration, and comprehensive evaluation capabilities._
 
 </div>
 
 ## 🌟 Overview
 
-P2Engine is a sophisticated multi-agent orchestration platform that enables:
+P2Engine is a sophisticated multi-agent orchestration platform developed as a Master's thesis project. The system demonstrates advanced concepts in distributed AI systems:
 
 - **Multi-Agent Conversations**: Agents can delegate tasks to each other, creating complex interaction hierarchies
 - **Financial Ledger Integration**: Built-in Canton/Daml ledger for agent wallet management and transactions
@@ -23,20 +24,12 @@ P2Engine is a sophisticated multi-agent orchestration platform that enables:
 - **Rollout System**: A/B testing and variant comparison for agent configurations
 - **Tool Ecosystem**: Extensible tool system with caching, deduplication, and post-effects
 
+The entire system is orchestrated through a single entry point (`./scripts/run_project.sh`) that handles all the complexity of distributed system initialization.
+
 ## 🏗️ Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         CLI Interface                           │
-├─────────────────────────────────────────────────────────────────┤
-│                         Runtime Engine                          │
-├──────────────┬─────────────┬──────────────┬────────────────────-┤
-│   Agents     │   Tools     │  Orchestrator│   Evaluations       │
-├──────────────┴─────────────┴──────────────┴────────────────────-┤
-│                      Infrastructure Layer                       │
-├────────────────────────┬────────────────────────────────────────┤
-│   Redis    │  Celery   │   Canton/Daml   │   Artifact Bus       │
-└────────────────────────┴────────────────────────────────────────┘
+
 ```
 
 ## 🚀 Quick Start
@@ -61,35 +54,118 @@ poetry install
 
 # Set up environment variables
 cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY
+# Edit .env with your configuration (see Environment Configuration below)
 
 # Initialize Canton/Daml (optional, for ledger features)
 ./scripts/setup_canton.sh
 ```
 
-### Running the System
+### Environment Configuration (.env)
+
+The `.env` file contains all critical configuration for the system. Here's a complete guide:
 
 ```bash
-# Start everything with the run script
-./scripts/run_project.sh
+# Configuration file path (optional - defaults to config/config.json)
+CONFIG_FILE=config/config.json
 
-# Or start components manually:
-# 1. Start Redis
+# OpenAI API Configuration (REQUIRED)
+# Get your API key from: https://platform.openai.com/api-keys
+OPENAI_API_KEY="sk-your-api-key-here"
+
+# Canton/Ledger Configuration
+# Set to false to run without financial ledger features (faster startup)
+LEDGER_ENABLED=true
+
+# Daml Package ID (auto-generated when building Daml project)
+# This is set automatically by run_project.sh when ledger is enabled
+DAML_PACKAGE_ID=auto_generated_on_build
+
+# Logging Configuration
+LOG_LEVEL=INFO              # Main application log level
+WORKER_LOG_LEVEL=INFO       # Celery worker log level
+LITELLM_LOG_LEVEL=error     # LLM library log level (set to debug for API traces)
+LOG_TO_CONSOLE=0            # Set to 1 to see logs in console
+
+# Redis Configuration (optional - these are the defaults)
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_DB=0
+
+# Tool Deduplication Policy
+# Options:
+#   - none: No deduplication, all tool calls execute
+#   - penalty: Track duplicates but allow execution
+#   - strict: Block duplicate side-effect operations
+DEDUP_POLICY=none
+
+# Artifact Storage Driver
+# Options:
+#   - fs: Filesystem storage (default, no setup required)
+#   - s3: AWS S3 storage (requires S3_BUCKET env var)
+ARTIFACT_DRIVER=fs
+
+# Development/Debugging Options
+# LOG_TO_CONSOLE=1           # Show logs in terminal
+# LITELLM_LOG_LEVEL=debug    # See all LLM API calls
+# LEDGER_DEV_MODE=true       # Auto-set for development
+```
+
+### Running the System
+
+The **primary way** to run P2Engine is through the orchestration script:
+
+```bash
+# This single command starts EVERYTHING:
+./scripts/run_project.sh
+```
+
+#### What run_project.sh does:
+
+1. **Environment Setup**: Loads `.env` configuration
+2. **Process Cleanup**: Kills any existing P2Engine processes
+3. **Redis Initialization**: Starts Redis and clears the database
+4. **Canton/Ledger Setup** (if LEDGER_ENABLED=true):
+   - Builds the Daml project
+   - Extracts and sets DAML_PACKAGE_ID
+   - Starts Canton daemon
+   - Launches JSON API
+   - Initializes agent wallets
+5. **Celery Workers**: Starts 4 worker queues:
+   - `ticks`: Main orchestration queue (16 workers)
+   - `tools`: Tool execution queue (16 workers)
+   - `evals`: Evaluation queue (8 workers + beat scheduler)
+   - `rollouts`: Rollout execution queue (2 workers)
+6. **Engine**: Starts the main runtime engine
+7. **CLI**: Launches the interactive shell
+
+The script handles all the complex orchestration and provides:
+
+- Automatic log rotation with timestamped directories
+- Process monitoring with PIDs
+- Graceful shutdown on Ctrl+C
+- Health checks for all services
+
+#### Manual Component Start (Advanced)
+
+If you need to run components separately for debugging:
+
+```bash
+# 1. Redis
 redis-server
 
-# 2. Start Canton (if using ledger features)
+# 2. Canton (if using ledger)
 ./scripts/start_canton.sh
 
-# 3. Start Celery workers
+# 3. Celery workers
 poetry run celery -A runtime.tasks.celery_app worker -Q ticks -n ticks@%h
 poetry run celery -A runtime.tasks.celery_app worker -Q tools -n tools@%h
 poetry run celery -A runtime.tasks.celery_app worker -Q evals -n evals@%h
 poetry run celery -A runtime.tasks.celery_app worker -Q rollouts -n rollouts@%h
 
-# 4. Start the engine
+# 4. Engine
 poetry run python runtime/engine.py
 
-# 5. Launch CLI
+# 5. CLI
 poetry run p2engine shell
 ```
 
@@ -444,27 +520,46 @@ tail -f logs/run_*/workers/*.log
 tail -f logs/canton/*.log
 ```
 
-## 🤝 Contributing
+## 📄 Access & Rights
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+**This is a closed academic work for a Master's thesis.**
 
-## 📄 License
+- **Access Period**: Sensors (examiners) may view and test the code only during the official examination period
+- **Restrictions**: After the examination period, all access must be revoked
+- **Intellectual Property**: The ideas, concepts, and implementations in this work may not be reshared or redistributed
+- **Authorized Users**: Limited to the thesis supervisor, student, and designated sensors/examiners
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 🛠️ Technology Stack
 
-## 🙏 Acknowledgments
+### Core Framework
 
-- Built with [LiteLLM](https://github.com/BerriAI/litellm) for LLM provider abstraction
-- Uses [Canton](https://www.digitalasset.com/developers) for distributed ledger functionality
-- Powered by [Celery](https://docs.celeryproject.org/) for distributed task processing
-- UI components from [Rich](https://github.com/Textualize/rich) and [Typer](https://typer.tiangolo.com/)
+- **[LiteLLM](https://github.com/BerriAI/litellm)** - Unified interface for multiple LLM providers
+- **[Celery](https://docs.celeryproject.org/)** - Distributed task queue for scalable execution
+- **[Redis](https://redis.io/)** - In-memory data store for caching and message passing
+
+### Ledger Technology
+
+- **[Canton](https://www.digitalasset.com/developers)** - Distributed ledger infrastructure
+- **[Daml](https://daml.com/)** - Smart contract language for ledger transactions
+
+### Development Tools
+
+- **[Poetry](https://python-poetry.org/)** - Dependency management and packaging
+- **[Typer](https://typer.tiangolo.com/)** - CLI interface framework
+- **[Rich](https://github.com/Textualize/rich)** - Terminal formatting and UI components
+- **[Pydantic](https://pydantic-docs.helpmanual.io/)** - Data validation and settings management
+
+### AI/ML Infrastructure
+
+- **[OpenAI API](https://openai.com/api/)** - Primary LLM provider
+- **[Jinja2](https://jinja.palletsprojects.com/)** - Template engine for prompt engineering
+- **[JSONSchema](https://json-schema.org/)** - Tool parameter validation
 
 ---
 
 <div align="center">
-Built with ❤️ for the future of multi-agent AI systems
+<strong>Master's Thesis Project</strong><br>
+<em>Multi-Agent Orchestration with Financial Ledger Integration</em><br>
+<br>
+© 2024 - Academic Use Only
 </div>
