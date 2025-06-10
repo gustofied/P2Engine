@@ -1,9 +1,16 @@
 # Autonomous Systems with Verifiable Infrastructure and Feedback Adaptation
 
 **Master's Thesis**  
-_[Your Name]_  
-_[University Name]_  
-_[Year]_
+_Adam Dybwad Sioud_  
+_Supervisor: Surya Kathaya_  
+_NTNU – Norges teknisk-naturvitenskapelige universitet, Department of Computer Science_   
+_2025_
+
+## Contact
+
+_adam.sioud@protonmail.com_  
+_surya.b.kathayat@ntnu.no_  
+
 
 ## Abstract
 
@@ -70,11 +77,6 @@ This is a closed academic work. Code access restricted to:
 
 **Note**: Ideas and implementations require explicit permission for redistribution.
 
-## Contact
-
-_[Your Email]_  
-_[Supervisor Name and Email]_  
-_[Department/Institution]_
 
 ---
 
