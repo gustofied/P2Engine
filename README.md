@@ -25,9 +25,9 @@ This thesis presents **P2Engine**, a framework for autonomous multi-agent system
 
 ```
 .
-├── p2engine/          # Core framework implementation
+├── p2engine/          # Framework 
 ├── diagrams/          # Architecture and flow diagrams  
-├── thesis/            # LaTeX source files
+├── thesis/            # PDF Document
 ├── demos/             # Video demonstrations of E1-E4 validation scenarios
 ```
 
