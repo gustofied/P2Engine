@@ -26,11 +26,6 @@ P2Engine is a research framework that realizes fully autonomous systems through 
 - **Effect System**: Controlled side-effect management ensuring system integrity
 - **Comprehensive Observability**: Real-time monitoring, tracing, and debugging capabilities
 
-The system addresses three fundamental challenges in autonomous systems:
-
-1. **Coordination** - How multiple agents collaborate through observable state transitions
-2. **Verification** - How every action becomes traceable and defendable
-3. **Adaptation** - How the system learns and improves through feedback loops
 
 ## 🏗️ Architecture
 
