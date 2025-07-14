@@ -4,7 +4,7 @@
 *Adam Dybwad Sioud*  
 *Supervisor: Surya Kathaya*  
 *NTNU – Norges teknisk-naturvitenskapelige universitet, Department of Computer Science*   
-*2025*
+*July 2025*
 
 ## Contact
 *adam.sioud@protonmail.com*  
