@@ -19,8 +19,8 @@ P2Engine is a research framework that seeks to realize fully autonomous systems 
 ### Core Capabilities
 
 - **FSM-Orchestrated Multi-Agent Systems**: Finite-state machine coordination enabling precise, observable agent workflows
-- **Verifiable Infrastructure via DLT**: Canton/Daml integration providing immutable audit trails and privacy-aware operations
-- **Learning-Enabled Autonomy**: MCTS/RL-based reasoners with automated evaluation for continuous improvement
+- **Auditable Infrastructure via DLT**: Canton/Daml integration providing immutable audit trails and privacy-aware operations
+- **Adaptation**: MCTS/RL-based reasoners with automated evaluation for continuous improvement
 - **Distributed Task Execution**: Celery-based architecture for scalable agent operations
 - **Effect System**: Controlled side-effect management ensuring system integrity
 - **Comprehensive Observability**: Real-time monitoring, tracing, and debugging capabilities
