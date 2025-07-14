@@ -1,4 +1,4 @@
-# P2Engine: A Modular Framework for Autonomous Systems with Verifiable Infrastructure and Adaptive Feedback
+# P2Engine: A Multi-Agent System Framework
 
 <div align="center">
 
@@ -8,14 +8,13 @@
 [![Celery](https://img.shields.io/badge/task%20queue-celery-green)](https://docs.celeryproject.org/)
 [![Daml](https://img.shields.io/badge/ledger-daml-blue)](https://www.digitalasset.com/developers)
 
-**A Modular Framework for Fully Autonomous Systems**
-_Integrating FSM-based Multi-Agent Coordination with Verifiable Infrastructure_
+**A Modular Framework**
 
 </div>
 
 ## 🌟 Overview
 
-P2Engine is a research framework that realizes fully autonomous systems through the integration of multi-agent systems (MAS) with distributed ledger technology (DLT). The platform demonstrates how autonomous agents can operate with verifiable accountability while continuously adapting through learning-enabled architectures.
+P2Engine is a research framework that seeks to realize fully autonomous systems through the integration of multi-agent systems (MAS) with distributed ledger technology (DLT). The platform demonstrates how autonomous agents can operate with verifiable accountability while also enabling the posibility for adaptation.
 
 ### Core Capabilities
 
