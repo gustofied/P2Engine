@@ -2,7 +2,7 @@
 
 **Master's Thesis**  
 *Adam Dybwad Sioud*  
-*Supervisor: Surya Kathaya*  
+*Supervisor: Surya Kathayat*  
 *NTNU – Norges teknisk-naturvitenskapelige universitet, Department of Computer Science*   
 *July 2025*
 
