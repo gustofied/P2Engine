@@ -613,7 +613,7 @@ tail -f logs/canton/*.log
 
 <div align="center">
 <strong>Master's Thesis Project</strong><br>
-<em>P2Engine A Multi-Agent System Framework</em><br>
+<em>P2Engine: A Multi-Agent System Framework</em><br>
 <br>
 © 2025 - Academic Use Only
 </div>
