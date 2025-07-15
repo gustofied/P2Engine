@@ -593,7 +593,7 @@ tail -f logs/canton/*.log
 
 ### Audit Layer - Ledger Technology
 
-- **[Canton](https://www.digitalasset.com/developers)** - Distributed ledger infrastructure
+- **[Canton](https://www.digitalasset.com/developers)** - Distributed Ledger 
 - **[Daml](https://daml.com/)** - Smart contract language for ledger transactions
 
 ### Development Tools
