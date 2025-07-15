@@ -1,5 +1,5 @@
 
-> **Note:** The `JULY-2025` branch is the official deliverable—its contents are frozen as of the thesis deadline and will not be edited further. Subsequent updates and ongoing development will take place on the `main` branch.
+> **Note:** The `JULY-2025` branch is the official deliverable. Its contents are frozen as of the thesis deadline and will not be edited further. Subsequent updates and ongoing development will take place on the `main` branch.
 
 # P2Engine: A Multi-Agent System Framework
 
