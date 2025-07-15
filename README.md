@@ -13,7 +13,6 @@
 ## Repository Structure
 
 ```
-.
 ├── p2engine/          # Framework   
 ├── thesis/            # PDF Document
 ├── demos/             # Video Demonstrations
@@ -31,7 +30,7 @@ This is a closed academic work. Code access restricted to:
 - Student author  
 - Examiners (evaluation period only)
 
-**Note**: Ideas and implementations require explicit permission for redistribution.
+Ideas and implementations require explicit permission for redistribution.
 
 ---
 
