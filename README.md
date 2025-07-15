@@ -24,7 +24,7 @@
 ## Quick Start
 To get started, see [`p2engine/README.md`](p2engine/README.md).
 For implementation details, see [`p2engine/README.md`](p2engine/README.md).
-Video demonstrations of framework, see  [`demos/`](demos/).
+Video demonstrations of p2engine, see  [`demos/`](demos/).
 
 ## Access & Rights
 
