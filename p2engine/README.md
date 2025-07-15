@@ -69,17 +69,6 @@ P2Engine is organized into several core modules, each with its own comprehensive
   - Caching and deduplication
   - Post-effects system
 
-- **[`/services`](./services/README.md)** - Service layer and DI container
-
-  - ServiceContainer for dependency injection
-  - Canton/Daml ledger integration
-  - Thread-safe service management
-
-- **[`/cli`](./cli/README.md)** - Command-line interface
-  - Interactive chat system
-  - Configuration management
-  - Conversation inspection
-  - Rollout execution
 
 ### System Flow
 
