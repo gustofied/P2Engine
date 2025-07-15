@@ -8,22 +8,23 @@
 [![Celery](https://img.shields.io/badge/task%20queue-celery-green)](https://docs.celeryproject.org/)
 [![Daml](https://img.shields.io/badge/ledger-daml-blue)](https://www.digitalasset.com/developers)
 
-**A Modular Framework**
+**Orchestration – Observability – Adaptation – Auditability**
 
 </div>
 
 ## 🌟 Overview
 
-P2Engine is a research framework that seeks to realize fully autonomous systems through the integration of multi-agent systems (MAS) with distributed ledger technology (DLT). The platform demonstrates how autonomous agents can operate with verifiable accountability while also enabling the posibility for adaptation.
+P2Engine is a multi-agent system framework that aims to be fully agentic, emergent, and trustworthy. Under continuous development, its core mission is to achieve complete autonomy. To do so it explore various implementations, including:
 
-### Core Capabilities
 
-- **FSM-Orchestrated Multi-Agent Systems**: Finite-state machine coordination enabling precise, observable agent workflows
-- **Auditable Infrastructure via DLT**: Canton/Daml integration providing immutable audit trails and privacy-aware operations
+### Core Implementations
+
+- **FSM Orchestration**: Finite-state machine coordination enabling precise, observable agent workflows
+- **Audit Layer via DLT**: Canton/Daml integration providing immutable audit trails and privacy-aware operations
 - **Adaptation**: MCTS/RL-based reasoners with automated evaluation for continuous improvement
 - **Distributed Task Execution**: Celery-based architecture for scalable agent operations
 - **Effect System**: Controlled side-effect management ensuring system integrity
-- **Comprehensive Observability**: Real-time monitoring, tracing, and debugging capabilities
+- **Observability**: Real-time monitoring, tracing, and debugging capabilities
 
 
 ## 🏗️ Architecture
