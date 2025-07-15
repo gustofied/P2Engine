@@ -16,13 +16,13 @@
 .
 ├── p2engine/          # Framework   
 ├── thesis/            # PDF Document
-├── demos/             # Video demonstrations of E1-E4 validation scenarios
+├── demos/             # Video Demonstrations
 ```
 
 ## Quick Start
-
+To get started, see [`p2engine/README.md`](p2engine/README.md).
 For implementation details, see [`p2engine/README.md`](p2engine/README.md).
-Video demonstrations of each validation scenario are available in [`demos/`](demos/).
+Video demonstrations of..  [`demos/`](demos/).
 
 ## Access & Rights
 
