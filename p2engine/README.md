@@ -306,7 +306,7 @@ p2engine ledger history agent_alpha --limit 20
 p2engine ledger audit
 ```
 
-## 🧪 Learning-Enabled System
+## 🧪 Adaptation / Learning-Enabled System
 
 The rollout system enables continuous improvement through evaluation and adaptation:
 
@@ -417,7 +417,7 @@ p2engine config set-tools <conversation> get_weather,delegate,check_balance
 p2engine config show-overrides <conversation>
 ```
 
-## 📊 Evaluation System
+## 📊 Adaptation / Evaluation System
 
 P2Engine includes a sophisticated evaluation framework:
 
@@ -582,14 +582,6 @@ tail -f logs/run_*/workers/*.log
 tail -f logs/canton/*.log
 ```
 
-## 📄 Access & Rights
-
-**This is a closed academic work for a Master's thesis.**
-
-- **Access Period**: Sensors (examiners) may view and test the code only during the official examination period
-- **Restrictions**: After the examination period, all access must be revoked
-- **Intellectual Property**: The ideas, concepts, and implementations in this work may not be reshared or redistributed
-- **Authorized Users**: Limited to the thesis supervisor, student, and designated sensors/examiners
 
 ## 🛠️ Technology Stack
 
@@ -599,7 +591,7 @@ tail -f logs/canton/*.log
 - **[Celery](https://docs.celeryproject.org/)** - Distributed task queue for scalable execution
 - **[Redis](https://redis.io/)** - In-memory data store for caching and message passing
 
-### Ledger Technology
+### Audit Layer - Ledger Technology
 
 - **[Canton](https://www.digitalasset.com/developers)** - Distributed ledger infrastructure
 - **[Daml](https://daml.com/)** - Smart contract language for ledger transactions
@@ -611,7 +603,7 @@ tail -f logs/canton/*.log
 - **[Rich](https://github.com/Textualize/rich)** - Terminal formatting and UI components
 - **[Pydantic](https://pydantic-docs.helpmanual.io/)** - Data validation and settings management
 
-### AI/ML Infrastructure
+### AI/ML/Adaptation Infrastructure
 
 - **[OpenAI API](https://openai.com/api/)** - Primary LLM provider
 - **[Jinja2](https://jinja.palletsprojects.com/)** - Template engine for prompt engineering
@@ -621,7 +613,7 @@ tail -f logs/canton/*.log
 
 <div align="center">
 <strong>Master's Thesis Project</strong><br>
-<em>Autonomous Systems via Multi-Agent Coordination and Verifiable Infrastructure</em><br>
+<em>P2Engine A Multi-Agent System Framework</em><br>
 <br>
 © 2025 - Academic Use Only
 </div>
