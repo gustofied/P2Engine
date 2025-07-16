@@ -17,7 +17,7 @@ packages = [
 # Runtime dependencies
 # ─────────────────────────────────────────────────────────────────────────────
 [tool.poetry.dependencies]
-python               = "^3.9"
+python               = ">=3.9,<3.12"
 celery               = "^5.2.7"
 redis                = "^4.3.4"
 litellm              = "^1.6.0"
