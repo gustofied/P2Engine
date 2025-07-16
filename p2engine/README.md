@@ -21,7 +21,7 @@ P2Engine is a multi-agent system framework that aims to be fully agentic, emerge
 
 - **FSM Orchestration**: Finite-state machine coordination enabling precise, observable agent workflows
 - **Audit Layer via DLT**: Canton/Daml integration providing immutable audit trails and privacy-aware operations
-- **Adaptation**: MCTS/RL-based reasoners with automated evaluation for continuous improvement
+- **Adaptation**: MCTS/RL-based infra with automated evaluation for continuous improvement
 - **Distributed Task Execution**: Celery-based architecture for scalable agent operations
 - **Effect System**: Controlled side-effect management ensuring system integrity
 - **Observability**: Real-time monitoring, tracing, and debugging capabilities
