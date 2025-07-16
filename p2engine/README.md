@@ -172,8 +172,17 @@ ARTIFACT_DRIVER=fs
 The **primary way** to run P2Engine is through the orchestration script:
 
 ```bash
-# This single command starts EVERYTHING:
+# This single command starts EVERYTHING: ./scripts/run_project.sh
+
+# Launch P2Engine
+
+# Option A: Enter the virtual environment
+poetry shell
 ./scripts/run_project.sh
+
+# OR Option B: Use 'poetry run' directly without activating the shell
+# poetry run ./scripts/run_project.sh
+
 ```
 
 #### What run_project.sh does:
