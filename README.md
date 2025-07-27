@@ -16,8 +16,8 @@
 ## Repository Structure
 
 ```
-├── p2engine/          # Framework
 ├── demos/             # Video Demonstrations  
+├── p2engine/          # Framework
 ├── thesis/            # PDF Document
 ```
 
