@@ -16,9 +16,9 @@
 ## Repository Structure
 
 ```
-├── p2engine/          # Framework   
+├── p2engine/          # Framework
+├── demos/             # Video Demonstrations  
 ├── thesis/            # PDF Document
-├── demos/             # Video Demonstrations
 ```
 
 ## Quick Start
