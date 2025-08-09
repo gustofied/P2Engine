@@ -1,3 +1,4 @@
+is this a framework hmm, we are calling it a framework, but the work is not to turn P2Engine into
 # P2Engine: A Multi-Agent System Framework test
 
 **Master's Thesis**  
