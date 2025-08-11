@@ -593,20 +593,8 @@ tail -f logs/canton/*.log
 ```
 
 
-## The project tries to be as bare bones as possible we use
+**Tech (bare-bones):** [LiteLLM](https://docs.litellm.ai/), [Celery](https://docs.celeryq.dev/), [Redis](https://redis.io/), [Canton](https://www.canton.network/), [Daml](https://docs.daml.com/), [Poetry](https://python-poetry.org/), [Typer](https://typer.tiangolo.com/), [Rich](https://github.com/Textualize/rich), [Pydantic](https://docs.pydantic.dev/latest/), [OpenAI API](https://platform.openai.com/docs), [Jinja2](https://jinja.palletsprojects.com/), [JSON Schema](https://json-schema.org/).
 
-- **[LiteLLM](https://github.com/BerriAI/litellm)** - Unified interface for multiple LLM providers
-- **[Celery](https://docs.celeryproject.org/)** - Distributed task queue for scalable execution
-- **[Redis](https://redis.io/)** - In-memory data store for caching and message passing
-- **[Canton](https://www.digitalasset.com/developers)** - Distributed ledger infrastructure
-- **[Daml](https://daml.com/)** - Smart contract language for ledger transactions
-- **[Poetry](https://python-poetry.org/)** - Dependency management and packaging
-- **[Typer](https://typer.tiangolo.com/)** - CLI interface framework
-- **[Rich](https://github.com/Textualize/rich)** - Terminal formatting and UI components
-- **[Pydantic](https://pydantic-docs.helpmanual.io/)** - Data validation and settings management
-- **[OpenAI API](https://openai.com/api/)** - Primary LLM provider
-- **[Jinja2](https://jinja.palletsprojects.com/)** - Template engine for prompt engineering
-- **[JSONSchema](https://json-schema.org/)** - Tool parameter validation
 
 ---
 
