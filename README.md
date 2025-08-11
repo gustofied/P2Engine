@@ -1,19 +1,21 @@
 is this a framework hmm, we are calling it a framework, but the work is not to turn P2Engine into
-# P2Engine: A Multi-Agent System Framework test
+
+# P2Engine: A Multi-Agent System Framework test 2
 
 **Master's Thesis**  
-*Adam Dybwad Sioud*  
-*Supervisor: Surya Kathaya*  
-*NTNU – Norges teknisk-naturvitenskapelige universitet, Department of Computer Science*   
-*July 2025*
+_Adam Dybwad Sioud_  
+_Supervisor: Surya Kathaya_  
+_NTNU – Norges teknisk-naturvitenskapelige universitet, Department of Computer Science_  
+_July 2025_
 
 ## Contact
+
 *adam.sioud@protonmail.com*  
-*surya.b.kathayat@ntnu.no*  
+*surya.b.kathayat@ntnu.no*
 
 ## Abstract
 
-This thesis presents **P2Engine**, a framework for autonomous multi-agent systems built on four foundational pillars: **orchestration**, **observability**, **adaptation**, and **auditability**. The system demonstrates how multiple agents can coordinate dynamically through emergent, non-rigid workflows while maintaining comprehensive audit layers and enabling adaptation through  adaptation loops.
+This thesis presents **P2Engine**, a framework for autonomous multi-agent systems built on four foundational pillars: **orchestration**, **observability**, **adaptation**, and **auditability**. The system demonstrates how multiple agents can coordinate dynamically through emergent, non-rigid workflows while maintaining comprehensive audit layers and enabling adaptation through adaptation loops.
 
 ## Core Contributions
 
@@ -26,25 +28,24 @@ This thesis presents **P2Engine**, a framework for autonomous multi-agent system
 
 ```
 .
-├── p2engine/          # Framework 
-├── diagrams/          # Architecture and flow diagrams  
+├── p2engine/          # Framework
+├── diagrams/          # Architecture and flow diagrams
 ├── thesis/            # PDF Document
 ├── demos/             # Video demonstrations of E1-E4 validation scenarios
 ```
 
 ## Quick Start
 
-
 For implementation details, see [`p2engine/README.md`](p2engine/README.md).
-
 
 Video demonstrations of each validation scenario are available in [`demos/`](demos/).
 
 ## Access & Rights
 
 This is a closed academic work. Code access restricted to:
+
 - Thesis supervisor
-- Student author  
+- Student author
 - Designated examiners (evaluation period only)
 
 **Note**: Ideas and implementations require explicit permission for redistribution.
