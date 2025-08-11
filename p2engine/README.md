@@ -592,46 +592,21 @@ tail -f logs/run_*/workers/*.log
 tail -f logs/canton/*.log
 ```
 
-## 📄 Access & Rights
 
-**This is a closed academic work for a Master's thesis.**
-
-- **Access Period**: Sensors (examiners) may view and test the code only during the official examination period
-- **Restrictions**: After the examination period, all access must be revoked
-- **Intellectual Property**: The ideas, concepts, and implementations in this work may not be reshared or redistributed
-- **Authorized Users**: Limited to the thesis supervisor, student, and designated sensors/examiners
-
-## 🛠️ Technology Stack
-
-### Core Framework
+## The project tries to be as bare bones as possible we use
 
 - **[LiteLLM](https://github.com/BerriAI/litellm)** - Unified interface for multiple LLM providers
 - **[Celery](https://docs.celeryproject.org/)** - Distributed task queue for scalable execution
 - **[Redis](https://redis.io/)** - In-memory data store for caching and message passing
-
-### Ledger Technology
-
 - **[Canton](https://www.digitalasset.com/developers)** - Distributed ledger infrastructure
 - **[Daml](https://daml.com/)** - Smart contract language for ledger transactions
-
-### Development Tools
-
 - **[Poetry](https://python-poetry.org/)** - Dependency management and packaging
 - **[Typer](https://typer.tiangolo.com/)** - CLI interface framework
 - **[Rich](https://github.com/Textualize/rich)** - Terminal formatting and UI components
 - **[Pydantic](https://pydantic-docs.helpmanual.io/)** - Data validation and settings management
-
-### AI/ML Infrastructure
-
 - **[OpenAI API](https://openai.com/api/)** - Primary LLM provider
 - **[Jinja2](https://jinja.palletsprojects.com/)** - Template engine for prompt engineering
 - **[JSONSchema](https://json-schema.org/)** - Tool parameter validation
 
 ---
 
-<div align="center">
-<strong>Master's Thesis Project</strong><br>
-<em>Autonomous Systems via Multi-Agent Coordination and Verifiable Infrastructure</em><br>
-<br>
-© 2025 - Academic Use Only
-</div>
