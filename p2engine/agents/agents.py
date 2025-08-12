@@ -1,3 +1,4 @@
+# TODO Check agents.py the factory/plugin against our IAgent?
 from typing import List
 
 from infra import config_loader as cfg

@@ -1,4 +1,5 @@
 # agents/impl/human_in_loop_agent.py
+# TODO, Add IAgent type hints in the implementations?
 from infra.logging.logging_config import logger
 from orchestrator.schemas.schemas import AskSchema, ReplySchema
 

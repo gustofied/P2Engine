@@ -1,0 +1,10 @@
+todos
+TODO, Send over tool related things from agents module over to tools module, and or fix more
+TODO, Check agents.py the factory/plugin against our IAgent?
+TODO, Add IAgent type hints in the implementations?
+TODO, Fix both readmes for Tools, and Agents
+TODO, constansts.py Just move this stuff into decoratros?
+TODO, Fix the two readmes of the two modles Tools and Agents
+-
+dones
+Read through modules agents and tools

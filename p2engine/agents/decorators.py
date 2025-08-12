@@ -1,3 +1,4 @@
+# TODO This file and everything inside should be in the tools module
 import hashlib
 import json
 import logging
@@ -25,41 +26,27 @@ class FunctionTool(ITool):
         self.output_schema = config.output_schema
         self.cache_ttl = config.cache_ttl
 
-    # ──────────────────────────────────────────────────────────────────────────
-    # NOTE:  ✨ Patched logic – helper-kwargs captured for *all* calls
-    #        but only forwarded to the tool function when it explicitly
-    #        declared `requires_context=True`.
-    # ──────────────────────────────────────────────────────────────────────────
     def execute(self, *, redis_client: Optional[redis.Redis] = None, **kwargs: Any) -> Dict[str, Any]:
-        # helper-keys we recognise (constants + branch_id added here)
         helper_keys = set(HELPER_KWARGS) | {"branch_id"}
 
-        # always grab the context for artefact headers
         context_params = {k: kwargs.get(k) for k in helper_keys if k in kwargs}
 
-        # decide what the *user* function should actually receive
         if self.config.requires_context:
-            input_params = kwargs  # forward everything, incl. helper kwargs
+            input_params = kwargs  
         else:
             input_params = {k: v for k, v in kwargs.items() if k not in helper_keys}
-
-        # ──────────────── cache (same as before) ────────────────
         if self.cache_ttl is not None and redis_client is not None:
             cache_key = f"tool_cache:{self.name}:" f"{hashlib.sha1(json.dumps(input_params, sort_keys=True).encode()).hexdigest()}"
             if cached := redis_client.get(cache_key):
                 result = json.loads(cached)
                 result["cache_status"] = "hit"
                 return result
-
-        # ──────────────── validation + call ────────────────
         try:
             if self.input_schema is not None:
                 validated_input = self.input_schema(**input_params)
                 func_kwargs = validated_input.dict()
             else:
                 func_kwargs = input_params
-
-            # re-inject context for tools that asked for it
             if self.config.requires_context:
                 func_kwargs.update(context_params)
 
@@ -90,8 +77,6 @@ class FunctionTool(ITool):
         except Exception as exc:
             logger.error("Error executing tool '%s': %s", self.name, exc, exc_info=True)
             output = {"status": "error", "message": str(exc), "error_type": type(exc).__name__}
-
-        # ──────────────── artefact emission (unchanged) ────────────────
         try:
             from infra.artifacts.bus import get_bus
             from infra.artifacts.schema import ArtifactHeader, current_timestamp, generate_ref
@@ -113,7 +98,6 @@ class FunctionTool(ITool):
 
         return output
 
-    # (schema & post_effects properties unchanged)
     @property
     def schema(self) -> Dict[str, Any]:
         if self.input_schema is not None:
@@ -137,7 +121,6 @@ class FunctionTool(ITool):
         return self.config.post_effects
 
 
-# decorator factory (unchanged)
 def function_tool(
     *,
     name: str,

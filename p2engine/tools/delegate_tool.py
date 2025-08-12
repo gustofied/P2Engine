@@ -1,4 +1,3 @@
-# tools/delegate_tool.py
 from __future__ import annotations
 
 from typing import Any, Optional
@@ -12,8 +11,6 @@ from infra.logging.logging_config import logger
 class DelegateInput(BaseModel):
     agent_id: str
     message: str
-
-    # allow extra keys so users can pass arbitrary metadata
     model_config = ConfigDict(extra="allow")
 
 
@@ -21,7 +18,7 @@ class DelegateInput(BaseModel):
     name="delegate",
     description=("Spawn (or wake) another agent **in the same conversation** and ask it " "to handle a sub-task."),
     input_schema=DelegateInput,
-    post_effects=["agent_call"],  # ⬅️  agent_call post-effect will do the heavy lifting
+    post_effects=["agent_call"], 
     requires_context=True,
     side_effect_free=True,
 )
@@ -30,7 +27,7 @@ def delegate(
     agent_id: str,
     message: str,
     conversation_id: str,
-    redis_client: Optional[Any] = None,  # kept for signature-compatibility
+    redis_client: Optional[Any] = None,  
     **_: Any,
 ):
     """
@@ -56,5 +53,4 @@ def delegate(
         }
     )
 
-    # No direct Redis manipulation here!
     return {"status": "queued", "child": agent_id}

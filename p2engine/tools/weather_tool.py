@@ -44,9 +44,6 @@ def get_weather(location: str, unit: str = "fahrenheit") -> dict:
     """
     logger.info("get_weather invoked with location=%s, unit=%s", location, unit)
 
-    # ------------------------------------------------------------------ #
-    #  Fake stub DB – swap this for a real weather provider if desired.  #
-    # ------------------------------------------------------------------ #
     weather_data = {
         "San Francisco": {"temperature": 72, "unit": "fahrenheit"},
         "Tokyo": {"temperature": 10, "unit": "celsius"},
@@ -63,7 +60,6 @@ def get_weather(location: str, unit: str = "fahrenheit") -> dict:
     temp = data["temperature"]
     stored_unit = data["unit"]
 
-    # Simple unit conversion so callers can ask in either °F or °C
     if unit != stored_unit:
         if unit == "fahrenheit" and stored_unit == "celsius":
             temp = (temp * 9 / 5) + 32

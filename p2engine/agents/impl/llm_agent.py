@@ -1,3 +1,4 @@
+# TODO, Add IAgent type hints in the implementations?
 import json
 from typing import Dict, List, Optional, Union
 
@@ -36,8 +37,6 @@ class LLMAgent:
         self.template_manager = template_manager
         self.redis: redis.Redis = redis_client or get_redis()
         self.config = config
-
-    # ------------------------------------------------------------------ #
 
     async def run(
         self,
@@ -128,9 +127,6 @@ class LLMAgent:
 
         return ReplySchema(message="No response generated.")
 
-    # ------------------------------------------------------------------ #
-    # internal helpers
-    # ------------------------------------------------------------------ #
 
     def _get_system_message(self, tool_schemas: List[dict]) -> dict:
         template = self.template_manager.get_template("system_message.j2")

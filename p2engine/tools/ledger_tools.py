@@ -19,7 +19,7 @@ class TransferInput(BaseModel):
             raise ValueError("Amount must be positive")
         if v > 10000:
             raise ValueError("Single transfer cannot exceed 10000")
-        return round(v, 2)  # Round to 2 decimal places
+        return round(v, 2) 
 
 
 @function_tool(
@@ -28,7 +28,7 @@ class TransferInput(BaseModel):
     input_schema=TransferInput,
     requires_context=True,
     side_effect_free=False,
-    dedup_ttl=10,  # Prevent duplicate transfers within 10 seconds
+    dedup_ttl=10,  
 )
 def transfer_funds(
     to_agent: str, amount: float, reason: str = "", creator_id: str = "", conversation_id: str = "", **kwargs: Any
@@ -44,7 +44,6 @@ def transfer_funds(
     async def _execute():
         ledger = await get_ledger_service()
 
-        # Ensure both agents have wallets
         await ledger.ensure_agent_wallet(creator_id)
         await ledger.ensure_agent_wallet(to_agent)
 
@@ -91,7 +90,7 @@ class BalanceInput(BaseModel):
     input_schema=BalanceInput,
     requires_context=True,
     side_effect_free=True,
-    cache_ttl=30,  # Cache for 30 seconds
+    cache_ttl=30,
 )
 def check_balance(agent_id: Optional[str] = None, creator_id: str = "", **kwargs: Any) -> Dict[str, Any]:
     """
@@ -132,7 +131,7 @@ class HistoryInput(BaseModel):
     input_schema=HistoryInput,
     requires_context=True,
     side_effect_free=True,
-    cache_ttl=60,  # Cache for 1 minute
+    cache_ttl=60,
 )
 def transaction_history(limit: int = 10, creator_id: str = "", **kwargs: Any) -> Dict[str, Any]:
     """
@@ -149,7 +148,6 @@ def transaction_history(limit: int = 10, creator_id: str = "", **kwargs: Any) ->
     try:
         transactions = run_async(_execute())
 
-        # Format transactions for readability
         formatted_txs = []
         for tx in transactions:
             payload = tx.get("payload", {})

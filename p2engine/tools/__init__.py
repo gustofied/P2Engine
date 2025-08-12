@@ -3,7 +3,6 @@ import os
 from infra.logging.logging_config import logger
 from orchestrator.registries import tool_registry
 
-# cache to avoid duplicate INFO spam in repeated invocations
 _MOD_CACHE: set[str] = set()
 
 
@@ -18,8 +17,7 @@ def load_tools() -> None:
         if not filename.endswith(".py") or filename == "__init__.py":
             continue
 
-        module_name = filename[:-3]  # strip ".py"
-
+        module_name = filename[:-3]  
         if module_name in _MOD_CACHE:
             logger.debug("Imported tool module: %s (cached)", module_name)
             continue
@@ -34,7 +32,6 @@ def load_tools() -> None:
     logger.info("Registered tools: %s", list(tool_registry._tools.keys()))
 
 
-# Initial import pass
 load_tools()
 
 __all__ = ["tool_registry"]
