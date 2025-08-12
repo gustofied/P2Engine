@@ -1,4 +1,3 @@
-# config/rollout_competitive_payment.yml
 teams:
   problem_solvers:
     base:

@@ -1,4 +1,3 @@
-# config/rollout_hierarchical_distribution.yml
 teams:
   management_team:
     initial_message: |

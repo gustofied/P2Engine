@@ -1,7 +1,6 @@
-# config/demo_rollout.yml  ➜  new schema
 teams:
-  demo_team: # ← wrap everything under here
-    initial_message: "What's the weather in Paris right now?"
+  demo_team:
+    initial_message: "What's the weather in Tokyo right now?"
 
     base:
       agent_id: agent_alpha
