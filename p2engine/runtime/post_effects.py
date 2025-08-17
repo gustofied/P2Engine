@@ -1,4 +1,3 @@
-# runtime/post_effects.py
 from __future__ import annotations
 from typing import Any, Callable, Dict, List, TYPE_CHECKING
 import redis
@@ -95,7 +94,6 @@ def _agent_call_handler(
         }
     )
 
-    # Enqueue a new tick for processing
     from runtime.tasks.tasks import enqueue_session_tick
 
     enqueue_session_tick(conversation_id)
@@ -121,7 +119,6 @@ def _treasurer_payment_handler(
         logger.error("treasurer_payment missing target agent")
         return []
 
-    # Determine payment amount based on score
     if evaluation_score >= 0.8:
         amount = 25
         reason = f"Excellent performance (score: {evaluation_score:.2f})"
@@ -132,11 +129,9 @@ def _treasurer_payment_handler(
         amount = 10
         reason = f"Satisfactory performance (score: {evaluation_score:.2f})"
     else:
-        # No payment for poor performance
         logger.info(f"No payment for {target_agent} due to low score: {evaluation_score}")
         return []
 
-    # Create payment effect
     return [
         CallTool(
             conversation_id=conversation_id,

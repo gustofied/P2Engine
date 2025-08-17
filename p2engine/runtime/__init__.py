@@ -19,13 +19,3 @@ __all__ = [
     "system_manager",
     "task_runner",
 ]
-
-# ─────────────────────────────────────────────────────────────────────────────
-# NOTE:
-#   The eager `from . import handlers` that lived here created a circular
-#   dependency:
-#     orchestrator.interactions.stack  →  runtime.constants
-#       ↳ runtime.__init__  →  runtime.handlers  →  … →  stack
-#
-#   Removing that line keeps `runtime` lightweight and import-safe.
-# ─────────────────────────────────────────────────────────────────────────────

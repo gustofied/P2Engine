@@ -19,6 +19,6 @@ class JinjaPromptMixin:
 
     tmpl_name: str = "judge_prompt.j2"
 
-    def _render_prompt(self, **ctx) -> str:  # noqa: D401
+    def _render_prompt(self, **ctx) -> str:  
         tmpl = _env.get_template(self.tmpl_name)
         return tmpl.render(**ctx)

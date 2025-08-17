@@ -13,7 +13,6 @@ def ack_tick(redis, cid: str, aid: str, tick: int):
     """
     waiting_key = f"session:{cid}:waiting:{tick}"
     if redis.srem(waiting_key, aid):
-        # If we did remove, measure how long we've been in this tick:
         start_time_key = f"session:{cid}:tick:{tick}:start_time"
         start_time = float(redis.get(start_time_key) or 0)
         if start_time:

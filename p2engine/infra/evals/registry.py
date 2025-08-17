@@ -31,14 +31,12 @@ class Evaluator:
         if args and kwargs:
             raise TypeError("Pass either a single payload dict *or* keyword-args, not both.")
 
-        # evaluator(payload_dict)
         if len(args) == 1 and not kwargs:
-            return self.fn(args[0])  # type: ignore[arg-type]
+            return self.fn(args[0]) 
 
-        # evaluator(**payload_dict)
-        return self.fn(**kwargs)  # type: ignore[arg-type]
+        return self.fn(**kwargs)  
 
-    def __repr__(self) -> str:  # pragma: no cover
+    def __repr__(self) -> str:
         return f"<Evaluator {self.id}@{self.version}>"
 
 
@@ -46,9 +44,6 @@ class _EvaluatorRegistry:
     def __init__(self) -> None:
         self._registry: Dict[str, Tuple[str, Evaluator]] = {}
 
-    # --------------------------------------------------------------------- #
-    # Public API
-    # --------------------------------------------------------------------- #
     def register(
         self,
         evaluator_id: str,
@@ -84,13 +79,12 @@ class _EvaluatorRegistry:
         *,
         version: str | None = None,
     ) -> Evaluator:
-        # Lazy-load any evaluator modules/plugins the first time we’re asked.
         if evaluator_id not in self._registry:
             _load_evaluators()
 
         try:
             registered_version, eval_obj = self._registry[evaluator_id]
-        except KeyError as exc:  # pragma: no cover
+        except KeyError as exc:  
             raise KeyError(
                 f"Evaluator '{evaluator_id}' not found. " "Ensure its module is importable or the plug-in is installed."
             ) from exc
@@ -107,7 +101,6 @@ class _EvaluatorRegistry:
         return eval_obj
 
 
-# The singleton registry instance used throughout the code-base
 registry = _EvaluatorRegistry()
 
 

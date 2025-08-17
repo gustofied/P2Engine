@@ -25,9 +25,6 @@ class WaitingState(BaseState):
     deadline: float
     correlation_id: Optional[str] = None
 
-    # --------------------------------------------------------------------- #
-    # Helpers – all deterministic w.r.t the *stored* timestamps.
-    # --------------------------------------------------------------------- #
 
     def remaining(self, now: float | None = None) -> float:
         """

@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 from typing import List
 
-# ── existing helpers ──────────────────────────────────────────────────────────
 
 
 def set_delivery(engine, scope: str, key: str, mode: str):
@@ -33,7 +32,6 @@ def get_overrides(engine, conv_id: str, agent_id: str) -> dict:
     return json.loads(raw) if raw else {}
 
 
-# ── NEW helper utilities for CLI autocompletion ──────────────────────────────
 
 
 def _bytes_or_str(v):

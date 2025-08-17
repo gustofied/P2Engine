@@ -29,19 +29,13 @@ class FSStorageDriver(BaseStorageDriver):
         self.journal_enabled: bool = os.getenv("ARTIFACT_JOURNAL", "1") != "0"
         self.payload_files_enabled: bool = os.getenv("ARTIFACT_PAYLOAD_FILES", "0") == "1"
 
-    # --------------------------------------------------------------------- #
-    # Internal helpers
-    # --------------------------------------------------------------------- #
-
     @staticmethod
     def _ext(mime: str) -> str:
         return {"application/json": "json", "text/plain": "txt"}.get(mime, "bin")
 
-    # ── path builders ----------------------------------------------------- #
 
     def _payload_path(self, session: str, ref: str, mime: str, compressed: bool) -> Path:
         ext = self._ext(mime) + (".gz" if compressed else "")
-        # 💡 NEW: the “agents/” hop is gone
         return self.base_dir / "artifacts" / session / "payloads" / f"{ref}.{ext}"
 
     def _legacy_payload_path(self, session: str, ref: str, mime: str, compressed: bool) -> Path:
@@ -55,9 +49,6 @@ class FSStorageDriver(BaseStorageDriver):
     def _legacy_journal_path(self, session: str) -> Path:
         return self.base_dir / "artifacts" / "agents" / session / "journal.ndjson"
 
-    # --------------------------------------------------------------------- #
-    # Public driver API
-    # --------------------------------------------------------------------- #
 
     def write_payload(
         self,
@@ -67,7 +58,6 @@ class FSStorageDriver(BaseStorageDriver):
         mime: str,
         header: Dict[str, Any],
     ) -> None:
-        # ── serialise ------------------------------------------------------ #
         if mime == "application/json":
             blob: bytes = json.dumps(payload, separators=(",", ":")).encode()
         elif mime == "text/plain":
@@ -77,7 +67,6 @@ class FSStorageDriver(BaseStorageDriver):
 
         header["raw_len"] = len(blob)
 
-        # ── maybe compress ------------------------------------------------- #
         compressed = header.get("compressed")
         if compressed is None:
             compressed = len(blob) > 2048
@@ -85,13 +74,11 @@ class FSStorageDriver(BaseStorageDriver):
         if compressed:
             blob = gzip.compress(blob)
 
-        # ── payload file --------------------------------------------------- #
         if self.payload_files_enabled:
             p = self._payload_path(session_id, ref, mime, compressed)
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_bytes(blob)
 
-        # ── journal -------------------------------------------------------- #
         if self.journal_enabled:
             self._append_to_journal(session_id, header, payload)
 
@@ -105,14 +92,12 @@ class FSStorageDriver(BaseStorageDriver):
             }
         )
 
-    # --------------------------------------------------------------------- #
 
     def read_payload(self, session_id: str, ref: str, mime: str) -> Any:
         """
         Tries the new location first, then falls back to the legacy path so
         old sessions remain accessible.
         """
-        # —— 1) new layout -------------------------------------------------- #
         for compressed in (False, True):
             path = self._payload_path(session_id, ref, mime, compressed)
             if self.payload_files_enabled and path.exists():
@@ -121,7 +106,6 @@ class FSStorageDriver(BaseStorageDriver):
                     data = gzip.decompress(data)
                 return self._decode(data, mime)
 
-        # —— 2) legacy layout ---------------------------------------------- #
         for compressed in (False, True):
             path = self._legacy_payload_path(session_id, ref, mime, compressed)
             if self.payload_files_enabled and path.exists():
@@ -130,7 +114,6 @@ class FSStorageDriver(BaseStorageDriver):
                     data = gzip.decompress(data)
                 return self._decode(data, mime)
 
-        # —— 3) journal fallback ------------------------------------------- #
         for jp in (self._journal_path(session_id), self._legacy_journal_path(session_id)):
             if not jp.exists():
                 continue
@@ -145,7 +128,6 @@ class FSStorageDriver(BaseStorageDriver):
 
         raise FileNotFoundError(f"Artifact {ref} not found")
 
-    # --------------------------------------------------------------------- #
 
     def delete_payload(self, session_id: str, ref: str, mime: str, compressed: bool) -> None:
         for builder in (self._payload_path, self._legacy_payload_path):
@@ -153,9 +135,7 @@ class FSStorageDriver(BaseStorageDriver):
             if p.exists():
                 p.unlink(missing_ok=True)
 
-    # --------------------------------------------------------------------- #
-    # Internals
-    # --------------------------------------------------------------------- #
+
 
     @staticmethod
     def _decode(data: bytes, mime: str) -> Any:

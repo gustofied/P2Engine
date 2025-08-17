@@ -11,7 +11,7 @@ from orchestrator.interactions.states.waiting import WaitingState
 from runtime.effects import BaseEffect, CallTool
 from runtime.policies.dedup import BaseDedupPolicy
 
-if TYPE_CHECKING:  # runtime-safe type hints
+if TYPE_CHECKING:  
     from orchestrator.interactions.stack import InteractionStack
 
 
@@ -40,9 +40,7 @@ class EffectExecutor:
         self.celery = celery_app
         self.dedup_policy = dedup_policy
 
-    # --------------------------------------------------------------------- #
-    # Public API
-    # --------------------------------------------------------------------- #
+
 
     def execute(self, effects: List[BaseEffect], conversation_id: str) -> None:
         """
@@ -51,7 +49,6 @@ class EffectExecutor:
         from infra.logging.effect_log import append_effect_log  # local import OK
 
         for eff in effects:
-            # ── tool calls with deduplication ─────────────────────────────
             if isinstance(eff, CallTool) and not self.dedup_policy.should_execute(eff):
                 self._skip_duplicate_tool_call(eff, conversation_id)
                 continue
@@ -60,7 +57,6 @@ class EffectExecutor:
                 self._enqueue_tool(eff, conversation_id)
                 continue
 
-            # ── generic effect ────────────────────────────────────────────
             try:
                 eff.execute(self.redis, self.celery)
                 logger.info(
@@ -82,9 +78,7 @@ class EffectExecutor:
                     exc_info=True,
                 )
 
-    # ------------------------------------------------------------------ #
-    # Internals
-    # ------------------------------------------------------------------ #
+
 
     def _skip_duplicate_tool_call(self, eff: CallTool, conversation_id: str) -> None:
         """

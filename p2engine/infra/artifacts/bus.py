@@ -19,7 +19,6 @@ from infra.logging.logging_config import logger
 from .drivers.base import BaseStorageDriver
 from .drivers.fs_driver import FSStorageDriver
 
-# ────────────────────────────────────────────────────────────────────────────
 __all__ = ["ArtifactBus", "get_bus"]
 
 
@@ -36,7 +35,6 @@ class ArtifactBus:
         self.redis = redis_client
         self.driver = driver
 
-        # key templates
         self.stream_key = "stream:artifacts"
         self.index_tpl = "artifacts:{session}:index"
         self.header_tpl = "artifacts:{session}:headers"
@@ -45,7 +43,6 @@ class ArtifactBus:
         self._lua_sha_next_idx: str | None = None
         self._load_lua_scripts()
 
-    # ------------------------------------------------------------------ class factory
     @classmethod
     def get_instance(
         cls,
@@ -71,9 +68,8 @@ class ArtifactBus:
 
         return cls._instance
 
-    __call__ = get_instance  # legacy alias (kept for ABI)
+    __call__ = get_instance  
 
-    # ------------------------------------------------------------------ Lua helper
     def _load_lua_scripts(self) -> None:
         lua_src = resources.files("infra.artifacts.lua").joinpath("next_idx.lua").read_text()
         self._lua_sha_next_idx = self.redis.script_load(lua_src)
@@ -82,12 +78,11 @@ class ArtifactBus:
         try:
             return int(self.redis.evalsha(self._lua_sha_next_idx, 0, session, branch, ref))
         except redis.exceptions.ResponseError as exc:
-            if "NOSCRIPT" in str(exc):  # hot-reload after Redis restart
+            if "NOSCRIPT" in str(exc):  
                 self._load_lua_scripts()
                 return int(self.redis.evalsha(self._lua_sha_next_idx, 0, session, branch, ref))
             raise
 
-    # ------------------------------------------------------------------ patch helpers
     def patch_artifact(
         self,
         ref: str,
@@ -104,10 +99,8 @@ class ArtifactBus:
         if not raw_hdr:
             raise KeyError(f"Artifact {ref!r} header missing")
 
-        # deserialize header
         header: ArtifactHeader = json.loads(raw_hdr)
 
-        # ── header patch ───────────────────────────────────────────────
         if updates_header:
             meta_patch = updates_header.pop("meta", None)
             header.update(updates_header)
@@ -115,7 +108,6 @@ class ArtifactBus:
                 header_meta = header.setdefault("meta", {})
                 header_meta.update(meta_patch)
 
-        # ── payload patch ──────────────────────────────────────────────
         if updates_payload is not None:
             try:
                 payload = self.driver.read_payload(header["session_id"], ref, header["mime"])
@@ -142,7 +134,6 @@ class ArtifactBus:
                     exc_info=True,
                 )
 
-        # ── lean-index patch (score / meta) ────────────────────────────
         raw_lean = self.redis.hget(idx_key, ref)
         if raw_lean:
             lean = json.loads(raw_lean)
@@ -152,12 +143,10 @@ class ArtifactBus:
                 lean["meta"] = header["meta"]
             self.redis.hset(idx_key, ref, json.dumps(lean))
 
-        # keep sorted-set up-to-date for score queries
         if header.get("score") is not None:
             scores_z = f"artifacts:{header['session_id']}:scores"
             self.redis.zadd(scores_z, {ref: header["score"]})
 
-        # finally store patched header + stream event
         self.redis.hset(hdr_key, ref, json.dumps(header))
         self.redis.xadd(
             self.stream_key,
@@ -205,7 +194,6 @@ class ArtifactBus:
 
         self.patch_artifact(ref, updates_header=hdr_updates, updates_payload=payload_updates)
 
-    # ------------------------------------------------------------------ evaluation helpers
     def create_evaluation(
         self,
         *,
@@ -237,14 +225,12 @@ class ArtifactBus:
             "meta": {"status": "pending", "eval_metrics": {}},
         }
 
-        # persist artefact first (so workers can stream-watch it)
         self._persist_artifact(header, payload)
 
-        # schedule the worker task (new, direct route – no flush timer)
         from runtime.tasks.celery_app import app as celery_app
         from infra.evals.batcher import EvaluationCoordinator
 
-        EvaluationCoordinator(self.redis, celery_app).schedule(  # type: ignore[call-arg]
+        EvaluationCoordinator(self.redis, celery_app).schedule( 
             header["ref"],
             evaluator_id,
             judge_version,
@@ -292,7 +278,6 @@ class ArtifactBus:
             payload={"parent_refs": [target_ref], **payload},
         )
 
-    # ------------------------------------------------------------------ timeline helpers
     def evaluations_for(
         self,
         session_id: str,
@@ -317,7 +302,6 @@ class ArtifactBus:
         out.sort(key=lambda pair: pair[0]["ts"])
         return out
 
-    # ------------------------------------------------------------------ *publishing* a new artefact
     def publish(self, header: ArtifactHeader, payload: Any) -> None:
         """
         Low-level entry-point: store an artefact (state, tool-call, metrics…).
@@ -325,7 +309,6 @@ class ArtifactBus:
         """
         self._persist_artifact(header, payload)
 
-    # ------------------------------------------------------------------ internal persistence
     def _persist_artifact(self, header: ArtifactHeader, payload: Any) -> None:
         """
         Writes payload to backing store + updates Redis indices, all
@@ -342,11 +325,9 @@ class ArtifactBus:
         branch_id: str = header["branch_id"]
         ref: str = header["ref"]
 
-        # monotonic step index per branch
         step_idx = self._next_step_idx(session_id, branch_id, ref)
         header["step_idx"] = step_idx
 
-        # write payload (can be large, goes to FS/S3)
         self.driver.write_payload(
             session_id=session_id,
             ref=ref,
@@ -355,7 +336,6 @@ class ArtifactBus:
             header=header,
         )
 
-        # slim “lean” index object (fast lookup)
         lean: Dict[str, Any] = {
             "ts": header["ts"],
             "role": header["role"],
@@ -372,7 +352,6 @@ class ArtifactBus:
         if "meta" in header:
             lean["meta"] = header["meta"]
 
-        # Redis keys
         idx_key = self.index_tpl.format(session=session_id)
         hdr_key = self.header_tpl.format(session=session_id)
         tline_key = self.timeline_tpl.format(session=session_id)
@@ -413,7 +392,6 @@ class ArtifactBus:
 
         self._maybe_prune(session_id, tline_key)
 
-    # ------------------------------------------------------------------ internal helpers
     def _header_by_ref(self, ref: str, *, return_keys: bool = False):
         session_id_b = self.redis.hget("artifacts:ref_to_session", ref)
         if not session_id_b:
@@ -451,7 +429,6 @@ class ArtifactBus:
 
         old_refs_s = [r.decode() if isinstance(r, bytes) else r for r in old_refs]
 
-        # delete payloads from driver
         for ref in old_refs_s:
             raw_hdr = self.redis.hget(hdr_key, ref)
             if raw_hdr is None:
@@ -464,7 +441,6 @@ class ArtifactBus:
             except Exception as exc:
                 logger.warning({"message": "payload_prune_failed", "ref": ref, "error": str(exc)})
 
-        # trim Redis indices
         with self.redis.pipeline() as pipe:
             pipe.zrem(timeline_key, *old_refs_s)
             pipe.hdel(idx_key, *old_refs_s)
@@ -473,7 +449,6 @@ class ArtifactBus:
 
         logger.debug({"message": "pruned", "session": session_id, "removed": len(old_refs_s)})
 
-    # ------------------------------------------------------------------ convenience readers
     def read_first_n(
         self,
         n: int,
@@ -550,7 +525,6 @@ class ArtifactBus:
 
         return rows
 
-    # ------------------------------------------------------------------ public accessor
     def get(self, ref: str) -> Tuple[ArtifactHeader, Any]:
         """
         Fetch *header & payload* for a single ref.  Raises ``KeyError`` if not
@@ -561,7 +535,6 @@ class ArtifactBus:
         return header, payload
 
 
-# --------------------------------------------------------------------------- utility
 def get_bus() -> ArtifactBus:
     if ArtifactBus._instance is None:
         raise RuntimeError("ArtifactBus not yet initialised")

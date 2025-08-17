@@ -34,9 +34,6 @@ class LLMEvaluator:
     def __init__(self, llm_client: LLMClient) -> None:
         self._llm = llm_client
 
-    # --------------------------------------------------------------------- #
-    # Public entry-point
-    # --------------------------------------------------------------------- #
     def __call__(self, payload: Dict[str, Any]) -> Dict[str, Any]:
         score, metrics, comment = run_async(self.score_async(payload))
         out: Dict[str, Any] = {
@@ -47,9 +44,6 @@ class LLMEvaluator:
             out["comment"] = comment
         return out
 
-    # --------------------------------------------------------------------- #
-    # Core async logic
-    # --------------------------------------------------------------------- #
     async def score_async(self, payload: Dict[str, Any]) -> Tuple[float, Dict[str, float], Optional[str]]:
         """
         Returns ``(score, metrics, comment)``.
@@ -67,16 +61,12 @@ class LLMEvaluator:
             raw = (resp.choices[0].message.content or "").strip()
 
             try:
-                # ------------------------------------------------------------------
-                # Optional JSON schema validation
-                # ------------------------------------------------------------------
                 if self.response_schema is not None:
                     obj = json.loads(raw)
                     validate(instance=obj, schema=self.response_schema)
 
                 parsed = self.parse_result(raw)
 
-                # Flexibly support 2-tuple or 3-tuple returns ----------------------
                 if isinstance(parsed, tuple):
                     if len(parsed) == 3:
                         score, metrics, comment = parsed
@@ -93,7 +83,6 @@ class LLMEvaluator:
                 if attempt == self._MAX_ATTEMPTS:
                     raise RuntimeError(f"Judge returned invalid JSON after {attempt} attempts: {err}") from err
 
-                # Tell the model to try again -------------------------------------
                 msgs.append(
                     {
                         "role": "system",
@@ -103,16 +92,13 @@ class LLMEvaluator:
                     }
                 )
 
-        # Should never reach here
         raise RuntimeError("Unexpected judge failure")
 
-    # --------------------------------------------------------------------- #
-    # Interfaces for subclasses
-    # --------------------------------------------------------------------- #
+
     def build_messages(self, payload: Dict[str, Any]) -> list[dict]:
         raise NotImplementedError
 
-    def parse_result(self, raw: str) -> Tuple[float, Dict[str, float], Optional[str]]:  # noqa: D401
+    def parse_result(self, raw: str) -> Tuple[float, Dict[str, float], Optional[str]]: 
         """
         Default “bare-bones” parser: treat the raw string as a bare score.
         """

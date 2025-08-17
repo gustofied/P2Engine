@@ -24,19 +24,16 @@ def write_override(redis_client: redis.Redis, aid: str, cid: str, patch: Dict[st
     else:
         current_override = {}
 
-    # Check if lock is set and patch tries to change other keys
     if current_override.get("lock", False) and any(k != "lock" for k in patch.keys()):
         logger.debug(f"Override locked for {aid} in {cid}, skipping patch: {patch}")
         return False
 
-    # Merge the patch
     for key, value in patch.items():
         if value is None:
             current_override.pop(key, None)
         else:
             current_override[key] = value
 
-    # Write back to Redis with 7-day TTL
     redis_client.set(override_key, json.dumps(current_override), ex=604800)
     logger.info(f"Override updated for {aid} in {cid}: {current_override}")
     return True

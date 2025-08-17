@@ -1,4 +1,3 @@
-# runtime/agent_runtime.py
 from __future__ import annotations
 
 from typing import List, Optional, Tuple
@@ -32,9 +31,6 @@ class AgentRuntime:
         self.agent_id = agent_id
         self.stack = stack
 
-    # --------------------------------------------------------------------- #
-    # Public API
-    # --------------------------------------------------------------------- #
     def step(self) -> Tuple[Optional[BaseState], List[BaseEffect]]:
         """
         Advance the agent by one turn.
@@ -46,7 +42,6 @@ class AgentRuntime:
         """
         self._strip_seeds()
 
-        # Nothing left on the branch?
         if self.stack.length() == 0:
             return None, []
 
@@ -54,12 +49,11 @@ class AgentRuntime:
         if cur_entry is None:
             return None, []
 
-        # First entry must always be a user message (after seed removal)
         if self.stack.length() == 1 and not isinstance(cur_entry.state, UserMessageState):
             raise RuntimeError("First state must be UserMessage, found " f"{type(cur_entry.state).__name__}")
 
         handler = _HANDLERS.get(type(cur_entry.state))
-        if handler is None:  # no handler ⇒ no work this tick
+        if handler is None:  
             return None, []
 
         effects: List[BaseEffect] = handler(
@@ -71,9 +65,7 @@ class AgentRuntime:
         )
         return None, effects
 
-    # --------------------------------------------------------------------- #
-    # Internal helpers
-    # --------------------------------------------------------------------- #
+
     def _strip_seeds(self) -> None:
         """
         Pops up to two consecutive synthetic-seed messages that may have been

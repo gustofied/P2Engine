@@ -14,8 +14,7 @@ from pathlib import Path
 
 _RUBRIC_DIR = Path(__file__).parent / "rubrics"
 
-# single regex – cheap and explicit
-_SAFE_NAME_RE = re.compile(r"^[A-Za-z0-9_\-]+$")  # e.g. "friendly_ping", "weather-accuracy"
+_SAFE_NAME_RE = re.compile(r"^[A-Za-z0-9_\-]+$")  
 
 
 class RubricNotFound(KeyError):
@@ -40,5 +39,4 @@ def get_rubric_text(rubric_id: str) -> str:
     if not path.is_file():
         raise RubricNotFound(f"Unknown rubric '{rubric_id}' " f"(expected template at {_RUBRIC_DIR / (rubric_id + '.jinja')})")
 
-    # Encoding chosen to match upstream loader logic (UTF-8)
     return path.read_text(encoding="utf-8")

@@ -139,7 +139,6 @@ def _display_ledger_changes(before_snapshot: Dict, after_snapshot: Dict, rollout
         after_balance = float(after.get("balance", 0))
         actual_change = after_balance - before_balance
 
-        # Count rollout transactions from the after snapshot
         rollout_txs = 0
         rollout_sent = 0.0
         rollout_received = 0.0
@@ -156,7 +155,6 @@ def _display_ledger_changes(before_snapshot: Dict, after_snapshot: Dict, rollout
 
         expected_change = rollout_received - rollout_sent
 
-        # Only log mismatch if it's significant (more than 0.01)
         if abs(actual_change - expected_change) > 0.01:
             logger.debug(
                 f"Balance calculation for {agent_id}: "
@@ -300,7 +298,6 @@ def _collect_rows(team_id: Optional[str], rollout_id: str, *, refresh: float = 2
                     seen.add(var_id)
                     rows.append(data)
             live.update(_rows_to_table(rows))
-    # Collect any final messages
     resp = _RDS.xread({_STREAM: last_id}, block=10, count=50)
     for _stream, msgs in resp:
         for _sid, fields in msgs:

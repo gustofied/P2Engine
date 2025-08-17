@@ -1,4 +1,4 @@
-from .dedup import BaseDedupPolicy, NoDedupPolicy, PenaltyDedupPolicy, StrictDedupPolicy  # noqa: F401 – re-export for convenience
+from .dedup import BaseDedupPolicy, NoDedupPolicy, PenaltyDedupPolicy, StrictDedupPolicy 
 
 __all__ = [
     "BaseDedupPolicy",

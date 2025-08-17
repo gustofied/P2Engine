@@ -9,7 +9,7 @@ from infra.logging.logging_config import logger
 from infra.logging.metrics import metrics
 from orchestrator.registries import ToolRegistry
 from runtime.effects import CallTool
-from runtime.helpers import _hash_tool_call  # single source of truth 👍
+from runtime.helpers import _hash_tool_call  
 
 __all__ = [
     "BaseDedupPolicy",
@@ -18,10 +18,6 @@ __all__ = [
     "StrictDedupPolicy",
 ]
 
-
-# --------------------------------------------------------------------------- #
-#  Base interface                                                             #
-# --------------------------------------------------------------------------- #
 class BaseDedupPolicy(ABC):
     @property
     @abstractmethod
@@ -31,9 +27,7 @@ class BaseDedupPolicy(ABC):
     def should_execute(self, effect: CallTool) -> bool: ...
 
 
-# --------------------------------------------------------------------------- #
-#  Policy: None                                                               #
-# --------------------------------------------------------------------------- #
+
 class NoDedupPolicy(BaseDedupPolicy):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         pass
@@ -46,15 +40,11 @@ class NoDedupPolicy(BaseDedupPolicy):
         return True
 
 
-# Helper – consistent Redis key everywhere
 def _dedup_key(effect: CallTool) -> str:
     stable_hash = _hash_tool_call(effect.tool_name, effect.parameters)
     return f"dedup:{effect.conversation_id}:{effect.agent_id}:" f"{effect.branch_id}:{stable_hash}"
 
 
-# --------------------------------------------------------------------------- #
-#  Policy: Penalty (logs duplicates, still runs)                              #
-# --------------------------------------------------------------------------- #
 class PenaltyDedupPolicy(BaseDedupPolicy):
     def __init__(
         self,
@@ -71,7 +61,6 @@ class PenaltyDedupPolicy(BaseDedupPolicy):
         return "penalty"
 
     def should_execute(self, effect: CallTool) -> bool:
-        # Per-tool TTL override if configured
         tool = self.tools.get_tool_by_name(effect.tool_name)
         ttl = (tool.config.dedup_ttl if tool else None) or self.ttl
 
@@ -93,9 +82,6 @@ class PenaltyDedupPolicy(BaseDedupPolicy):
         return True
 
 
-# --------------------------------------------------------------------------- #
-#  Policy: Strict (blocks unless side-effect-free)                            #
-# --------------------------------------------------------------------------- #
 class StrictDedupPolicy(BaseDedupPolicy):
     def __init__(
         self,
@@ -119,9 +105,8 @@ class StrictDedupPolicy(BaseDedupPolicy):
         added = self.redis.set(_dedup_key(effect), "1", ex=ttl, nx=True)
 
         if added:
-            return True  # first time we see it
+            return True 
 
-        # Duplicate detected
         action = "allowed" if side_effect_free else "blocked"
         metrics.emit(
             "duplicate_tool_call",

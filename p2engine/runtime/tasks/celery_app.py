@@ -18,7 +18,6 @@ from infra.config_loader import settings
 from infra.logging.logging_config import LoggerStream, litellm_logger, logger
 from services.services import ServiceContainer
 
-# Quiet-by-default LiteLLM logs unless operator overrides
 os.environ.setdefault("LITELLM_LOG_LEVEL", "error")
 
 

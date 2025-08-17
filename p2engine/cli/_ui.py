@@ -1,9 +1,8 @@
+# TODO this file just move the things to where it is used..
 from rich.console import Console
 
-# One console object for the whole CLI
 console = Console()
 
-# Central place for colour / style names
 STYLES = {
     "header": "bold magenta",
     "name": "cyan",

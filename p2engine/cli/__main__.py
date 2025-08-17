@@ -9,12 +9,10 @@ from .config import app as config_app
 from .conversation import app as conversation_app
 from .eval import app as eval_app
 from runtime.engine import Engine
-from runtime.rollout.cli import app as rollout_app  # ← fixed import
+from runtime.rollout.cli import app as rollout_app 
 from .ledger import app as ledger_app
 
-# ---------------------------------------------------------------------------#
-# root Typer application                                                     #
-# ---------------------------------------------------------------------------#
+
 app = typer.Typer(help="p2engine command-line interface")
 
 _engine: Engine | None = None
@@ -27,14 +25,10 @@ def main(ctx: typer.Context) -> None:
 
     if _engine is None:
         _engine = Engine()
-        _engine.start(block=False)  # fire up background threads but don’t block
+        _engine.start(block=False)
 
     ctx.obj = _engine
 
-
-# ---------------------------------------------------------------------------#
-# sub-command groups                                                         #
-# ---------------------------------------------------------------------------#
 app.add_typer(agents_app, name="agent", help="Manage agents")
 app.add_typer(chat_app, name="chat", help="Chat with agents")
 app.add_typer(config_app, name="config", help="Runtime configuration")
@@ -45,7 +39,6 @@ app.add_typer(rollout_app, name="rollout", help="Run roll-outs")
 app.add_typer(ledger_app, name="ledger", help="Canton ledger operations")
 
 
-# ── import & register the REPL *after* `app` exists to avoid a cycle ────────
-from .shell import shell as shell_app  # noqa: E402  (imported late on purpose)
+from .shell import shell as shell_app  
 
 app.add_typer(shell_app, name="shell", help="Interactive multi-command shell")

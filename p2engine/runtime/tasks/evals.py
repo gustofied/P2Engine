@@ -11,9 +11,7 @@ from infra.logging.logging_config import logger
 from runtime.tasks.celery_app import app
 
 
-# ──────────────────────────────────────────────────────────────────────────
-# Helpers
-# ──────────────────────────────────────────────────────────────────────────
+
 def _update_status(ref: str, status: str, **extra) -> None:
     """
     Patch the evaluation artefact’s header so that stream watchers
@@ -58,9 +56,7 @@ def _maybe_set_cache(rds: redis.Redis, cache_key: str | None, ttl: int, result: 
         pass
 
 
-# ──────────────────────────────────────────────────────────────────────────
-# Celery task: run_eval
-# ──────────────────────────────────────────────────────────────────────────
+
 @app.task(
     name="runtime.tasks.evals.run_eval",
     queue="evals",
@@ -86,14 +82,10 @@ def run_eval(
     bus = get_bus()
     rds: redis.Redis = bus.redis
 
-    # ------------------------------------------------------------------ #
-    # 1. Mark as running immediately
-    # ------------------------------------------------------------------ #
+
     _update_status(ref, "running")
 
-    # ------------------------------------------------------------------ #
-    # 2. Cheap cache-lookup (deduplicates rapid identical requests)
-    # ------------------------------------------------------------------ #
+
     cache_key: str | None
     cache_ttl: int
     try:
@@ -126,7 +118,7 @@ def run_eval(
         record_latency_ms(evaluator_id, latency_ms)
         bus.patch_artifact(ref, updates_payload=result)
 
-        # mark as finished and return
+
         _update_status(
             ref,
             "finished",
@@ -135,9 +127,7 @@ def run_eval(
         )
         return
 
-    # ------------------------------------------------------------------ #
-    # 3. Run the evaluator
-    # ------------------------------------------------------------------ #
+
     evaluator = registry.get(evaluator_id, version=judge_version)
     if evaluator is None:
         _update_status(
@@ -157,12 +147,9 @@ def run_eval(
     latency_ms = (time.perf_counter_ns() - start_ns) / 1_000_000.0
     record_latency_ms(evaluator_id, latency_ms)
 
-    # Store raw result under the artefact’s payload
+
     bus.patch_artifact(ref, updates_payload=result)
 
-    # ------------------------------------------------------------------ #
-    # 4. Mark as finished (header + meta)
-    # ------------------------------------------------------------------ #
     _update_status(
         ref,
         "finished",
@@ -170,13 +157,9 @@ def run_eval(
         eval_metrics=result.get("eval_metrics", {}),
     )
 
-    # ------------------------------------------------------------------ #
-    # 5. *Explicitly* emit a “finished” header on the X-stream.
-    #    This guarantees `wait_for_eval` sees the transition even if it
-    #    missed the patch above (e.g. due to stream trimming).
-    # ------------------------------------------------------------------ #
+
     try:
-        hdr, payload = bus.get(ref)  # current header & payload
+        hdr, payload = bus.get(ref)  
         hdr["meta"] = hdr.get("meta", {}) | {"status": "finished"}
         bus.publish(hdr, payload)
     except Exception as exc:
@@ -189,14 +172,8 @@ def run_eval(
             exc_info=True,
         )
 
-    # ------------------------------------------------------------------ #
-    # 6. Cache the result to speed up future identical requests
-    # ------------------------------------------------------------------ #
     _maybe_set_cache(rds, cache_key, cache_ttl, result)
 
-    # ------------------------------------------------------------------ #
-    # 7. Log and return
-    # ------------------------------------------------------------------ #
     logger.info(
         {
             "message": "eval_completed",

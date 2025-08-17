@@ -9,8 +9,6 @@ from threading import Thread
 
 from infra.logging.logging_config import LoggerStream, litellm_logger, logger
 
-# A single shared loop reference for the whole process.
-# *Every* Celery worker will overwrite this with its own running loop.
 loop: asyncio.AbstractEventLoop | None = None
 
 
@@ -27,7 +25,6 @@ def _bootstrap_background_loop() -> None:
     """Spawn a thread that runs :pyfunc:`start_event_loop`."""
     t = Thread(target=start_event_loop, daemon=True, name="AsyncLoop")
     t.start()
-    # give the loop a moment so callers can schedule coroutines right away
     t.join(0.1)
 
 
@@ -37,17 +34,12 @@ def start_event_loop() -> None:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    # pipe stdout / stderr into litellm to avoid interleaving in worker logs
     sys.stdout = LoggerStream(litellm_logger, logging.DEBUG)
     sys.stderr = LoggerStream(litellm_logger, logging.ERROR)
 
     logger.debug("Event loop started in thread with stdout redirection")
     loop.run_forever()
 
-
-# --------------------------------------------------------------------------- #
-# Public helpers
-# --------------------------------------------------------------------------- #
 
 
 def run_async(coro):
@@ -66,7 +58,7 @@ def run_async(coro):
     try:
         fut = asyncio.run_coroutine_threadsafe(coro, loop)
         return fut.result()
-    except Exception as exc:  # pragma: no cover – surfaces the real error
+    except Exception as exc: 
         logger.error("run_async failed: %s", exc, exc_info=True)
         raise
 

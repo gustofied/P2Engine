@@ -5,7 +5,7 @@ from threading import Event
 from typing import Optional, Set
 
 import redis
-import redis.exceptions  # ← NEW: for clean disconnect handling
+import redis.exceptions  
 
 from infra.clock import TICK_TIMEOUT_SEC
 from infra.logging.logging_config import logger
@@ -14,9 +14,7 @@ from runtime.tasks.celery_app import app as celery_app
 from services.services import ServiceContainer
 
 
-# ------------------------------------------------------------------------- #
-# helpers
-# ------------------------------------------------------------------------- #
+
 def _decode_set(raw: set[bytes] | set[str]) -> Set[str]:
     return {m.decode() if isinstance(m, bytes) else m for m in raw}
 
@@ -42,7 +40,6 @@ def _advance_tick(r: redis.Redis, sid: str, cur: int) -> int | str | None:
                 pipe.reset()
                 return None
 
-            # prune agents that were never active
             for aid in _decode_set(pipe.smembers(agents_key)):
                 if pipe.hget(f"agent_last_active:{sid}", aid) is None:
                     pipe.srem(agents_key, aid)
@@ -67,9 +64,7 @@ def _advance_tick(r: redis.Redis, sid: str, cur: int) -> int | str | None:
             return None
 
 
-# ------------------------------------------------------------------------- #
-# main loop
-# ------------------------------------------------------------------------- #
+
 def session_driver(
     poll_interval: float = 1,
     *,
@@ -92,7 +87,6 @@ def session_driver(
                 sid = sid_b.decode() if isinstance(sid_b, bytes) else sid_b
                 cur = int(r.get(f"session:{sid}:tick") or 0)
 
-                # timeout monitoring --------------------------------------------------
                 start_key = f"session:{sid}:tick:{cur}:start_time"
                 start = float(r.get(start_key) or 0)
                 if start and time.time() - start > TICK_TIMEOUT_SEC:
@@ -109,7 +103,6 @@ def session_driver(
                         )
                         r.setex(dedup_key, 30, "1")
 
-                # try to move the session forward ------------------------------------
                 res = _advance_tick(r, sid, cur)
                 if res == "_NO_AGENTS":
                     r.srem("active_sessions", sid)
@@ -127,7 +120,6 @@ def session_driver(
                 )
 
         except redis.exceptions.ConnectionError:
-            # Redis went away during shutdown; exit quietly.
             logger.info("SessionDriver: Redis connection closed – shutting down thread")
             break
 

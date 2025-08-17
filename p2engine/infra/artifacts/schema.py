@@ -8,14 +8,11 @@ from typing import TYPE_CHECKING, Literal, Optional, TypedDict
 class ArtifactMeta(TypedDict, total=False):
     state_cls: Optional[str]
     tags: list[str]
-    # --- evaluator additions -------------------------------------------------
-    eval_metrics: dict[str, float]  # individual metric → value
-    status: Literal["pending", "finished"]  # evaluation status
-    # ------------------------------------------------------------------------
+    eval_metrics: dict[str, float]  
+    status: Literal["pending", "finished"]  
 
 
 class ArtifactHeader(TypedDict, total=False):
-    # ─── core routing --------------------------------------------------------
     ref: str
     session_id: str
     branch_id: str
@@ -24,25 +21,22 @@ class ArtifactHeader(TypedDict, total=False):
     step_idx: int
     parent_refs: list[str]
 
-    # ─── semantics -----------------------------------------------------------
     role: Literal[
         "state",
         "tool_call",
         "tool_result",
-        "evaluation",  # NEW
+        "evaluation",  
         "policy_decision",
         "metrics",
     ]
-    if TYPE_CHECKING:  # mypy friendliness
+    if TYPE_CHECKING: 
         type: Literal["state", "tool_call", "tool_result", "evaluation", "event"]
 
-    # ─── scoring / search helpers -------------------------------------------
     score: Optional[float]
     reward: Optional[float]
     visit_count: Optional[int]
     value_estimate: Optional[float]
 
-    # ─── provenance ----------------------------------------------------------
     agent_id: str
     policy_id: Optional[str]
     model: Optional[str]
@@ -51,7 +45,6 @@ class ArtifactHeader(TypedDict, total=False):
     prompt_tokens: Optional[int]
     completion_tokens: Optional[int]
 
-    # ─── persistence metadata -----------------------------------------------
     compressed: Optional[bool]
     raw_len: Optional[int]
     mime: str
@@ -59,15 +52,9 @@ class ArtifactHeader(TypedDict, total=False):
     state_id: str
     meta: ArtifactMeta
 
-    # ─── evaluator additions -------------------------------------------------
-    evaluator_id: Optional[str]  # which judge was used
-    judge_version: Optional[str]  # semantic version of the judge
-    # ------------------------------------------------------------------------
+    evaluator_id: Optional[str] 
+    judge_version: Optional[str]
 
-
-# ──────────────────────────────────────────────────────────────────────────────
-# helper utilities
-# ──────────────────────────────────────────────────────────────────────────────
 def generate_ref() -> str:
     """Return a random, URL-safe reference ID (32-hex char)."""
     return uuid.uuid4().hex

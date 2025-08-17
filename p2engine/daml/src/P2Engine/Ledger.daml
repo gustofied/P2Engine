@@ -4,24 +4,22 @@ import Daml.Script
 import DA.Time
 import DA.Text
 
--- Main wallet template for agents
 template AgentWallet
   with
     party : Party
-    agent : Text  -- Agent ID
+    agent : Text 
     balance : Decimal
     created : Int
   where
     signatory party
     
-    -- Unique key per agent
+ 
     key (party, agent) : (Party, Text)
     maintainer key._1
     
-    -- Ensure positive balance
+  
     ensure balance >= 0.0
     
-    -- Transfer funds to another wallet
     choice Transfer : (ContractId AgentWallet, ContractId TransferRecord)
       with
         toWalletId : ContractId AgentWallet
@@ -30,22 +28,17 @@ template AgentWallet
         timestamp : Int
       controller party
       do
-        -- Validate transfer
         assertMsg "Amount must be positive" (amount > 0.0)
         assertMsg "Insufficient balance" (balance >= amount)
         
-        -- Fetch target wallet
         toWallet <- fetch toWalletId
         
-        -- Archive this wallet and create a new one with updated balance
         newFromWallet <- create this with balance = balance - amount
         
-        -- Archive the target wallet and create a new one with updated balance
         archive toWalletId
         newToWallet <- create toWallet with 
           balance = toWallet.balance + amount
         
-        -- Record the transfer
         transferRecord <- create TransferRecord with
           party = party
           fromAgent = agent
@@ -56,12 +49,10 @@ template AgentWallet
           
         return (newFromWallet, transferRecord)
     
-    -- Check balance (non-consuming)
     nonconsuming choice GetBalance : Decimal
       controller party
       do return balance
 
--- Immutable transfer record
 template TransferRecord
   with
     party : Party
@@ -73,7 +64,6 @@ template TransferRecord
   where
     signatory party
 
--- System metrics contract (singleton)
 template SystemMetrics
   with
     party : Party
@@ -86,7 +76,6 @@ template SystemMetrics
     key party : Party
     maintainer key
     
-    -- Update metrics after a transfer
     choice UpdateMetrics : ContractId SystemMetrics
       with
         volumeDelta : Decimal
@@ -97,7 +86,6 @@ template SystemMetrics
           transactionCount = transactionCount + 1
           lastUpdated = lastUpdated
 
--- Helper to get or create wallet
 getOrCreateWallet : Party -> Text -> Decimal -> Int -> Script (ContractId AgentWallet)
 getOrCreateWallet party agentId initialBalance timestamp = do
   optWallet <- queryContractKey @AgentWallet party (party, agentId)
@@ -110,16 +98,13 @@ getOrCreateWallet party agentId initialBalance timestamp = do
         balance = initialBalance
         created = timestamp
 
--- Test setup
 setup : Script ()
 setup = do
   p2engine <- allocateParty "p2engine"
   
-  -- Create initial wallets using the helper
   wallet1 <- getOrCreateWallet p2engine "agent_alpha" 100.0 1704067200
   wallet2 <- getOrCreateWallet p2engine "agent_beta" 100.0 1704067200
       
-  -- Test transfer
   submit p2engine do
     exerciseCmd wallet1 Transfer with
       toWalletId = wallet2

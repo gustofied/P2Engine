@@ -16,10 +16,6 @@ from typing import Any
 from infra.config import BASE_DIR
 from infra.config_loader import settings
 
-# --------------------------------------------------------------------------- #
-#  Duplicate-suppression filter
-# --------------------------------------------------------------------------- #
-
 
 class _SingleInfoFilter(logging.Filter):
     """
@@ -52,9 +48,6 @@ class _SingleInfoFilter(logging.Filter):
         return True
 
 
-# --------------------------------------------------------------------------- #
-#  Remaining helpers & formatters
-# --------------------------------------------------------------------------- #
 
 STANDARD_LOG_RECORD_ATTRIBUTES = {
     "args",
@@ -104,7 +97,6 @@ class ConsoleCleanFilter(logging.Filter):
         if self._skip:
             return False
 
-        # ensure msg is str & strip ANSI
         if not isinstance(record.msg, (str, bytes, bytearray)):
             try:
                 record.msg = json.dumps(record.msg, default=str)
@@ -133,9 +125,6 @@ class JSONFormatter(logging.Formatter):
         return json.dumps(doc, default=str)
 
 
-# --------------------------------------------------------------------------- #
-#  Handler wiring
-# --------------------------------------------------------------------------- #
 
 LOG_DIR = os.getenv("LOG_DIR", os.path.join(BASE_DIR, settings().logging.log_dir))
 os.makedirs(LOG_DIR, exist_ok=True)
@@ -148,7 +137,6 @@ def _log_path(name: str) -> str:
 MAIN_LOG = _log_path("main.log")
 LITELLM_DEBUG_LOG = _log_path("litellm_debug.log")
 
-# queue → listener pattern so console & file stay in sync
 log_queue: queue.Queue[logging.LogRecord] = queue.Queue(-1)
 queue_handler = QueueHandler(log_queue)
 
@@ -160,7 +148,6 @@ file_handler = TimedRotatingFileHandler(
 )
 file_handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
 
-# —— filters ——————————————————————————————— #
 console_clean = ConsoleCleanFilter()
 dup_suppress = _SingleInfoFilter()
 
@@ -172,7 +159,6 @@ queue_listener = QueueListener(log_queue, file_handler)
 queue_listener.start()
 atexit.register(queue_listener.stop)
 
-# console (optional)
 _LOG_TO_CONSOLE = os.getenv("LOG_TO_CONSOLE", "0").lower() not in {"0", "false", "no"}
 console_handler: logging.Handler | None = None
 if _LOG_TO_CONSOLE:
@@ -184,11 +170,10 @@ if _LOG_TO_CONSOLE:
         console_handler = logging.StreamHandler(sys.stdout)
 
     console_handler.setFormatter(logging.Formatter("%(message)s"))
-    console_handler.setLevel(logging.INFO)  # ditch DEBUG noise
+    console_handler.setLevel(logging.INFO)
     console_handler.addFilter(console_clean)
     console_handler.addFilter(dup_suppress)
 
-# root logger initialisation
 log_level = getattr(logging, os.getenv("LOG_LEVEL", "INFO").upper(), logging.INFO)
 logger = logging.getLogger(__name__)
 logger.setLevel(log_level)
@@ -197,9 +182,6 @@ if console_handler is not None:
     logger.handlers.append(console_handler)
 logger.propagate = False
 
-# --------------------------------------------------------------------------- #
-#  LiteLLM noisy debug stream – now **file-only**
-# --------------------------------------------------------------------------- #
 
 _debug_file_handler = TimedRotatingFileHandler(
     LITELLM_DEBUG_LOG,
@@ -210,13 +192,12 @@ _debug_file_handler = TimedRotatingFileHandler(
 _debug_file_handler.setLevel(logging.DEBUG)
 _debug_file_handler.setFormatter(logging.Formatter("%(message)s"))
 
-# --- honour LITELLM_LOG_LEVEL (default: ERROR) ----------------------------- #
 _llm_level = getattr(logging, os.getenv("LITELLM_LOG_LEVEL", "ERROR").upper(), logging.ERROR)
 
 litellm_logger = logging.getLogger("litellm")
 litellm_logger.setLevel(_llm_level)
 litellm_logger.addHandler(_debug_file_handler)
-litellm_logger.propagate = False  # keep away from main.log
+litellm_logger.propagate = False  
 
 litellm_upper_logger = logging.getLogger("LiteLLM")
 litellm_upper_logger.setLevel(_llm_level)
@@ -224,8 +205,7 @@ litellm_upper_logger.addHandler(_debug_file_handler)
 litellm_upper_logger.propagate = False
 
 
-# Helpers exposed to the rest of the codebase
-# --------------------------------------------------------------------------- #
+
 @contextmanager
 def redirect_stdout_to_logger(_logger: logging.Logger, level: int = logging.DEBUG):
     original_stdout = sys.stdout
@@ -268,15 +248,11 @@ class _LoggerStream:
             self._logger.log(self._level, self._buffer.strip())
             self._buffer = ""
 
-    # ------------------------------------------------------------------ #
-    # Compatibility shims – needed for Celery >=5.2 (isatty) and the odd
-    # place that calls os.fstat(stream.fileno()) (fileno).
-    # ------------------------------------------------------------------ #
+
     def isatty(self) -> bool:  # pylint: disable=invalid-name
         return False
 
     def fileno(self) -> int:  # type: ignore[override]
-        # Dummy FD. We never pass this to real OS calls; it just needs to exist.
         return 0
 
 

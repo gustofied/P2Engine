@@ -1,5 +1,4 @@
 def estimate_tokens(text: str) -> int:
-    # quick-n-dirty ≈ GPT-2 tokenizer
     return int(len(text.encode("utf-8")) / 3.7)
 
 

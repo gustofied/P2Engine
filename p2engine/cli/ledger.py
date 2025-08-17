@@ -134,7 +134,6 @@ def audit_cmd(
     bus = get_bus()
     redis_client = bus.redis
 
-    # Look for ledger sessions with various formats
     ledger_sessions = []
     patterns = [
         "artifacts:ledger:*:index",
@@ -150,7 +149,6 @@ def audit_cmd(
                 if session_id not in ledger_sessions:
                     ledger_sessions.append(session_id)
 
-    # Also check for party-based sessions
     party_id = os.getenv("LEDGER_PARTY_ID", "p2engine::default")
     additional_patterns = [f"ledger:{party_id}", f"ledger:{party_id.replace('::', '_')}", "ledger:p2engine_default"]
 
@@ -244,11 +242,10 @@ def init_wallets_cmd(
 
         ledger = await get_ledger_service()
 
-        # Get all configured agents
+    
         agent_configs = cfg.agents()
         agent_ids = [cfg.id for cfg in agent_configs]
 
-        # Also include common agents that might not be in config
         additional_agents = ["treasurer", "agent_helper", "child"]
         all_agents = list(set(agent_ids + additional_agents))
 
@@ -298,30 +295,30 @@ def debug_canton_cmd(ctx: typer.Context) -> None:
 
         results = []
 
-        # Check JSON API health
+   
         try:
             response = requests.get("http://localhost:7575/livez", timeout=5)
             results.append(("JSON API Health", "✓", f"Status: {response.status_code}"))
         except Exception as e:
             results.append(("JSON API Health", "✗", str(e)))
 
-        # Check package ID
+     
         package_id = os.getenv("DAML_PACKAGE_ID")
         if package_id:
             results.append(("Package ID", "✓", package_id[:20] + "..."))
         else:
             results.append(("Package ID", "✗", "Not set"))
 
-        # Check ledger service
+       
         try:
             ledger = await get_ledger_service()
             results.append(("Ledger Service", "✓", "Initialized"))
 
-            # Get party ID
+     
             party_id = await ledger._ensure_party()
             results.append(("Party ID", "✓", party_id))
 
-            # Get metrics
+      
             metrics = await ledger.get_system_metrics()
             results.append(("Wallet Query", "✓", f"{metrics.get('wallet_count', 0)} wallets"))
         except Exception as e:
@@ -348,8 +345,7 @@ def overview_cmd(ctx: typer.Context) -> None:
 
     async def _get_overview():
         ledger = await get_ledger_service()
-
-        # Get all known agents
+        
         from infra import config_loader as cfg
 
         agent_configs = cfg.agents()
@@ -375,7 +371,7 @@ def overview_cmd(ctx: typer.Context) -> None:
     try:
         wallets, metrics = run_async(_get_overview())
 
-        # System metrics
+       
         metrics_table = Table(show_header=False, box=None)
         metrics_table.add_column("Metric", style=STYLES["name"])
         metrics_table.add_column("Value", justify="right", style=STYLES["value"])
@@ -387,7 +383,7 @@ def overview_cmd(ctx: typer.Context) -> None:
 
         console.print(Panel(metrics_table, title="[bold]System Overview[/bold]", border_style="cyan"))
 
-        # Agent wallets
+     
         if wallets:
             wallet_table = Table(title="Agent Wallets", header_style=STYLES["header"])
             wallet_table.add_column("Agent", style=STYLES["name"])

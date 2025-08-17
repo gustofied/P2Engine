@@ -1,4 +1,3 @@
-# p2engine/cli/handlers/stack_watch.py
 from __future__ import annotations
 
 import time
@@ -15,9 +14,7 @@ from cli.handlers.conversation import (
 from cli.utils.compat import get_redis
 
 
-# ────────────────────────────────────────────────────────────────────────────
-# helpers
-# ────────────────────────────────────────────────────────────────────────────
+
 def _snapshot(
     engine,
     conv_id: str,
@@ -47,9 +44,6 @@ def _snapshot(
     return table
 
 
-# ────────────────────────────────────────────────────────────────────────────
-# public entry-point
-# ────────────────────────────────────────────────────────────────────────────
 def watch_stack(
     engine,
     conv_name_or_id: str,

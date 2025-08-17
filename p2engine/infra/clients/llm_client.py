@@ -34,7 +34,6 @@ class LLMClient:
         self.model = model
         self.logger_fn = logger_fn or litellm_logging_fn
 
-        # ── only turn on super-verbose LiteLLM logs when explicitly asked ──
         if settings().mode == "development" and os.getenv("LITELLM_LOG_LEVEL", "").lower() == "debug":
             with redirect_stdout_to_logger(litellm_logger):
                 litellm._turn_on_debug()

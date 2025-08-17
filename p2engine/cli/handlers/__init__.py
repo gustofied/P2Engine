@@ -5,4 +5,4 @@ Blank marker + re-exports so `cli.chat` / `cli.conversation` can lazy-import hel
 without circular-import headaches.
 """
 
-from .stack_watch import watch_stack  # noqa: F401  (re-export)
+from .stack_watch import watch_stack  

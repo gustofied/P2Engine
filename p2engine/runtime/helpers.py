@@ -18,15 +18,13 @@ from orchestrator.schemas.schemas import FunctionCallSchema, ReplySchema
 from runtime.constants import TOOL_TIMEOUT_SEC
 from runtime.effects import BaseEffect, CallTool, PublishSystemReply
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:  
     from orchestrator.interactions.stack import InteractionStack
 
 logger = logging.getLogger(__name__)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-#  Helper predicates to decide whether the *root* agent should be auto-finished
-# ─────────────────────────────────────────────────────────────────────────────
+
 def _is_cli_session(r, cid: str) -> bool:
     """True if this conversation is an interactive CLI chat."""
     return bool(r.get(f"conversation:{cid}:is_cli"))
@@ -37,21 +35,16 @@ def _is_rollout_session(r, cid: str) -> bool:
     return r.get(f"conversation:{cid}:mode") == "rollout"
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-#  Mark the current branch finished (used by many runtime handlers)
-# ─────────────────────────────────────────────────────────────────────────────
+
 def mark_finished(stack: "InteractionStack") -> None:
     root_branch = stack.get_parent_agent_id() is None
 
-    # keep the root agent open for live CLI sessions
     if root_branch and _is_cli_session(stack.redis, stack.cid):
         return
 
-    # otherwise (roll-out root or any child branch) finish if not already done
     if isinstance(stack.current().state, FinishedState):
         return
 
-    # don’t finish while we’re still waiting for a tool / agent / user input
     if any(isinstance(e.state, WaitingState) and not e.state.is_expired() for e in stack.iter_last_n(stack.length())):
         return
 
@@ -67,9 +60,6 @@ def mark_child_finished(stack: "InteractionStack") -> None:
     mark_finished(stack)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-#  Utility helpers (unchanged)
-# ─────────────────────────────────────────────────────────────────────────────
 def _hash_tool_call(name: str, params: dict) -> str:
     blob = json.dumps({"name": name, "params": params}, sort_keys=True)
     return hashlib.sha1(blob.encode()).hexdigest()
@@ -103,7 +93,6 @@ def materialise_response(
         logger.error({"message": "Agent returned None", "agent_id": agent_id})
         return []
 
-    # ── plain text reply ────────────────────────────────────────────────────
     if isinstance(response, ReplySchema):
         last_entry = stack.current()
         meta = last_entry.state.meta if last_entry and isinstance(last_entry.state, UserMessageState) else None
@@ -122,12 +111,10 @@ def materialise_response(
             effects.append(PublishSystemReply(conversation_id, message))
         return effects
 
-    # ── function / tool call ────────────────────────────────────────────────
     if isinstance(response, FunctionCallSchema):
         tool_hash = _hash_tool_call(response.function_name, response.arguments)
         branch_id = stack.current_branch()
 
-        # If we’re already waiting on *exactly* the same tool-call don’t queue twice
         top = stack.current()
         if isinstance(top.state, WaitingState):
             if top.state.correlation_id == tool_hash:
@@ -139,7 +126,6 @@ def materialise_response(
                 )
             ]
 
-        # schedule the tool call
         tool_state = ToolCallState(
             id=tool_hash,
             function_name=response.function_name,
@@ -164,7 +150,6 @@ def materialise_response(
             )
         ]
 
-    # ── unexpected return type ──────────────────────────────────────────────
     logger.error(
         {
             "message": "Unexpected response type",

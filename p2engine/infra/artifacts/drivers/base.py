@@ -3,8 +3,6 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Dict
 
-# NOTE:  The interface now passes the full header *including mime* to give
-#        drivers access to compression flags, raw_len, etc.
 
 
 class BaseStorageDriver(ABC):

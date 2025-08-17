@@ -17,20 +17,12 @@ __all__ = [
     "best_branch",
 ]
 
-# --------------------------------------------------------------------------- #
-# helper to access the already-initialised Celery app
-# --------------------------------------------------------------------------- #
-
 
 def _get_celery():
     from runtime.tasks.celery_app import app as celery_app
 
     return celery_app
 
-
-# --------------------------------------------------------------------------- #
-# public factory – replaces the old EvaluationBatcher.instance(...)
-# --------------------------------------------------------------------------- #
 
 
 def get_evaluation_batcher(redis_client):

@@ -1,4 +1,3 @@
-# cli/utils/compat.py
 from typing import Protocol, TypeVar, runtime_checkable
 
 
@@ -36,7 +35,7 @@ def get_redis(obj):
     c = _as_container(obj)
     if hasattr(c, "get_redis_client"):
         return c.get_redis_client()
-    return c  # already a redis client
+    return c  
 
 
 def get_agent_registry(obj):
@@ -51,4 +50,4 @@ def get_agent_registry(obj):
     c = _as_container(obj)
     if hasattr(c, "get_agent_registry"):
         return c.get_agent_registry()
-    return c  # already an AgentRegistry
+    return c 

@@ -1,3 +1,4 @@
+# TODO conversation helpers are duplicated we also define it in our helpers
 from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
@@ -37,7 +38,7 @@ def _resolve_agent_id(r, conv_name_or_id: str) -> str:
     if aid:
         return aid.decode() if isinstance(aid, (bytes, bytearray)) else aid
 
-    # Try to find agent_id by conv_id
+
     for key in r.keys("conversation:*:id"):
         if r.get(key) == conv_name_or_id or (isinstance(r.get(key), (bytes, bytearray)) and r.get(key).decode() == conv_name_or_id):
             conv_name = key.decode().split(":")[1] if isinstance(key, bytes) else key.split(":")[1]
@@ -115,7 +116,6 @@ def stack_view(
         entry = stack.at(i, branch_id)
         state = entry.state
 
-        # Skip synthetic markers
         if isinstance(state, UserMessageState) and state.text == "__child_finished__":
             continue
 
@@ -255,13 +255,9 @@ def rewind_cmd(
     original_length = stack.length()
 
     if create_branch:
-        # Fork from the rewind point to create new branch
         new_branch_id = _fork(stack, idx)
 
-        # Use custom name if provided
         if branch_name:
-            # Note: In a real implementation, you might want to validate the branch name
-            # and handle collisions. For now, we'll just use the generated ID.
             console.print(f"[green]Created new branch '{new_branch_id}' from index {idx}[/green]")
         else:
             console.print(f"[green]Created new branch {new_branch_id} from index {idx}[/green]")
@@ -269,30 +265,24 @@ def rewind_cmd(
         console.print(f"[dim]Original branch '{original_branch}' preserved with {original_length} messages[/dim]")
         console.print(f"[green]Now on branch {new_branch_id} at index {idx}[/green]")
 
-        # Clean up state for the new branch
         branch_id = new_branch_id
         episode_key = f"stack:{conv_id}:{aid}:episode:{branch_id}"
         rounds_key = f"round_by_branch:{conv_id}:{aid}:{branch_id}"
 
-        # Delete episode and round tracking for new branch
         r.delete(episode_key)
         r.delete(rounds_key)
 
     else:
-        # Direct rewind without creating a branch (destructive)
         try:
             _rewind(stack, idx)
 
-            # Clean up associated Redis keys for proper state reset
             branch_id = stack.current_branch()
             episode_key = f"stack:{conv_id}:{aid}:episode:{branch_id}"
             rounds_key = f"round_by_branch:{conv_id}:{aid}:{branch_id}"
 
-            # Delete episode and round tracking
             r.delete(episode_key)
             r.delete(rounds_key)
 
-            # Clean up any tool call references beyond the rewind point
             toolcall_ref_key = f"stack:{conv_id}:{aid}:toolcall_ref"
             for ref_key in r.hkeys(toolcall_ref_key):
                 r.hdel(toolcall_ref_key, ref_key)
@@ -351,7 +341,6 @@ def prune_branches_cmd(
         bid = branch_info["branch_id"]
         last_ts = branch_info.get("last_ts", 0)
 
-        # Never delete main or current branch
         if bid == "main" or bid == current_branch:
             continue
 

@@ -18,7 +18,6 @@ from ._ui import STYLES, console
 app = typer.Typer()
 
 
-# ── autocompletion helpers ─────────────────────────────────────────────────────
 def complete_conversation(ctx: typer.Context, incomplete: str):
     engine = ctx.obj
     names = get_conversation_names(engine)
@@ -36,7 +35,6 @@ def complete_persona(ctx: typer.Context, incomplete: str):
     return [p for p in personas if p.startswith(incomplete)]
 
 
-# ── commands ───────────────────────────────────────────────────────────────────
 @app.command("set-delivery")
 def set_delivery_cmd(
     ctx: typer.Context,

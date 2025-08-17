@@ -21,9 +21,6 @@ class RolloutStore:
     def __init__(self, r: redis.Redis):
         self._r = r
 
-    # --------------------------------------------------------------------- #
-    # lifecycle                                                             #
-    # --------------------------------------------------------------------- #
 
     def create(self, rollout_id: str, total: int, *, ttl: int | None = None) -> None:
         """
@@ -45,9 +42,6 @@ class RolloutStore:
         )
         self._r.expire(key, ttl or self._DEFAULT_TTL_SEC)
 
-    # --------------------------------------------------------------------- #
-    # helpers                                                               #
-    # --------------------------------------------------------------------- #
 
     def incr_completed(self, rollout_id: str) -> int:
         """Atomically bump the completed counter and return the new value."""

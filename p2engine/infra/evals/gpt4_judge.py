@@ -25,23 +25,17 @@ class GPT4Judge(JinjaPromptMixin, LLMEvaluator):
         "additionalProperties": False,
     }
 
-    # ------------------------------------------------------------------ #
-    # Prompt construction
-    # ------------------------------------------------------------------ #
+
     def build_messages(self, payload: Dict[str, Any]) -> list[dict]:
-        # 1 — resolve rubric
         raw = payload.get("rubric")
         if raw and "\n" not in str(raw):
-            # treat as *symbolic ID* → look up .jinja file
             try:
                 rubric_txt = get_rubric_text(str(raw))
             except KeyError:
-                # fall back to literal value if not found
                 rubric_txt = str(raw)
         else:
             rubric_txt = str(raw or "Rate the final assistant answer for factual accuracy, " "completeness and clarity.")
 
-        # 2 — summarise per-tool rewards (unchanged)
         traj = payload.get("traj", [])
         rewards: list[Tuple[str, float]] = []
         for msg in traj:
@@ -55,7 +49,7 @@ class GPT4Judge(JinjaPromptMixin, LLMEvaluator):
             if r is not None:
                 rewards.append((msg.get("name", "tool"), float(r)))
 
-        # 3 — render system prompt
+    
         sys_prompt = self._render_prompt(
             rubric=rubric_txt,
             score_type="float between 0.0 and 1.0",
@@ -68,9 +62,6 @@ class GPT4Judge(JinjaPromptMixin, LLMEvaluator):
 
         return [{"role": "system", "content": sys_prompt}] + traj
 
-    # ------------------------------------------------------------------ #
-    # JSON parsing (unchanged)
-    # ------------------------------------------------------------------ #
     def parse_result(self, raw: str) -> Tuple[float, Dict[str, float], str | None]:
         data = json.loads(raw)
         score = float(data["score"])

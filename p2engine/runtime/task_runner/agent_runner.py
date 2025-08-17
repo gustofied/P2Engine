@@ -90,19 +90,16 @@ def process_agent_tick(conversation_id: str, agent_id: str) -> bool:
     parent_agent_id = stack.get_parent_agent_id()
     current_frame = stack.current()
 
-    # ─────────────────────────────────────────────────────────────────────────
-    # TERMINATION paths
-    # ─────────────────────────────────────────────────────────────────────────
     if _is_finished(current_frame) and finished_on_entry and parent_agent_id is None:
         _publish_finished(conversation_id, agent_id, branch_id)
-        redis_client.sadd(f"session:{conversation_id}:finished", agent_id)  # NEW
+        redis_client.sadd(f"session:{conversation_id}:finished", agent_id)
         ack_tick(redis_client, conversation_id, agent_id, session.tick)
         session.unregister_agent(agent_id, force=True)
         return False
 
     if finished_on_entry and not effects and parent_agent_id is None:
         _publish_finished(conversation_id, agent_id, branch_id)
-        redis_client.sadd(f"session:{conversation_id}:finished", agent_id)  # NEW
+        redis_client.sadd(f"session:{conversation_id}:finished", agent_id)
         ack_tick(redis_client, conversation_id, agent_id, session.tick)
         session.unregister_agent(agent_id, force=True)
         return False
@@ -118,13 +115,11 @@ def process_agent_tick(conversation_id: str, agent_id: str) -> bool:
             }
         )
         _publish_finished(conversation_id, agent_id, branch_id)
-        redis_client.sadd(f"session:{conversation_id}:finished", agent_id)  # NEW
+        redis_client.sadd(f"session:{conversation_id}:finished", agent_id)  
         ack_tick(redis_client, conversation_id, agent_id, session.tick)
         return False
 
-    # ─────────────────────────────────────────────────────────────────────────
-    # Process side-effects
-    # ─────────────────────────────────────────────────────────────────────────
+
     executor = EffectExecutor(redis_client, celery_app, dedup_policy)
     executor.execute(effects, conversation_id)
 
@@ -133,7 +128,7 @@ def process_agent_tick(conversation_id: str, agent_id: str) -> bool:
 
     if _is_finished(stack.current()) and parent_agent_id is None:
         _publish_finished(conversation_id, agent_id, branch_id)
-        redis_client.sadd(f"session:{conversation_id}:finished", agent_id)  # NEW
+        redis_client.sadd(f"session:{conversation_id}:finished", agent_id)  
         session.unregister_agent(agent_id, force=True)
 
     logger.info(

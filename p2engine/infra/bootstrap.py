@@ -8,12 +8,6 @@ from typing import Final
 
 from infra.logging.logging_config import logger
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Quiet-by-default LiteLLM logging
-#   • honour operator-supplied value
-#   • otherwise default to “error”
-#   • MUST be set before the first “import litellm” anywhere in the process
-# ─────────────────────────────────────────────────────────────────────────────
 os.environ.setdefault("LITELLM_LOG_LEVEL", "error")
 
 os.environ.setdefault("LITELLM_DISABLE_CACHE_UPDATE", "true")

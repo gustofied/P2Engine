@@ -17,12 +17,10 @@ class Engine:
     def __init__(self, config_path: str = "config/config.json") -> None:
         logger.info("Initializing Engine…")
 
-        # ── basic wiring ──────────────────────────────────────────────────────
         self.config = cfg.settings()
         self.container = ServiceContainer()
         self.mode = self.config.mode
 
-        # ── background asyncio loop (for LLMEvaluator + aquery, etc.) ─────────
         self.loop_ready = Event()
         self.loop: asyncio.AbstractEventLoop = asyncio.new_event_loop()
         self.event_loop_thread = Thread(
@@ -35,14 +33,14 @@ class Engine:
             raise RuntimeError("Event loop failed to start in time")
         set_event_loop(self.loop)
 
-        # ── SessionDriver (ticks & Redis orchestration) ───────────────────────
-        self._stop_event = Event()  # ← NEW: let us stop the driver gracefully
+    
+        self._stop_event = Event()  
         self._driver_thread = Thread(
             target=session_driver,
             kwargs={
                 "poll_interval": 1,
                 "container": self.container,
-                "stop_event": self._stop_event,  # ← pass it down
+                "stop_event": self._stop_event, 
             },
             daemon=True,
             name="SessionDriver",
@@ -51,9 +49,7 @@ class Engine:
         self._initialize_agents()
         logger.info("Engine initialized successfully")
 
-    # --------------------------------------------------------------------- #
-    # internal helpers
-    # --------------------------------------------------------------------- #
+
     def _start_event_loop(self) -> None:
         asyncio.set_event_loop(self.loop)
         self.loop_ready.set()
@@ -64,9 +60,7 @@ class Engine:
             agent = self.container.get_agent_factory().create(agent_cfg)
             self.container.get_agent_registry().register(agent, agent_cfg)
 
-    # --------------------------------------------------------------------- #
-    # public API
-    # --------------------------------------------------------------------- #
+
     def start(self, *, block: bool = True) -> None:
         logger.info("Starting runtime…")
         self._driver_thread.start()
@@ -76,20 +70,16 @@ class Engine:
 
     def stop(self) -> None:
         logger.info("Stopping runtime…")
-        # Signal SessionDriver first, *then* wait
+
         self._stop_event.set()
         if self._driver_thread.is_alive():
             self._driver_thread.join(timeout=5)
 
-        # Tear down the async loop
+
         if self.loop.is_running():
             self.loop.call_soon_threadsafe(self.loop.stop)
         self.event_loop_thread.join(timeout=5)
 
-
-# ------------------------------------------------------------------------- #
-# CLI entry-point
-# ------------------------------------------------------------------------- #
 if __name__ == "__main__":
     run_once_global_init()
     engine = Engine()

@@ -24,7 +24,6 @@ def chat_with(ctx: typer.Context, agent_id: str) -> None:
     """Start a chat with a specific agent."""
     engine = ctx.obj
 
-    # Check if agent exists
     if not engine.container.get_agent_registry().get_agent(agent_id):
         console.print(f"[red]Agent '{agent_id}' not found.[/red]")
         raise typer.Exit(code=1)
@@ -34,7 +33,6 @@ def chat_with(ctx: typer.Context, agent_id: str) -> None:
         console.print("[red]Conversation name cannot be empty.[/red]")
         raise typer.Exit(code=1)
 
-    # Check if conversation already exists
     if _conversation_exists(engine, conv_name):
         if typer.confirm(
             f"Conversation '{conv_name}' already exists – resume instead of starting a new one?",
@@ -45,7 +43,6 @@ def chat_with(ctx: typer.Context, agent_id: str) -> None:
             _interactive_loop(engine, conversation_id, _agent)
             return
 
-    # Start new conversation
     started = start_chat(engine, agent_id, conv_name)
     console.print(f"Entering chat with {agent_id} (Name: {conv_name}, ID: {started.conv_id}). " "Type 'exit' to quit.")
     _interactive_loop(engine, started.conv_id, agent_id)
@@ -70,7 +67,6 @@ def _interactive_loop(engine, conversation_id: str, agent_id: str) -> None:
     """Main chat interaction loop."""
     r = engine.container.get_redis_client()
 
-    # Show current branch on resume
     branch_key = f"stack:{conversation_id}:{agent_id}:branch"
     current_branch = r.get(branch_key)
     if current_branch:
@@ -83,10 +79,8 @@ def _interactive_loop(engine, conversation_id: str, agent_id: str) -> None:
         if message.lower() == "exit":
             break
 
-        # Send message
         send_user_message(engine, conversation_id, agent_id, message)
 
-        # Wait for response
         timeout = 60
         with Progress(
             SpinnerColumn(),

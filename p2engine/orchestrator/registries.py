@@ -9,9 +9,6 @@ from infra.config_loader import settings
 from infra.logging.logging_config import logger
 from orchestrator.schemas.schemas import AgentConfig, LLMAgentConfig
 
-# ---------------------------------------------------------------------------
-# Tool registry
-# ---------------------------------------------------------------------------
 
 
 class ToolRegistry:
@@ -21,9 +18,6 @@ class ToolRegistry:
         self._tools: Dict[str, ITool] = {}
         self._lock = threading.Lock()
 
-    # ------------------------------------------------------------------
-    # Public API
-    # ------------------------------------------------------------------
 
     def register(self, tool: ITool) -> bool:
         """Register *tool* by its unique ``name``.
@@ -51,9 +45,6 @@ class ToolRegistry:
 
 tool_registry = ToolRegistry()
 
-# ---------------------------------------------------------------------------
-# Agent registry
-# ---------------------------------------------------------------------------
 
 
 class AgentRegistry(IAgentRegistry):
@@ -79,15 +70,11 @@ class AgentRegistry(IAgentRegistry):
         self._agents: Dict[str, IAgent] = {}
         self._lock = threading.Lock()
 
-    # ------------------------------------------------------------------
-    # IAgentRegistry implementation
-    # ------------------------------------------------------------------
 
     def register(self, agent: IAgent, config: AgentConfig) -> None:
         with self._lock:
             agent_id = config.id
 
-            # avoid duplicate work – check Redis *and* local cache
             if self.repository.redis.sismember("active_agents", agent_id):
                 logger.info(
                     {
@@ -105,7 +92,6 @@ class AgentRegistry(IAgentRegistry):
                 )
                 return
 
-            # persist + mark active
             self._agents[agent_id] = agent
             self.repository.set(f"agent:{agent_id}:config", json.dumps(config.model_dump()))
             self.repository.redis.sadd("active_agents", agent_id)
@@ -130,9 +116,6 @@ class AgentRegistry(IAgentRegistry):
             else:
                 logger.warning({"message": "Agent not found", "agent_id": agent_id})
 
-    # ------------------------------------------------------------------
-    # Core lookup logic
-    # ------------------------------------------------------------------
 
     def get_agent(self, agent_id: str) -> Optional[IAgent]:
         """Return a *live* agent instance.
@@ -145,17 +128,15 @@ class AgentRegistry(IAgentRegistry):
         4. **Auto-create** from a minimal template
         """
         with self._lock:
-            # 1) already instantiated in this process
             if agent_id in self._agents:
                 return self._agents[agent_id]
 
-            # 2) persisted by a previous run / another worker
             config_str = self.repository.get(f"agent:{agent_id}:config")
             if config_str:
                 try:
                     config_dict = json.loads(config_str)
                     config = TypeAdapter(AgentConfig).validate_python(config_dict)
-                except Exception as exc:  # pragma: no cover – should never happen
+                except Exception as exc:  
                     logger.error(
                         {
                             "message": "Failed to parse persisted agent config",
@@ -177,8 +158,7 @@ class AgentRegistry(IAgentRegistry):
                 )
                 return agent
 
-            # 3) try the static YAML
-            from infra.config_loader import agents as load_cfgs  # late import to avoid cycles
+            from infra.config_loader import agents as load_cfgs 
 
             cfg_map = {cfg.id: cfg for cfg in load_cfgs()}
             cfg = cfg_map.get(agent_id)
@@ -194,9 +174,7 @@ class AgentRegistry(IAgentRegistry):
                 )
                 return agent
 
-            # 4) -----------------------------------------------------------------
-            #    AUTO-CREATE a generic LLM agent (default model, full tool-box)
-            # -----------------------------------------------------------------
+
             default_model = settings().llm.models.default_model
             all_tools = list(self.agent_factory.tool_registry.list_tools().keys())
 
@@ -209,7 +187,6 @@ class AgentRegistry(IAgentRegistry):
 
             agent = self.agent_factory.create(cfg)
 
-            # persist & mark active so every worker sees it next time
             self._agents[agent_id] = agent
             self.repository.set(f"agent:{agent_id}:config", json.dumps(cfg.model_dump()))
             self.repository.redis.sadd("active_agents", agent_id)
@@ -223,7 +200,6 @@ class AgentRegistry(IAgentRegistry):
             )
             return agent
 
-    # ------------------------------------------------------------------
 
     def list_agents(self) -> Dict[str, str]:
         with self._lock:

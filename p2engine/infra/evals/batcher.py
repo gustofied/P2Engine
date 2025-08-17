@@ -23,16 +23,13 @@ class EvaluationCoordinator:
       just enough to collapse accidental duplicates.
     """
 
-    _CACHE_TTL_SEC = 60 * 60 * 24  # unchanged
-    _DEDUP_TTL_SEC = 5  # grace window for identical bursts
+    _CACHE_TTL_SEC = 60 * 60 * 24  
+    _DEDUP_TTL_SEC = 5  
 
     def __init__(self, redis_client: redis.Redis, celery_app: Celery):
         self.r = redis_client
         self.app = celery_app
 
-    # --------------------------------------------------------------------- #
-    # internal helpers
-    # --------------------------------------------------------------------- #
 
     def _dedupe_key(self, evaluator_id: str, judge_version: str, payload: Dict) -> str:
         blob = json.dumps(
@@ -40,9 +37,7 @@ class EvaluationCoordinator:
         )
         return f"eval-dedupe:{sha1(blob.encode()).hexdigest()}"
 
-    # --------------------------------------------------------------------- #
-    # public API – called by ArtifactBus
-    # --------------------------------------------------------------------- #
+
 
     def schedule(self, ref: str, evaluator_id: str, judge_version: str, payload: Dict) -> None:
         """
@@ -51,7 +46,6 @@ class EvaluationCoordinator:
         """
         dkey = self._dedupe_key(evaluator_id, judge_version, payload)
 
-        # -- fast-path: another producer already scheduled this very request --
         if not self.r.set(dkey, "1", ex=self._DEDUP_TTL_SEC, nx=True):
             logger.debug({"message": "eval_dedup_hit", "ref": ref})
             return
@@ -60,7 +54,7 @@ class EvaluationCoordinator:
             "runtime.tasks.evals.run_eval",
             args=[ref, evaluator_id, judge_version, payload, False],
             queue="evals",
-            priority=6,  # keep below interactive ticks/tools
+            priority=6,  
         )
 
         logger.debug({"message": "eval_enqueued", "ref": ref, "evaluator": evaluator_id, "version": judge_version})

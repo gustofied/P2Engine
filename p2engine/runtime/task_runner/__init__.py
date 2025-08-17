@@ -1,4 +1,3 @@
-# runtime/task_runner/__init__.py
 from runtime.tasks.celery_app import app as celery_app
 
 
@@ -21,6 +20,6 @@ def get_task_context():
         "redis_client": redis_client,
         "agent_registry": agent_registry,
         "tool_registry": tool_registry,
-        "dedup_policy": container.get_dedup_policy(),  # Add dedup_policy
+        "dedup_policy": container.get_dedup_policy(), 
     }
     return celery_app.dependencies

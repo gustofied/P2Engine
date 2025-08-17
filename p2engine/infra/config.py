@@ -10,7 +10,6 @@ from pydantic_settings import BaseSettings
 
 logger = logging.getLogger(__name__)
 
-# Load environment variables
 load_dotenv()
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -77,7 +76,6 @@ def load_settings() -> AppSettings:
     with config_path.open() as f:
         config_data = json.load(f)
 
-    # Ensure LLM API key is set
     from os import getenv
 
     config_data.setdefault("llm", {})

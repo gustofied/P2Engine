@@ -56,7 +56,6 @@ class _REPL:
         if not raw.strip():
             return
 
-        # built-in shell helpers
         if raw.strip() in {"help", "?", "--help"}:
             self._print_help()
             return
@@ -81,7 +80,6 @@ class _REPL:
                 console.print("[red]Invalid history reference[/red]")
                 return
 
-        # parse / execute
         self.history.append(raw)
         try:
             argv = shlex.split(raw)
@@ -92,9 +90,7 @@ class _REPL:
         try:
             root_app(argv, obj=self.ctx.obj, standalone_mode=False)
 
-        # ------------------------ improved error handling -----------------------
         except click.UsageError as ue:
-            # click.NoSuchOption inherits UsageError but exposes “option_name”
             target = getattr(ue, "cmd_name", getattr(ue, "option_name", ""))
             suggestion = _fuzzy(target, _collect_commands(root_app))
             if suggestion:
@@ -103,10 +99,8 @@ class _REPL:
                 console.print(ue.format_message())
 
         except click.ClickException as ce:
-            # any other Click-level error (e.g. BadParameter)
             console.print(ce.format_message())
 
-        # -----------------------------------------------------------------------
         except typer.Exit as e:
             if e.exit_code != 0:
                 console.print(f"[red]Command exited with code {e.exit_code}[/red]")
@@ -117,7 +111,6 @@ class _REPL:
             console.print("[bold red]Unhandled exception while executing command:[/bold red]")
             console.print(traceback.format_exc())
 
-    # -------------------------------------------------- repl loop
 
     def run(self) -> None:
         console.print("[bold magenta]p2engine interactive shell[/bold magenta] " "(type 'help' or '?' for commands, 'quit' to exit)\n")
@@ -129,8 +122,6 @@ class _REPL:
                 break
             self._run_command(line)
 
-
-# ----------------------------------------------------------------------------- Typer hook
 
 shell_app = typer.Typer(
     name="shell",

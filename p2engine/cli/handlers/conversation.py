@@ -7,7 +7,7 @@ from typing import List, Optional
 import typer
 from rich.table import Table
 
-from cli.utils.compat import get_redis  #  ← unified helper
+from cli.utils.compat import get_redis  
 from orchestrator.interactions import InteractionStack
 from orchestrator.interactions.states.assistant_message import (
     AssistantMessageState,
@@ -61,13 +61,8 @@ class BranchInfo:
     is_current: bool
 
 
-# ────────────────────────────────────────────────────────────────────────────
-# Public helpers
-# ────────────────────────────────────────────────────────────────────────────
-
-
 def list_conversations(engine) -> List[ConversationInfo]:
-    r = get_redis(engine)  # <-- shim
+    r = get_redis(engine)  
     infos: List[ConversationInfo] = []
     for key in r.keys("conversation:*:id"):
         conv_name = key.decode().split(":")[1] if isinstance(key, bytes) else key.split(":")[1]
@@ -92,7 +87,7 @@ def stack_view(
     branch_id: str | None = None,
     agent_id: Optional[str] = None,
 ) -> List[StackLine]:
-    r = get_redis(engine)  # <-- shim
+    r = get_redis(engine)
     conv_id = _resolve_conv_id(r, conv_id)
     agent_id = agent_id or _resolve_agent_id(r, conv_id)
     stack = InteractionStack(r, conv_id, agent_id)
@@ -129,7 +124,7 @@ def branches(
     conv_id: str,
     agent_id: Optional[str] = None,
 ) -> List[BranchInfo]:
-    r = get_redis(engine)  # <-- shim
+    r = get_redis(engine)  
     conv_id = _resolve_conv_id(r, conv_id)
     agent_id = agent_id or _resolve_agent_id(r, conv_id)
     info = InteractionStack(r, conv_id, agent_id).get_branch_info()

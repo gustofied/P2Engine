@@ -57,13 +57,9 @@ class InteractionStack:
 
         self._episode_key_tpl = f"{self._base_key}:episode:{{branch}}"
 
-        # rollout provenance (cached)
         self._rollout_team: Optional[str] = None
         self._rollout_variant: Optional[str] = None
 
-    # --------------------------------------------------------------------- #
-    #  Branch helpers
-    # --------------------------------------------------------------------- #
 
     def _branch_key(self, branch_id: str) -> str:
         return self._base_key if branch_id == "main" else f"{self._base_key}:{branch_id}"
@@ -85,9 +81,6 @@ class InteractionStack:
             self._rollout_variant = _b2s(self.redis.get(f"{self.cid}:variant"))
         return self._rollout_team, self._rollout_variant
 
-    # --------------------------------------------------------------------- #
-    #  Push / pop
-    # --------------------------------------------------------------------- #
 
     def push(self, *states: BaseState, group_id: Optional[str] = None) -> None:
         """
@@ -101,18 +94,15 @@ class InteractionStack:
         if not states:
             return
 
-        # --- lazy-register agent ----------------------------------------
         agents_key = f"session:{self.cid}:agents"
         if not self.redis.sismember(agents_key, self.aid):
             self.redis.sadd(agents_key, self.aid)
             self.redis.sadd("active_sessions", self.cid)
-        # ----------------------------------------------------------------
 
         cur = self.current()
         if cur and isinstance(cur.state, FinishedState):
             self.pop(1)
 
-        # avoid duplicate FinishedState
         if len(states) == 1 and isinstance(states[0], FinishedState) and cur and isinstance(cur.state, FinishedState):
             return
 
@@ -122,17 +112,11 @@ class InteractionStack:
         encoded = [json.dumps(encode(s)) for s in states]
         self.r.rpush(key, *encoded)
 
-        # ---------------- episode bookkeeping --------------------------
         ep_key = self._episode_key_tpl.format(branch=branch_id)
         episode_id = _b2s(self.redis.get(ep_key))
         if episode_id is None:
             episode_id = uuid.uuid4().hex[:8]
             self.redis.set(ep_key, episode_id, ex=86_400)
-        # ---------------------------------------------------------------
-
-        # -----------------------------------------------------------------
-        #  Persist artefacts + rollout provenance, etc.
-        # -----------------------------------------------------------------
         bus = get_bus()
         rollout_team, rollout_variant = self._get_rollout_provenance()
 
@@ -206,7 +190,6 @@ class InteractionStack:
                     exc_info=True,
                 )
 
-        # prune if the branch grows too long
         if self.r.llen(key) > MAX_STACK_LEN:
             self.r.ltrim(key, -MAX_STACK_LEN, -1)
 
@@ -224,10 +207,6 @@ class InteractionStack:
         if out:
             self.redis.expire(key, 86_400)
         return out
-
-    # ----------------------------------------------------------------- #
-    #  Convenience / helpers (unchanged)
-    # ----------------------------------------------------------------- #
 
     def at(self, idx: int, branch_id: Optional[str] = None) -> StackEntry:
         raw = self.r.lindex(self._branch_key(branch_id or self.current_branch()), idx)
@@ -251,9 +230,6 @@ class InteractionStack:
             env = json.loads(raw)
             yield StackEntry(decode(env), env["ts"])
 
-    # --------------------------------------------------------------- #
-    #  Branch management
-    # --------------------------------------------------------------- #
 
     def refresh_current_branch(self) -> None:
         self._branch_id = _b2s(self.r.get(self._ptr_key)) or "main"
@@ -282,9 +258,6 @@ class InteractionStack:
         logger.info({"message": "Forked branch", "from": src, "to": dst})
         return dst
 
-    # ---------------------------------------------------------------- #
-    #  Misc helpers
-    # ---------------------------------------------------------------- #
 
     def get_branch_info(self) -> List[dict]:
         cur = self.current_branch()
@@ -324,10 +297,6 @@ class InteractionStack:
         key = f"agent_call_correlation:{self.cid}:{self.aid}"
         return _b2s(self.redis.get(key))
 
-
-# --------------------------------------------------------------------------- #
-#  Monkey-patch helpers required by other modules (unchanged)
-# --------------------------------------------------------------------------- #
 
 if not hasattr(InteractionStack, "_stack_key"):
 

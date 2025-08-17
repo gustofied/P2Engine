@@ -1,4 +1,3 @@
-# path: cli/artifact.py   (new file)
 import typer
 
 from .handlers.artifacts import cat_artifact, diff_artifacts, show_artifacts

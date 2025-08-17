@@ -13,12 +13,10 @@ from orchestrator.interactions.states.agent_result import AgentResultState
 from orchestrator.interactions.states.user_message import UserMessageState
 from orchestrator.interactions.states.waiting import WaitingState
 
-# ────────────────────────────────────────────────────────────────────
-#  Forward‑refs for *typing only* to prevent runtime import cycles
-# ────────────────────────────────────────────────────────────────────
-if TYPE_CHECKING:  # pragma: no cover
-    from orchestrator.interactions.stack import InteractionStack  # noqa: F401
-    from infra.session import get_session  # noqa: F401
+
+if TYPE_CHECKING:  
+    from orchestrator.interactions.stack import InteractionStack  
+    from infra.session import get_session 
 
 __all__ = [
     "BaseEffect",
@@ -29,39 +27,32 @@ __all__ = [
 ]
 
 
-# ────────────────────────────────────────────────────────────────────
-#  Helpers
-# ────────────────────────────────────────────────────────────────────
 
 
 def _get_celery_app():
     """Lazy import so `celery_app` isn’t pulled in at module load time."""
-    from runtime.tasks.celery_app import app as celery_app  # local import
+    from runtime.tasks.celery_app import app as celery_app  
 
     return celery_app
 
 
-# --------------------------------------------------------------------
-# Base class
-# --------------------------------------------------------------------
+
 @dataclass(slots=True, frozen=True)
-class BaseEffect:  # noqa: D401 – one‑liner docs are fine here
+class BaseEffect:  
     """Abstract parent for all side‑effects."""
 
     def _stable_blob(self) -> str:
         return json.dumps(asdict(self), default=str, sort_keys=True)
 
     def dedup_key(self) -> str:
-        return hashlib.sha1(self._stable_blob().encode()).hexdigest()  # nosec B303
+        return hashlib.sha1(self._stable_blob().encode()).hexdigest() 
 
-    def execute(self, redis_client: redis.Redis, celery_app=None) -> None:  # noqa: D401
+    def execute(self, redis_client: redis.Redis, celery_app=None) -> None:
         """Execute the effect – subclasses must override."""
         raise NotImplementedError
 
 
-# --------------------------------------------------------------------
-# Push message to another agent
-# --------------------------------------------------------------------
+
 @dataclass(slots=True, frozen=True)
 class PushToAgent(BaseEffect):
     conversation_id: str
@@ -71,9 +62,9 @@ class PushToAgent(BaseEffect):
     correlation_id: str
     _TTL_SEC: int = 86_400
 
-    def execute(self, redis_client: redis.Redis, celery_app=None) -> None:  # noqa: C901 – keep long for clarity
-        # lazy import to avoid import‑time cycle with infra.session
-        from infra.session import get_session  # local
+    def execute(self, redis_client: redis.Redis, celery_app=None) -> None:
+
+        from infra.session import get_session 
         from infra.logging.interaction_log import log_interaction_event
 
         log_interaction_event(
@@ -90,7 +81,6 @@ class PushToAgent(BaseEffect):
         session = get_session(self.conversation_id, redis_client)
         stack = session.stack_for(self.target_agent_id)
 
-        # propagate episode id from parent → child so metrics are grouped
         parent_episode_id = redis_client.get(f"stack:{self.conversation_id}:{self.sender_agent_id}:episode:{stack.current_branch()}")
         if parent_episode_id:
             redis_client.set(
@@ -128,9 +118,6 @@ class PushToAgent(BaseEffect):
         )
 
 
-# --------------------------------------------------------------------
-# Child agent returns a result
-# --------------------------------------------------------------------
 @dataclass(slots=True, frozen=True)
 class PushAgentResult(BaseEffect):
     conversation_id: str
@@ -140,7 +127,7 @@ class PushAgentResult(BaseEffect):
     child_agent_id: str
     score: Optional[float] = None
 
-    def execute(self, redis_client: redis.Redis, celery_app=None) -> None:  # noqa: C901 – keep long for clarity
+    def execute(self, redis_client: redis.Redis, celery_app=None) -> None:  
         guard_key = f"expect_agent_result:{self.conversation_id}:{self.target_agent_id}:{self.correlation_id}"
         if not redis_client.exists(guard_key):
             logger.warning(
@@ -154,13 +141,11 @@ class PushAgentResult(BaseEffect):
             )
             return
 
-        # local import avoids cycle
-        from orchestrator.interactions.stack import InteractionStack  # local
+        from orchestrator.interactions.stack import InteractionStack 
         from infra.logging.interaction_log import log_interaction_event
 
         stack = InteractionStack(redis_client, self.conversation_id, self.target_agent_id)
 
-        # pop WaitingState if it matches
         top = stack.current()
         if isinstance(top.state, WaitingState) and top.state.correlation_id == self.correlation_id:
             stack.pop()
@@ -215,10 +200,6 @@ class PushAgentResult(BaseEffect):
             }
         )
 
-
-# --------------------------------------------------------------------
-# Tool execution scheduling
-# --------------------------------------------------------------------
 @dataclass(slots=True, frozen=True)
 class CallTool(BaseEffect):
     conversation_id: str
@@ -252,17 +233,13 @@ class CallTool(BaseEffect):
         )
 
 
-# --------------------------------------------------------------------
-# Publish a system‑level reply
-# --------------------------------------------------------------------
 @dataclass(slots=True, frozen=True)
 class PublishSystemReply(BaseEffect):
     conversation_id: str
     message: str
 
-    def dedup_key(self) -> str:  # unique every time – include timestamp
-        return hashlib.sha1(f"{self.conversation_id}:{time.time_ns()}".encode()).hexdigest()  # nosec B303
-
+    def dedup_key(self) -> str:  
+        return hashlib.sha1(f"{self.conversation_id}:{time.time_ns()}".encode()).hexdigest() 
     def execute(self, redis_client: redis.Redis, celery_app=None) -> None:
         redis_client.set(f"response:{self.conversation_id}", self.message, ex=3_600)
         logger.info({"message": "system_reply_published", "conversation_id": self.conversation_id})

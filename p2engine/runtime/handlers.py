@@ -47,7 +47,6 @@ def handler(state_cls: Type[BaseState]):
     return wrapper
 
 
-# ─────────────────────────────────────── User message ────────────────────────
 @handler(UserMessageState)
 def handle_user_message(
     entry: StackEntry,
@@ -61,7 +60,6 @@ def handle_user_message(
     return materialise_response(stack, response, conversation_id, agent_id)
 
 
-# ─────────────────────────────────────── Tool result ─────────────────────────
 @handler(ToolResultState)
 def handle_tool_result(
     entry: StackEntry,
@@ -70,7 +68,6 @@ def handle_tool_result(
     conversation_id: str,
     agent_id: str,
 ) -> List[BaseEffect]:
-    # Ignore synthetic "delegate" results – they’re bubbled up elsewhere
     if entry.state.tool_name == "delegate":
         return []
 
@@ -78,7 +75,6 @@ def handle_tool_result(
     response = run_async(agent.run(ask))
     effects = materialise_response(stack, response, conversation_id, agent_id)
 
-    # Optional tool-reflection
     tool_name = entry.state.tool_name
     from orchestrator.registries import tool_registry
 
@@ -94,7 +90,6 @@ def handle_tool_result(
     return effects
 
 
-# ─────────────────────────────────────── Waiting state ───────────────────────
 @handler(WaitingState)
 def handle_waiting(
     entry: StackEntry,
@@ -107,7 +102,6 @@ def handle_waiting(
     if not state.is_expired():
         return []
 
-    # Grace window while child/agent result is still expected
     if state.kind == "agent" and state.correlation_id:
         guard_key = f"expect_agent_result:{conversation_id}:{agent_id}:{state.correlation_id}"
         if stack.redis.exists(guard_key):
@@ -122,7 +116,6 @@ def handle_waiting(
             )
             return []
 
-    # Clean up dedup fence on tool timeout
     if state.kind == "tool" and state.correlation_id:
         dedup_key = f"dedup:{conversation_id}:{agent_id}:{stack.current_branch()}:{state.correlation_id}"
         stack.redis.delete(dedup_key)
@@ -137,7 +130,6 @@ def handle_waiting(
         }
     )
 
-    # Emit a synthetic timeout result
     if state.kind == "agent":
         timeout_result: BaseState = AgentResultState(
             correlation_id=state.correlation_id,
@@ -168,7 +160,6 @@ def handle_waiting(
     return [PublishSystemReply(conversation_id, "")]
 
 
-# ─────────────────────────────────────── Agent call ──────────────────────────
 @handler(AgentCallState)
 def handle_agent_call(
     entry: StackEntry,
@@ -184,7 +175,6 @@ def handle_agent_call(
     correlation_id = uuid.uuid4().hex
     deadline = time.time() + max(TOOL_TIMEOUT_SEC, MIN_AGENT_RESPONSE_SEC, 300)
 
-    # Map child-to-parent so the bridge can bubble the answer back
     stack.redis.set(
         f"child_to_parent:{conversation_id}:{state.agent_id}",
         agent_id,
@@ -227,8 +217,6 @@ def handle_agent_call(
         )
     ]
 
-
-# ─────────────────────────────────────── Agent result ────────────────────────
 @handler(AgentResultState)
 def handle_agent_result(
     entry: StackEntry,
@@ -254,7 +242,6 @@ def handle_agent_result(
     return effects
 
 
-# ─────────────────────────────────────── Finished ────────────────────────────
 @handler(FinishedState)
 def handle_finished(
     entry: StackEntry,
@@ -263,7 +250,6 @@ def handle_finished(
     conversation_id: str,
     agent_id: str,
 ) -> List[BaseEffect]:
-    # Make sure we run only once per branch
     once_key = f"finished_once:{conversation_id}:{agent_id}:{stack.current_branch()}"
     if not stack.redis.setnx(once_key, "1"):
         return []
@@ -272,7 +258,6 @@ def handle_finished(
     parent_agent_id: str | None = stack.get_parent_agent_id()
     correlation_id: str | None = stack.get_correlation_id() if parent_agent_id else None
 
-    # ── bubble answer back to parent when we were delegated ──────────────────
     if parent_agent_id and correlation_id:
         try:
             final_answer = stack.get_last_assistant_msg() or ""
@@ -301,7 +286,6 @@ def handle_finished(
                 exc_info=True,
             )
 
-    # ── automatic evaluation ────────────────────────────────────────────────
     try:
         from infra.evals.registry import registry
 
@@ -315,7 +299,6 @@ def handle_finished(
 
         traj = render_for_llm(stack, last_n=50)
 
-        # **FIX** – create an evaluation artefact instead of patching assistant
         bus.create_evaluation_for(
             target_ref,
             evaluator_id=judge.id,
@@ -328,7 +311,6 @@ def handle_finished(
             },
         )
     except KeyError:
-        # evaluator not registered – nothing to do
         logger.error(
             {
                 "message": "auto_evaluation_skipped",
@@ -348,11 +330,9 @@ def handle_finished(
             exc_info=True,
         )
 
-    # ── self-reflection / reflection agent  (unchanged) ──────────────────────
     if isinstance(agent, LLMAgent):
         cfg = agent.config
 
-        # same-agent reflection
         if cfg.enable_self_reflection:
             reflection_count = sum(
                 1
@@ -366,7 +346,6 @@ def handle_finished(
                 stack.push(UserMessageState(text=prompt, meta="reflection"))
                 return []
 
-        # reflection delegated to a separate agent
         if cfg.reflection_agent_id:
             last_msg = stack.get_last_assistant_msg() or "No response"
             critique = f"Critique the following response: {last_msg}"
@@ -393,7 +372,6 @@ def handle_finished(
     return []
 
 
-# ──────────────────────────────────────── No-ops / passthroughs ──────────────
 @handler(UserInputRequestState)
 def handle_user_input_req(*_) -> List[BaseEffect]:
     return []

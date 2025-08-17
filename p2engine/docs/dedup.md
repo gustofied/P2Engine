@@ -29,7 +29,7 @@ Tools can opt-out of strict blocking by declaring themselves side-effect-free:
 @function_tool(
     name="example_tool",
     description="An example tool",
-    side_effect_free=True,   # ✅ duplicates may still run under Strict policy
+    side_effect_free=True,
 )
 def example_tool():
     ...

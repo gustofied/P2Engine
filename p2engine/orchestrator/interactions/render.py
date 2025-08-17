@@ -79,7 +79,6 @@ def render_for_llm(
         if isinstance(state, _INTERNAL_ONLY):
             continue
 
-        # ── Hide the synthetic “__child_finished__” sentinel ────────────
         if isinstance(state, UserMessageState) and state.text == "__child_finished__":
             continue
 

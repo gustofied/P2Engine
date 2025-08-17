@@ -1,4 +1,3 @@
-# filename: orchestrator/interactions/serializers.py
 from __future__ import annotations
 
 import base64
@@ -14,10 +13,6 @@ from infra.logging.logging_config import logger
 from .states.agent_call import AgentCallState
 from .states.agent_result import AgentResultState
 from .states.assistant_message import AssistantMessageState
-
-# --------------------------------------------------------------------------- #
-# Concrete state classes – add new ones here and they will be auto-registered
-# --------------------------------------------------------------------------- #
 from .states.base import BaseState
 from .states.finished import FinishedState
 from .states.tool_call import ToolCallState
@@ -43,10 +38,7 @@ STATE_CLASSES: Dict[str, Type[BaseState]] = {
     )
 }
 
-# --------------------------------------------------------------------------- #
-# Encoding / decoding helpers
-# --------------------------------------------------------------------------- #
-_GZIP_THRESHOLD = int(os.getenv("STATE_GZIP_THRESH", "2048"))  # bytes
+_GZIP_THRESHOLD = int(os.getenv("STATE_GZIP_THRESH", "2048")) 
 
 
 def _maybe_compress(raw: str) -> tuple[bool, str]:
@@ -77,7 +69,7 @@ def encode(state: BaseState) -> dict:
     payload = json.dumps(asdict(state), separators=(",", ":"))
     compressed, body = _maybe_compress(payload)
     envelope = {
-        "v": state.__version__,  # type: ignore[attr-defined]
+        "v": state.__version__,  
         "t": type(state).__name__,
         "ts": time.time(),
         "data": body,
@@ -107,21 +99,18 @@ def decode(envelope: dict) -> BaseState:
     if env_ver > getattr(cls, "__version__", 1):
         raise RuntimeError(f"Cannot decode {t_name} v{env_ver}: runtime understands " f"only up to v{cls.__version__}")
 
-    # ------------------------------------------------------------------ #
+
     raw = envelope["data"]
 
     if envelope.get("compressed"):
-        # gzip + base64
         try:
             raw_json = gzip.decompress(base64.b64decode(raw)).decode()
-        except Exception as exc:  # pragma: no cover
+        except Exception as exc:  
             logger.error("Failed to decompress state '%s': %s", t_name, exc)
             raise
         data_dict = json.loads(raw_json)
 
     else:
-        # uncompressed: could be dict (preferred) or str (legacy format)
         data_dict = json.loads(raw) if isinstance(raw, str) else raw
 
-    # ------------------------------------------------------------------ #
     return cls(**data_dict)

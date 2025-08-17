@@ -71,7 +71,6 @@ def run_variant(
 
     conversation_id = f"rollout:{team_id}:{variant_id}:{time.time_ns()}"
 
-    # Set up conversation metadata
     r.mset(
         {
             f"conversation:{conversation_id}:mode": "rollout",
@@ -83,14 +82,14 @@ def run_variant(
         }
     )
 
-    # Apply overrides
+
     r.set(
         f"agent:{agent_id}:{conversation_id}:override",
         json.dumps(overrides),
         ex=86_400,
     )
 
-    # Initialize session
+
     session = get_session(conversation_id, r)
     session.register_agent(agent_id)
     session.stack_for(agent_id).push(UserMessageState(text=initial_message))
@@ -142,7 +141,6 @@ def trigger_eval(run_info: Dict[str, Any]) -> Dict[str, Any]:
     conversation_id = run_info["conversation_id"]
     agent_id = run_info["agent_id"]
 
-    # Get last assistant reference
     last_ref_key = f"stack:{conversation_id}:{agent_id}:last_assistant_ref"
     assistant_ref = r.get(last_ref_key)
     if not assistant_ref:
@@ -155,11 +153,9 @@ def trigger_eval(run_info: Dict[str, Any]) -> Dict[str, Any]:
         )
         return run_info
 
-    # Get conversation trajectory
     stack = get_session(conversation_id, r).stack_for(agent_id)
     traj_for_llm = render_for_llm(stack)
 
-    # Create evaluation
     from infra.evals.registry import registry
 
     judge = registry.get(eval_spec.evaluator_id)
@@ -242,7 +238,6 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
     r: redis.Redis = ctx["redis_client"]
     bus = get_bus()
 
-    # Get metrics from artifacts
     metrics: List[Dict[str, Any]] = [
         hdr for hdr, _ in bus.read_last_n(1000, session_id=conversation_id, role="metrics") if hdr.get("agent_id") == agent_id
     ]
@@ -250,7 +245,6 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
     tokens = sum((m.get("prompt_tokens") or 0) + (m.get("completion_tokens") or 0) for m in metrics)
     cost_usd = sum(m.get("cost_usd") or 0.0 for m in metrics)
 
-    # Get timing info
     first_hdr, _ = bus.read_first_n(1, session_id=conversation_id)[0]
     last_hdr, _ = bus.read_last_n(1, session_id=conversation_id)[0]
     wall = parse_timestamp(last_hdr["ts"]) - parse_timestamp(first_hdr["ts"])
@@ -268,7 +262,6 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
         "overrides": overrides,
     }
 
-    # Enhanced ledger tracking
     if os.getenv("LEDGER_ENABLED", "true") == "true":
         try:
 
@@ -277,33 +270,27 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
 
                 ledger = await get_ledger_service()
 
-                # Get current balance
                 balance = await ledger.get_agent_balance(agent_id)
 
-                # Get ALL transaction history
                 all_history = await ledger.get_transaction_history(agent_id, limit=10000)
 
-                # Calculate metrics for this rollout
                 net_flow = 0.0
                 rollout_tx_count = 0
 
-                # Use the rollout start time to filter transactions
                 rollout_start_time = parse_timestamp(first_hdr["ts"])
 
                 for tx in all_history:
                     payload = tx.get("payload", {})
                     tx_timestamp = float(payload.get("timestamp", 0))
 
-                    # Only count transactions that happened during this rollout
                     if tx_timestamp >= rollout_start_time:
                         rollout_tx_count += 1
                         amount = float(payload.get("amount", 0))
 
-                        # Calculate net flow
                         if payload.get("toAgent") == agent_id:
-                            net_flow += amount  # Received
+                            net_flow += amount  
                         elif payload.get("fromAgent") == agent_id:
-                            net_flow -= amount  # Sent
+                            net_flow -= amount  
 
                 return {
                     "final_balance": balance,
@@ -317,7 +304,6 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
         except Exception as exc:
             logger.warning(f"Failed to collect ledger metrics: {exc}")
 
-    # Write to results stream
     try:
         bus.redis.xadd(
             "stream:rollout_results",
@@ -328,7 +314,6 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
     except Exception:
         logger.exception("Failed to write roll-out summary row")
 
-    # Update rollout progress
     if rollout_id:
         store = RolloutStore(r)
         completed = store.incr_completed(rollout_id)

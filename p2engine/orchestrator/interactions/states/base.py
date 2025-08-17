@@ -1,6 +1,4 @@
-# orchestrator/interactions/states/base.py
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import ClassVar
 
@@ -14,4 +12,4 @@ class BaseState:
     field called `version`, because that breaks dataclass inheritance rules.
     """
 
-    __version__: ClassVar[int] = 1  # ← class-level only, no defaulted instance fields
+    __version__: ClassVar[int] = 1  

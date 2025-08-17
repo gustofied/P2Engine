@@ -5,11 +5,6 @@ from typing import Dict, List, Optional
 from infra.logging.logging_config import logger
 from infra.logging.metrics import metrics
 
-# --------------------------------------------------------------------------- #
-#  Simple helpers used by evaluator plumbing
-# --------------------------------------------------------------------------- #
-
-
 def mean_metric(values: List[float]) -> float:
     """Arithmetic mean that returns 0.0 on an empty list (no NaN)."""
     if not values:

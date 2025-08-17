@@ -27,15 +27,12 @@ def _import_plugins() -> None:
 
 
 def load_all() -> None:
-    if _DISCOVERED:  # pragma: no cover – already loaded
+    if _DISCOVERED: 
         return
     _import_internal()
     _import_plugins()
 
 
-# ------------------------------------------------------------------------- #
-#  Guard-rail: abort worker start-up if *any* evaluator import explodes
-# ------------------------------------------------------------------------- #
 def safe_load_all() -> None:
     """
     Wrapper used by Celery worker-init hooks.
@@ -46,7 +43,7 @@ def safe_load_all() -> None:
     """
     try:
         load_all()
-    except Exception as exc:  # noqa: BLE001 – want *everything*
+    except Exception as exc: 
         import logging
 
         logging.getLogger(__name__).critical("Evaluator import failed – aborting worker: %s", exc, exc_info=True)

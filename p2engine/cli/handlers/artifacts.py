@@ -17,9 +17,7 @@ def _render_row(idx: int, header: ArtifactHeader, payload) -> str:
     return f"{idx:>3}. {ts}  {kind:<12}  br={branch:<8}  {preview}"
 
 
-# ------------------------------------------------------------------ #
-# CLI helpers
-# ------------------------------------------------------------------ #
+
 def show_artifacts(
     engine,
     conversation_id: str,
@@ -40,11 +38,10 @@ def show_artifacts(
             since=since,
             limit=limit,
         )
-        # branch filter in Python – cheap
+
         if branch_id:
             results = [pair for pair in results if pair[0]["branch_id"] == branch_id]
     else:
-        # fast-path: fall back to timeline read
         results = bus.read_last_n(limit, session_id=conversation_id)
 
     if not results:

@@ -1,10 +1,29 @@
-todos
+--- TODOS
 TODO, Send over tool related things from agents module over to tools module, and or fix more
 TODO, Check agents.py the factory/plugin against our IAgent?
 TODO, Add IAgent type hints in the implementations?
 TODO, Fix both readmes for Tools, and Agents
 TODO, constansts.py Just move this stuff into decoratros?
 TODO, Fix the two readmes of the two modles Tools and Agents
--
-dones
-Read through modules agents and tools
+TODO, cli/_ui.py, this file just move the things to where it is used.
+TODO, cli, conversation helpers are duplicated we also define it in our helpers
+TODO, fix the README of infra
+TODO, fix remove omegaconf from infra, project
+TODO, remove runtime.py from infra
+TODO, fix readme in orchestrator
+TODO, look into protcols from agents, and that registers file in orchestrator
+
+
+
+--- VISUAL
+TODO, For like rollouts, you can log text the config yaml of it, in rerun, so you could see it?
+and even update results in such text log too to see results from the rollout
+
+maybe it is rollouts we are in most interest to showcase get rerun on, add rollout with rerun flag?
+
+--- REVIEWS
+- YOU HAVE TO GO THROGUH THEM ALL ONCE MORE WEEKEND
+- Review of agents and tools
+- Review of cli
+- Review of infra 
+- Review of orchestrator

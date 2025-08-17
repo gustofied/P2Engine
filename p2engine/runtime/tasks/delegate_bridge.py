@@ -10,7 +10,7 @@ from runtime.task_runner import get_task_context
 from runtime.tasks.celery_app import app
 from runtime.tasks.tasks import enqueue_session_tick
 
-if TYPE_CHECKING:  # avoids runtime import cost / cycles
+if TYPE_CHECKING:  
     from infra.session import get_session
 
 
@@ -33,17 +33,15 @@ def bubble_up_delegate(
     InteractionStack and get_session are imported lazily to sidestep
     the circular-import chain seen during CLI start-up.
     """
-    from orchestrator.interactions.stack import InteractionStack  # lazy import
-    from infra.session import get_session  # lazy import
+    from orchestrator.interactions.stack import InteractionStack 
+    from infra.session import get_session 
 
     ctx = get_task_context()
     r: redis.Redis = ctx["redis_client"]
 
-    # parent agent’s stack
     session = get_session(conversation_id, r)
     parent_stack = session.stack_for(parent_agent_id)
 
-    # remove WaitingState and append results
     _settle_wait(parent_stack, tool_call_id)
 
     parent_stack.push(
@@ -67,5 +65,4 @@ def bubble_up_delegate(
         )
     )
 
-    # nudge the driver
     enqueue_session_tick(conversation_id, delay_sec=0)
