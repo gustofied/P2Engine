@@ -90,10 +90,31 @@ def run_rollout(
     all_agent_ids.update(["treasurer", "agent_helper", "child"])
     rollout_id = f"multi:{time.time_ns()}"
     RolloutStore(_rds).create(rollout_id, total_variants)
+    
+    # NEW: Initialize Rerun logging for this rollout
+# NEW: Initialize Rerun logging for this rollout
+    from infra.observability.rerun_rollout import log_rollout_start, log_ledger_snapshot
+    log_rollout_start(
+        rollout_id=rollout_id,
+        teams=len(multi_spec.teams),
+        total_variants=total_variants,
+        config={
+            "teams": list(multi_spec.teams.keys()),
+            "parallel_hint": parallel_hint,
+            "strict_tools": strict_tools,
+            "start_time": time.time()
+        }
+    )
+    
     if os.getenv("LEDGER_ENABLED", "true") == "true":
         before_snapshot = run_async(capture_ledger_snapshot("before_rollout", list(all_agent_ids)))
         _rds.set(f"rollout:{rollout_id}:snapshot:before", json.dumps(before_snapshot), ex=86400)
+        
+        # NEW: Log to Rerun
+        log_ledger_snapshot(rollout_id, "before", before_snapshot)
+        
         logger.info(f"Captured before snapshot for rollout {rollout_id}")
+    
     sigs = []
     for team_id, team_spec in multi_spec.teams.items():
         variants = expand_variants(team_spec)

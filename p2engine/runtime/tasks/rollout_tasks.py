@@ -82,13 +82,11 @@ def run_variant(
         }
     )
 
-
     r.set(
         f"agent:{agent_id}:{conversation_id}:override",
         json.dumps(overrides),
         ex=86_400,
     )
-
 
     session = get_session(conversation_id, r)
     session.register_agent(agent_id)
@@ -227,7 +225,7 @@ def wait_for_eval(run_info: Dict[str, Any]) -> Dict[str, Any]:
 
 @shared_task(name="runtime.tasks.rollout_tasks.finalise_rollout", queue="ticks")
 def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
-    """Finalize rollout with proper ledger tracking."""
+    """Finalize rollout with Rerun visualization logging."""
     conversation_id, team_id, variant_id, agent_id = (run_info[k] for k in ("conversation_id", "team_id", "variant_id", "agent_id"))
     rollout_id: Optional[str] = run_info.get("rollout_id")
     score = float(run_info.get("score", 0.0))
@@ -262,21 +260,18 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
         "overrides": overrides,
     }
 
+    # Ledger metrics collection (existing code)
     if os.getenv("LEDGER_ENABLED", "true") == "true":
         try:
-
             async def _get_ledger_metrics():
                 from services.ledger_service import get_ledger_service
 
                 ledger = await get_ledger_service()
-
                 balance = await ledger.get_agent_balance(agent_id)
-
                 all_history = await ledger.get_transaction_history(agent_id, limit=10000)
 
                 net_flow = 0.0
                 rollout_tx_count = 0
-
                 rollout_start_time = parse_timestamp(first_hdr["ts"])
 
                 for tx in all_history:
@@ -304,6 +299,44 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
         except Exception as exc:
             logger.warning(f"Failed to collect ledger metrics: {exc}")
 
+    # NEW: Log to Rerun
+    from infra.observability.rerun_rollout import (
+        log_variant_metrics, log_pareto_point, log_variant_config
+    )
+    
+    # Log variant metrics
+    log_variant_metrics(
+        rollout_id=rollout_id or "unknown",
+        team_id=team_id,
+        variant_id=variant_id,
+        score=score,
+        tokens=tokens,
+        cost=cost_usd,
+        wall_time=wall,
+        net_flow=summary_raw.get("net_flow", 0.0),
+        final_balance=summary_raw.get("final_balance", 0.0),
+        transaction_count=summary_raw.get("transaction_count", 0)
+    )
+    
+    # Log for Pareto visualization
+    log_pareto_point(
+        rollout_id=rollout_id or "unknown",
+        team_id=team_id,
+        variant_id=variant_id,
+        score=score,
+        cost=cost_usd,
+        tokens=tokens
+    )
+    
+    # Log variant configuration
+    log_variant_config(
+        rollout_id=rollout_id or "unknown",
+        team_id=team_id,
+        variant_id=variant_id,
+        config=overrides
+    )
+
+    # Write to Redis stream (existing code)
     try:
         bus.redis.xadd(
             "stream:rollout_results",
@@ -320,6 +353,53 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
         _, total = store.progress(rollout_id)
         if completed >= total:
             store.mark_done(rollout_id)
+            
+            # NEW: Log final ledger snapshot when rollout is done
+            if os.getenv("LEDGER_ENABLED", "true") == "true" and completed >= total:
+                agent_ids_json = r.get(f"rollout:{rollout_id}:agents")
+                if agent_ids_json:
+                    agent_ids = json.loads(agent_ids_json)
+                    after_snapshot = run_async(capture_ledger_snapshot("after_rollout", agent_ids, wait_for_settle=True))
+                    r.set(f"rollout:{rollout_id}:snapshot:after", json.dumps(after_snapshot), ex=86400)
+                    
+                    from infra.observability.rerun_rollout import log_ledger_snapshot
+                    log_ledger_snapshot(rollout_id, "after", after_snapshot)
 
     logger.info({"message": "rollout_variant_done", **summary_raw})
     return summary_raw
+
+
+async def capture_ledger_snapshot(label: str, agent_ids: List[str], wait_for_settle: bool = False) -> Dict[str, Any]:
+    """Helper function to capture ledger state."""
+    if os.getenv("LEDGER_ENABLED", "true") != "true":
+        return {"label": label, "enabled": False}
+    if wait_for_settle:
+        logger.info(f"Waiting for ledger transactions to settle before {label} snapshot...")
+        await asyncio.sleep(5)
+    try:
+        from services.ledger_service import get_ledger_service
+
+        ledger = await get_ledger_service()
+        ledger._wallet_cache.clear()
+
+        metrics = await ledger.get_system_metrics()
+        wallets = []
+        for agent_id in agent_ids:
+            try:
+                balance = await ledger.get_agent_balance(agent_id, use_cache=False)
+                history = await ledger.get_transaction_history(agent_id, limit=10000)
+                wallets.append(
+                    {
+                        "agent_id": agent_id,
+                        "balance": balance,
+                        "transaction_count": len(history),
+                        "transactions": history,
+                    }
+                )
+            except Exception as e:
+                logger.debug(f"Could not get balance for {agent_id}: {e}")
+                wallets.append({"agent_id": agent_id, "balance": 0.0, "transaction_count": 0, "error": str(e)})
+        return {"label": label, "timestamp": time.time(), "enabled": True, "metrics": metrics, "wallets": wallets}
+    except Exception as exc:
+        logger.warning(f"Failed to capture ledger snapshot: {exc}")
+        return {"label": label, "enabled": False, "error": str(exc)}

@@ -46,6 +46,7 @@ rich                 = "^14.0.0"
 # ─────────────────────────────────────────────────────────────────────────────
 prompt-toolkit = "^3.0.51"
 pyjwt = "^2.10.1"
+rerun-sdk = "^0.24.1"
 [tool.poetry.group.dev.dependencies]
 flake8    = "^7.1.2"
 black     = "^25.1.0"
