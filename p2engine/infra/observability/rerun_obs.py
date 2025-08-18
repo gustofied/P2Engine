@@ -6,6 +6,7 @@ Adds:
 - set_time_seconds(...) to drive timeline playback.
 - points2d(...) with radii/colors/labels.
 - line_strips2d(...) with per-strip colors.
+- text_log(...) for streaming log lines.
 """
 
 from __future__ import annotations
@@ -145,7 +146,11 @@ def scalar(path: str, value: float, **attrs: Any) -> None:
         rr.log(_path(path), rr.Scalar(value))
 
 
-def json_doc(path: str, data: Dict[str, Any]) -> None:
+def json_doc(path: str, data: Dict[str, Any], *, timeless: bool = False) -> None:
+    """
+    Log a JSON document. 'timeless' is accepted for compatibility but ignored
+    in the modern Rerun Python API (no 'timeless' kw on rr.log).
+    """
     if not _backend:
         return
     _, rr = _backend
@@ -156,7 +161,10 @@ def json_doc(path: str, data: Dict[str, Any]) -> None:
         logger.debug("Rerun json_doc failed: %s", e)
 
 
-def kv(path: str, **attrs: Any) -> None:
+def kv(path: str, *, timeless: bool = False, **attrs: Any) -> None:
+    """
+    Log a small key/value JSON blob. 'timeless' accepted but ignored.
+    """
     if not _backend:
         return
     _, rr = _backend
@@ -168,12 +176,24 @@ def kv(path: str, **attrs: Any) -> None:
         logger.debug("Rerun kv failed: %s", e)
 
 
-def text_doc(path: str, text: str, media_type: str = "text/plain") -> None:
+def text_doc(path: str, text: str, *, media_type: str = "text/plain", timeless: bool = False) -> None:
+    """
+    Log a text document. 'timeless' accepted but ignored.
+    """
     if not _backend:
         return
     _, rr = _backend
     with contextlib.suppress(Exception):
         rr.log(_path(path), rr.TextDocument(text, media_type=media_type))
+
+
+def text_log(path: str, text: str) -> None:
+    """Append a single log line to a TextLog entity."""
+    if not _backend:
+        return
+    _, rr = _backend
+    with contextlib.suppress(Exception):
+        rr.log(_path(path), rr.TextLog(text))
 
 
 # ---------- Graph primitives (2D) ----------
@@ -184,6 +204,7 @@ def points2d(
     radii: Optional[Sequence[float]] = None,
     colors: Optional[Sequence[Sequence[int]]] = None,  # RGBA 0..255
     labels: Optional[Sequence[str]] = None,
+    timeless: bool = False,  # accepted but ignored by rr.log
 ) -> None:
     """Log 2D points with optional radii/colors/labels."""
     if not _backend:
@@ -198,6 +219,7 @@ def line_strips2d(
     strips: Sequence[Sequence[Sequence[float]]],
     *,
     colors: Optional[Sequence[Sequence[int]]] = None,  # one color per strip
+    timeless: bool = False,  # accepted but ignored by rr.log
 ) -> None:
     """
     Log 2D line strips; each strip is a list of [x,y] points.

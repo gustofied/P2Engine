@@ -1,4 +1,6 @@
 from __future__ import annotations
+import json
+import time
 from typing import Any, Dict
 
 from infra.artifacts.bus import get_bus
@@ -17,7 +19,6 @@ ROUND_TTL: int = 86_400
 
 def _ctx() -> Dict[str, Any]:
     from . import get_task_context
-
     return get_task_context()
 
 
@@ -49,6 +50,38 @@ def _publish_finished(conversation_id: str, agent_id: str, branch_id: str) -> No
         )
 
 
+def _emit_stack_update(redis_client, conversation_id: str, agent_id: str, stack_length: int) -> None:
+    """Emit a real-time stack update event for monitoring."""
+    try:
+        # Get rollout metadata if this is a rollout
+        team_id = redis_client.get(f"{conversation_id}:team")
+        variant_id = redis_client.get(f"{conversation_id}:variant")
+        rollout_id = redis_client.get(f"{conversation_id}:rollout_id")
+        
+        if rollout_id:
+            # Publish stack update event for real-time monitoring
+            event = {
+                "type": "stack_update",
+                "conversation_id": conversation_id,
+                "agent_id": agent_id,
+                "team_id": team_id.decode() if team_id else None,
+                "variant_id": variant_id.decode() if variant_id else None,
+                "rollout_id": rollout_id.decode() if rollout_id else None,
+                "stack_length": stack_length,
+                "timestamp": time.time()
+            }
+            
+            # Publish to a dedicated channel for real-time updates
+            redis_client.xadd(
+                "stream:stack_updates",
+                {k: json.dumps(v) if not isinstance(v, (str, bytes, int, float)) else v 
+                 for k, v in event.items()},
+                maxlen=10000  # Keep last 10k events
+            )
+    except Exception as e:
+        logger.debug(f"Failed to emit stack update: {e}")
+
+
 def process_agent_tick(conversation_id: str, agent_id: str) -> bool:
     ctx = _ctx()
     redis_client = ctx["redis_client"]
@@ -74,6 +107,10 @@ def process_agent_tick(conversation_id: str, agent_id: str) -> bool:
     runtime = AgentRuntime(agent, conversation_id, agent_id, stack)
     _, effects = runtime.step()
     after_len = stack.length()
+    
+    # Emit real-time update after runtime step
+    if after_len > before_len:
+        _emit_stack_update(redis_client, conversation_id, agent_id, after_len)
 
     progressed = bool(effects)
     if not progressed and after_len > before_len:
@@ -119,9 +156,12 @@ def process_agent_tick(conversation_id: str, agent_id: str) -> bool:
         ack_tick(redis_client, conversation_id, agent_id, session.tick)
         return False
 
-
     executor = EffectExecutor(redis_client, celery_app, dedup_policy)
     executor.execute(effects, conversation_id)
+    
+    # Emit another update after effects execution
+    if effects:
+        _emit_stack_update(redis_client, conversation_id, agent_id, stack.length())
 
     current_tick = session.refresh_tick()
     ack_tick(redis_client, conversation_id, agent_id, current_tick)
