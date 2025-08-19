@@ -96,6 +96,31 @@ def execute_tool(
         if tool is None:
             raise RuntimeError(f"Tool '{tool_name}' not found")
         t0 = time.time()
+
+        # --- live: tool_start event (for realtime visual playhead) ---
+        try:
+            rollout_id = r.get(f"{conversation_id}:rollout_id")
+            if rollout_id:
+                team_b = r.get(f"{conversation_id}:team"); var_b = r.get(f"{conversation_id}:variant")
+                r.xadd(
+                    "stream:stack_updates",
+                    {
+                        "type": "tool_start",
+                        "conversation_id": conversation_id,
+                        "agent_id": agent_id,
+                        "team_id": (team_b.decode() if isinstance(team_b, bytes) else team_b) or "",
+                        "variant_id": (var_b.decode() if isinstance(var_b, bytes) else var_b) or "",
+                        "rollout_id": rollout_id.decode() if isinstance(rollout_id, bytes) else rollout_id,
+                        "tool": tool_name,
+                        "timestamp": time.time(),
+                    },
+                    maxlen=10000,
+                    approximate=True,
+                )
+        except Exception:
+            pass
+        # -------------------------------------------------------------
+
         exec_kwargs: Dict[str, Any] = {
             "redis_client": r,
             "conversation_id": conversation_id,
@@ -229,3 +254,29 @@ def execute_tool(
             "conversation_id": conversation_id,
         }
     )
+
+    # --- live: tool_end event (after ToolResult is on the stack) -------------
+    try:
+        rollout_id = r.get(f"{conversation_id}:rollout_id")
+        if rollout_id:
+            team_b = r.get(f"{conversation_id}:team"); var_b = r.get(f"{conversation_id}:variant")
+            r.xadd(
+                "stream:stack_updates",
+                {
+                    "type": "tool_end",
+                    "conversation_id": conversation_id,
+                    "agent_id": agent_id,
+                    "team_id": (team_b.decode() if isinstance(team_b, bytes) else team_b) or "",
+                    "variant_id": (var_b.decode() if isinstance(var_b, bytes) else var_b) or "",
+                    "rollout_id": rollout_id.decode() if isinstance(rollout_id, bytes) else rollout_id,
+                    "tool": tool_name,
+                    "ok": result.get("status") == "ok",
+                    "latency_ms": int(meta.get("latency_ms") or 0),
+                    "timestamp": time.time(),
+                },
+                maxlen=10000,
+                approximate=True,
+            )
+    except Exception:
+        pass
+    # -------------------------------------------------------------------------

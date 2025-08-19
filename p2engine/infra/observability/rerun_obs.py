@@ -4,8 +4,10 @@ Zero coupling — silently no-ops if Rerun isn't available.
 
 Adds:
 - set_time_seconds(...) to drive timeline playback.
+- set_time_frame(...) to use an integer "frame" timeline.
 - points2d(...) with radii/colors/labels.
 - line_strips2d(...) with per-strip colors.
+- graph(...) to log GraphNodes/GraphEdges (variant→session→agent).
 - text_log(...) for streaming log lines.
 """
 
@@ -15,7 +17,7 @@ import contextlib
 import logging
 import os
 import time
-from typing import Any, Dict, Optional, Tuple, Sequence
+from typing import Any, Dict, Optional, Tuple, Sequence, List
 
 logger = logging.getLogger(__name__)
 
@@ -127,7 +129,7 @@ def abs_path(p: str) -> str:
 
 
 # -----------------------------------------------------------------------------
-# Logging helpers — safe no-ops if backend isn't initialized
+# Time helpers — safe no-ops if backend isn't initialized
 # -----------------------------------------------------------------------------
 def set_time_seconds(timeline: str, t: float) -> None:
     """Set the current time on a named timeline (e.g. 'step')."""
@@ -138,6 +140,21 @@ def set_time_seconds(timeline: str, t: float) -> None:
         rr.set_time_seconds(timeline, float(t))
 
 
+def set_time_frame(frame: int | float) -> None:
+    """
+    Set the current 'frame' timeline to an integer/float index.
+    This is great for scrubbing one visual frame per interaction.
+    """
+    if not _backend:
+        return
+    _, rr = _backend
+    with contextlib.suppress(Exception):
+        rr.set_time("frame", sequence=int(frame))
+
+
+# -----------------------------------------------------------------------------
+# Logging helpers — safe no-ops if backend isn't initialized
+# -----------------------------------------------------------------------------
 def scalar(path: str, value: float, **attrs: Any) -> None:
     if not _backend:
         return
@@ -230,6 +247,30 @@ def line_strips2d(
     _, rr = _backend
     with contextlib.suppress(Exception):
         rr.log(_path(path), rr.LineStrips2D(strips, colors=colors))
+
+
+# ---------- Graph (nodes/edges) ----------
+def graph(
+    origin: str,
+    *,
+    nodes: Sequence[str],
+    labels: Optional[Sequence[str]] = None,
+    colors: Optional[Sequence[Sequence[int]]] = None,  # RGBA
+    radii: Optional[Sequence[float]] = None,
+    edges: Sequence[Tuple[str, str]] = (),
+    directed: bool = True,
+) -> None:
+    """
+    Log a GraphNodes/GraphEdges pair at the given origin.
+    Use together with a blueprint GraphView for force-layout in the viewer.
+    """
+    if not _backend:
+        return
+    _, rr = _backend
+    with contextlib.suppress(Exception):
+        rr.log(_path(origin), rr.GraphNodes(nodes, labels=labels, colors=colors, radii=radii))
+        if edges:
+            rr.log(_path(origin), rr.GraphEdges(edges, graph_type=rr.GraphType.Directed if directed else "undirected"))
 
 
 def send_blueprint(blueprint: Any, make_active: bool = True, make_default: bool = False) -> None:

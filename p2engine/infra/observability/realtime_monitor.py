@@ -1,6 +1,7 @@
 """Real-time monitoring for conversation stacks during rollouts."""
 
 import json
+import os
 import time
 import threading
 from typing import Dict, List, Optional, Set, Tuple, Any
@@ -44,10 +45,23 @@ class RealtimeStackMonitor:
         self.conversations: Dict[str, Tuple[str, str]] = {}  # conv_id -> (team, variant)
         self.last_positions: Dict[str, int] = {}  # conv_id -> last_stack_index
         self.last_line_idx: Dict[Tuple[str, str], int] = {}  # (team, variant) -> last_line_idx
+
+        # Track last normalized state kind per conversation for clean transitions
+        self.last_kind_by_conv: Dict[str, str] = {}  # conv_id -> last_kind
         
         # Markov graph state
         self.markov = None  # Will be initialized with MarkovAgg
         self.t_anim = 0.0
+
+        # --- world_sessions graph toggle (OFF by default) --------------------
+        self.enable_world_sessions = os.getenv("OBS_WORLD_SESSIONS", "0") == "1"
+        # World sessions graph state ("variant → session → agent")
+        self.world = rr_viz.WorldState() if self.enable_world_sessions else None
+        self.frame_idx: int = 0  # one frame per interaction
+        # --------------------------------------------------------------------
+
+        # Mini state-flow ring
+        self.pulse = rr_viz.StatePulse()
         
         # Team documentation
         self.team_docs: Dict[str, List[str]] = {}
@@ -80,6 +94,18 @@ class RealtimeStackMonitor:
         """Register a conversation for monitoring."""
         self.conversations[conv_id] = (team_id, variant_id)
         self.team_docs.setdefault(team_id, [f"# {team_id}\n"])
+        # Seed world state minimally (only if enabled)
+        if self.enable_world_sessions:
+            rr_viz.world_apply_update(
+                self.world,
+                conversation_id=conv_id,
+                team_id=team_id,
+                variant_id=variant_id,
+                agent_id=None,
+                event_type=None,
+                frame=self.frame_idx,
+            )
+            rr_viz.log_world_sessions(self.rollout_id, self.world, frame=self.frame_idx)
         
     def _monitor_loop(self):
         """Main monitoring loop - runs in background thread."""
@@ -161,19 +187,51 @@ class RealtimeStackMonitor:
         variant = data["variant_id"]
         lines = data["lines"]
         new_lines = data["new_lines"]
+        conv_id = data.get("conversation_id", "")
+
+        # Determine the kind immediately preceding the first new line (for clean transitions)
+        prev_kind: Optional[str] = self.last_kind_by_conv.get(conv_id)
+        if lines and new_lines and prev_kind is None:
+            try:
+                first_new = new_lines[0]
+                idx_in_full = lines.index(first_new)
+                if idx_in_full > 0:
+                    prev_kind = getattr(lines[idx_in_full - 1], "kind", None)
+            except Exception:
+                prev_kind = None
         
-        # Stream new lines to Rerun
+        # Stream new lines to Rerun AND advance one world frame per line
         for ln in new_lines:
+            cur_kind = getattr(ln, "kind", "")
             rr_viz.log_stack_line(
                 self.rollout_id,
                 team,
                 variant,
                 idx=int(ln.idx),
-                kind=getattr(ln, "kind", ""),
+                kind=cur_kind,
                 content=getattr(ln, "content", ""),
                 t_step=self.t_anim,
             )
             self.t_anim += self.step_sec * 0.5
+
+            # Mini state-flow ring: feed transition and render one frame per interaction
+            try:
+                self.pulse.add(prev_kind, cur_kind)
+            except Exception:
+                pass
+            rr_viz.log_state_pulse(self.rollout_id, self.pulse, frame=self.frame_idx)
+
+            # Advance world timeline iff enabled
+            if self.enable_world_sessions:
+                rr_viz.world_tick(self.world, self.frame_idx)
+                rr_viz.log_world_sessions(self.rollout_id, self.world, frame=self.frame_idx)
+
+            self.frame_idx += 1
+
+            # Chain transitions and remember last kind for this conversation
+            prev_kind = cur_kind
+            if conv_id:
+                self.last_kind_by_conv[conv_id] = cur_kind
             
         # Update Markov graph if we have one
         if self.markov and new_lines:
@@ -189,7 +247,6 @@ class RealtimeStackMonitor:
                     ka = getattr(a, "kind", "")
                     kb = getattr(b, "kind", "")
                     pos_map = {m["variant"]: positions[i] for i, m in enumerate(meta)}
-                    
                     if ka in pos_map and kb in pos_map:
                         events.append({
                             "t": self.t_anim,
@@ -207,10 +264,54 @@ class RealtimeStackMonitor:
         
     def _process_event_update(self, data: Dict[str, Any]):
         """Process an event update from workers."""
-        # Event updates trigger a poll for the conversation
-        conv_id = data["conversation_id"]
+        conv_id = data.get("conversation_id")
+        if not conv_id:
+            return
+
+        # Determine team/variant now
+        team = None
+        variant = None
         if conv_id in self.conversations:
-            # Mark for immediate polling
+            team, variant = self.conversations[conv_id]
+        else:
+            team = data.get("team_id") or "?"
+            variant = data.get("variant_id") or "?"
+
+        # Update world graph state immediately when events arrive (only if enabled)
+        if self.enable_world_sessions:
+            rr_viz.world_apply_update(
+                self.world,
+                conversation_id=conv_id,
+                team_id=team,
+                variant_id=variant,
+                agent_id=data.get("agent_id"),
+                event_type=data.get("type"),
+                frame=self.frame_idx,
+            )
+            rr_viz.log_world_sessions(self.rollout_id, self.world, frame=self.frame_idx)
+
+        # Map live events to flow kinds and update the state-flow ring too
+        ev_type = (data.get("type") or "").lower()
+        flow_kind_map = {
+            "tool_start": "ToolCall",
+            "tool_end": "ToolResult",
+            "ledger_transfer": "ToolResult",  # ledger ops show as effect/result in flow ring
+            "stack_update": None,             # handled by polling path
+        }
+        flow_kind = flow_kind_map.get(ev_type)
+        if flow_kind:
+            prev_kind = self.last_kind_by_conv.get(conv_id)
+            try:
+                self.pulse.add(prev_kind, flow_kind)
+            except Exception:
+                pass
+            rr_viz.log_state_pulse(self.rollout_id, self.pulse, frame=self.frame_idx)
+            self.last_kind_by_conv[conv_id] = flow_kind
+
+        self.frame_idx += 1
+
+        # Event updates also trigger a poll for the conversation
+        if conv_id in self.conversations:
             self.last_positions[conv_id] = self.last_positions.get(conv_id, -1) - 1
             
     def _update_team_docs(self, team_id: str):

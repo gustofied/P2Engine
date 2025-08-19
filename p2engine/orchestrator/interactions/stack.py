@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 import uuid
+import time
 from dataclasses import asdict, dataclass
 from typing import Iterable, List, Optional, Union
 
@@ -60,7 +61,6 @@ class InteractionStack:
         self._rollout_team: Optional[str] = None
         self._rollout_variant: Optional[str] = None
 
-
     def _branch_key(self, branch_id: str) -> str:
         return self._base_key if branch_id == "main" else f"{self._base_key}:{branch_id}"
 
@@ -81,6 +81,38 @@ class InteractionStack:
             self._rollout_variant = _b2s(self.redis.get(f"{self.cid}:variant"))
         return self._rollout_team, self._rollout_variant
 
+    def _emit_stack_update(self, *, reason: str, delta: int = 0) -> None:
+        """
+        Fire-and-forget signal that a stack changed. Consumed by RealtimeStackMonitor
+        to immediately poll and stream new lines to Rerun.
+        """
+        try:
+            rollout_id_b = self.redis.get(f"{self.cid}:rollout_id")
+            if not rollout_id_b:
+                return  # not part of a rollout; skip noise
+            rollout_id = rollout_id_b.decode() if isinstance(rollout_id_b, bytes) else rollout_id_b
+            team, variant = self._get_rollout_provenance()
+            payload = {
+                "type": "stack_update",
+                "conversation_id": self.cid,
+                "agent_id": self.aid,
+                "team_id": team,
+                "variant_id": variant,
+                "rollout_id": rollout_id,
+                "stack_length": self.length(),
+                "delta": delta,
+                "reason": reason,
+                "timestamp": time.time(),
+            }
+            # Keep values simple for monitor._parse_update
+            self.redis.xadd(
+                "stream:stack_updates",
+                {k: (json.dumps(v) if not isinstance(v, (str, bytes, int, float)) else v) for k, v in payload.items()},
+                maxlen=10000,
+                approximate=True,
+            )
+        except Exception:
+            pass
 
     def push(self, *states: BaseState, group_id: Optional[str] = None) -> None:
         """
@@ -193,6 +225,9 @@ class InteractionStack:
         if self.r.llen(key) > MAX_STACK_LEN:
             self.r.ltrim(key, -MAX_STACK_LEN, -1)
 
+        # Signal the monitor that new lines exist
+        self._emit_stack_update(reason="push", delta=len(states))
+
     def pop(self, n: int = 1, branch_id: Optional[str] = None) -> List[BaseState]:
         if n <= 0:
             return []
@@ -206,6 +241,8 @@ class InteractionStack:
             out.append(decode(env))
         if out:
             self.redis.expire(key, 86_400)
+            # Signal removal as well (use negative delta)
+            self._emit_stack_update(reason="pop", delta=-len(out))
         return out
 
     def at(self, idx: int, branch_id: Optional[str] = None) -> StackEntry:
@@ -229,7 +266,6 @@ class InteractionStack:
         for raw in self.r.lrange(key, -n, -1):
             env = json.loads(raw)
             yield StackEntry(decode(env), env["ts"])
-
 
     def refresh_current_branch(self) -> None:
         self._branch_id = _b2s(self.r.get(self._ptr_key)) or "main"
@@ -257,7 +293,6 @@ class InteractionStack:
         self.redis.publish(self._ptr_key, dst)
         logger.info({"message": "Forked branch", "from": src, "to": dst})
         return dst
-
 
     def get_branch_info(self) -> List[dict]:
         cur = self.current_branch()

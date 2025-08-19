@@ -8,6 +8,15 @@ World graph improvements:
 - Colors represent teams/variants
 - Animated flow shows current activity
 - Aspect ratio aware canvas; stays readable regardless of window size
+
+Added:
+- WorldState & logging for a second graph ("variant → session → agent") using
+  Rerun's GraphView (internal force layout), advanced one frame per interaction.
+- State Flow (mini ring) at /mini/state_flow — compact viz of recent transitions.
+
+Layout:
+- LEFT:  YAML config (top) + State Flow (below)
+- RIGHT: Team logs → Team summaries → CLI metrics
 """
 
 from __future__ import annotations
@@ -19,8 +28,8 @@ import math
 import hashlib
 import re
 import random
-from collections import defaultdict
-from dataclasses import dataclass
+from collections import defaultdict, deque
+from dataclasses import dataclass, field
 
 from . import rerun_obs as rr
 
@@ -41,6 +50,14 @@ __all__ = [
     "log_pareto_point",
     "log_variant_config",
     "log_ledger_snapshot",
+    # new world-sessions graph API
+    "WorldState",
+    "world_apply_update",
+    "world_tick",
+    "log_world_sessions",
+    # mini state flow ring
+    "StatePulse",
+    "log_state_pulse",
 ]
 
 # -----------------------------------------------------------------------------
@@ -93,7 +110,7 @@ def _color_for_team(team: str) -> list[int]:
     return _hsv_to_rgba(_stable_hue(team), 0.65, 0.85, 255)
 
 # -----------------------------------------------------------------------------
-# Enhanced Graph Data Structures
+# Enhanced Graph Data Structures (Points2D world graph)
 # -----------------------------------------------------------------------------
 
 @dataclass
@@ -143,17 +160,15 @@ class _ForceLayout:
         n = max(1, len(node_ids))
         area = self.W * self.H
         k = math.sqrt(area / n)
-        # Cooling schedule
         t0 = max(self.W, self.H) * 0.12
         gravity = 0.02  # gentle pull to center
-        # Precompute edge list (u, v, weight)
         e_list = [(u, v, max(0.2, edge_strength.get((u, v), 1.0))) for (u, v) in edges]
 
         for it in range(iterations):
             t = t0 * (1.0 - it / max(1, iterations))
             disp: Dict[str, List[float]] = {nid: [0.0, 0.0] for nid in node_ids}
 
-            # Repulsion (O(n^2) – fine for ~few hundred nodes)
+            # Repulsion
             for i in range(n):
                 u = node_ids[i]
                 ux, uy = pos[u]
@@ -163,32 +178,29 @@ class _ForceLayout:
                     dx = ux - vx
                     dy = uy - vy
                     dist = math.hypot(dx, dy) or 1e-6
-                    # Fruchterman repulsive force ~ k^2 / d
                     f = (k * k) / dist
                     rx = (dx / dist) * f
                     ry = (dy / dist) * f
                     disp[u][0] += rx; disp[u][1] += ry
                     disp[v][0] -= rx; disp[v][1] -= ry
 
-            # Attraction along edges
+            # Attraction
             for u, v, w in e_list:
                 ux, uy = pos[u]
                 vx, vy = pos[v]
                 dx = ux - vx
                 dy = uy - vy
                 dist = math.hypot(dx, dy) or 1e-6
-                # Fruchterman attractive force ~ d^2 / k
                 f = (dist * dist) / k
-                f *= w  # strengthen delegations etc.
+                f *= w
                 ax = (dx / dist) * f
                 ay = (dy / dist) * f
                 disp[u][0] -= ax; disp[u][1] -= ay
                 disp[v][0] += ax; disp[v][1] += ay
 
-            # Gravity to center + move with temperature cap
+            # Gravity + move
             for nid in node_ids:
                 dx, dy = disp[nid]
-                # gentle gravity
                 px, py = pos[nid]
                 dx += (self.cx - px) * gravity
                 dy += (self.cy - py) * gravity
@@ -198,14 +210,13 @@ class _ForceLayout:
                 px += dx * min(1.0, limit)
                 py += dy * min(1.0, limit)
 
-                # clamp to canvas
                 halfW, halfH = self.W * 0.5, self.H * 0.5
                 px = max(-halfW, min(halfW, px))
                 py = max(-halfH, min(halfH, py))
                 pos[nid] = (px, py)
 
 # -----------------------------------------------------------------------------
-# Graph builder
+# Graph builder (Points2D world graph)
 # -----------------------------------------------------------------------------
 
 class WorldGraphBuilder:
@@ -215,22 +226,18 @@ class WorldGraphBuilder:
         self.rollout_id = rollout_id
         self.nodes: Dict[str, GraphNode] = {}
         self.edges: List[GraphEdge] = []
-        # Cached positions (persist across updates)
         self.positions: Dict[str, Tuple[float, float]] = {}
-        # Track activity
         self.agent_activity: Dict[str, float] = defaultdict(float)
         self.tool_usage: Dict[str, float] = defaultdict(float)
         self.delegations: List[Tuple[str, str, str]] = []  # (from, to, variant)
         self.agent_teams: Dict[str, str] = {}
 
-        # Canvas / aspect
         self.W = float(os.getenv("WORLD_GRAPH_WIDTH", "1200"))
         self.H = float(os.getenv("WORLD_GRAPH_HEIGHT", "750"))
         self.layout = _ForceLayout(self.W, self.H, seed=17)
         
     def _ensure_pos(self, node_id: str) -> Tuple[float, float]:
         if node_id not in self.positions:
-            # random but bounded initial positions (gives nicer settle)
             halfW, halfH = self.W * 0.45, self.H * 0.45
             self.positions[node_id] = (random.uniform(-halfW, halfW), random.uniform(-halfH, halfH))
         return self.positions[node_id]
@@ -300,33 +307,25 @@ class WorldGraphBuilder:
                 self.nodes[tool].activity_count = c
 
     def _force_relayout(self, iterations: int = 22) -> None:
-        # Stable order: agents first, then tools by id
         node_ids = sorted(self.nodes.keys(), key=lambda nid: (self.nodes[nid].type, nid))
-        # Ensure all have a starting pos & sync with .position
         for nid in node_ids:
             self._ensure_pos(nid)
 
-        # Build edge list & strengths
         pair_edges: List[Tuple[str, str]] = []
         strengths: Dict[Tuple[str, str], float] = {}
         for e in self.edges:
             pair_edges.append((e.source, e.target))
             strengths[(e.source, e.target)] = e.weight
 
-        # Run layout on our shared positions map
         self.layout.run(node_ids, self.positions, pair_edges, strengths, iterations=iterations)
 
-        # Push back into nodes
         for nid in node_ids:
             self.nodes[nid].position = self.positions[nid]
 
     def to_rerun_format(self) -> Tuple[List[Tuple[float, float]], List[Dict], List[Tuple[int, int]]]:
-        # Refresh visuals
         self.update_node_sizes()
-        # Do a few iterations each update for smooth convergence
         self._force_relayout(iterations=14)
 
-        # Stable order
         node_ids = sorted(self.nodes.keys(), key=lambda nid: (self.nodes[nid].type, nid))
         idx = {nid: i for i, nid in enumerate(node_ids)}
 
@@ -362,6 +361,272 @@ def get_graph_builder(rollout_id: str) -> WorldGraphBuilder:
     if _graph_builder is None or _graph_builder.rollout_id != rollout_id:
         _graph_builder = WorldGraphBuilder(rollout_id)
     return _graph_builder
+
+# -----------------------------------------------------------------------------
+# Variant → Session → Agent "world sessions" graph (GraphView)
+# -----------------------------------------------------------------------------
+
+@dataclass
+class _SessionNode:
+    session_id: str
+    team_id: Optional[str] = None
+    variant_id: Optional[str] = None
+    agents: set[str] = field(default_factory=set)
+
+@dataclass
+class WorldState:
+    # variant_id -> color index for stable palette
+    variant_color_idx: Dict[str, int] = field(default_factory=dict)
+    # conv_id -> _SessionNode
+    sessions: Dict[str, _SessionNode] = field(default_factory=dict)
+    # "agent@session" -> frame index until which the agent is hot
+    hot_agents_until: Dict[str, int] = field(default_factory=dict)
+
+# Color palette for variants in GraphView
+_COLOR_SCHEME: List[List[int]] = [
+    [228, 26, 28, 255],
+    [55, 126, 184, 255],
+    [77, 175, 74, 255],
+    [152, 78, 163, 255],
+    [255, 127, 0, 255],
+    [255, 255, 51, 255],
+    [166, 86, 40, 255],
+    [247, 129, 191, 255],
+    [153, 153, 153, 255],
+]
+
+def _color_for_variant_idx(world: WorldState, variant_id: Optional[str]) -> List[int]:
+    if not variant_id:
+        return [200, 200, 200, 255]
+    if variant_id not in world.variant_color_idx:
+        world.variant_color_idx[variant_id] = len(world.variant_color_idx) % len(_COLOR_SCHEME)
+    return _COLOR_SCHEME[world.variant_color_idx[variant_id]]
+
+def world_apply_update(
+    world: WorldState,
+    *,
+    conversation_id: str,
+    team_id: Optional[str],
+    variant_id: Optional[str],
+    agent_id: Optional[str] = None,
+    event_type: Optional[str] = None,
+    frame: int = 0,
+) -> None:
+    """
+    Mutate WorldState with a single interaction.
+    """
+    node = world.sessions.get(conversation_id)
+    if node is None:
+        node = _SessionNode(session_id=conversation_id)
+        world.sessions[conversation_id] = node
+
+    if team_id:
+        node.team_id = node.team_id or team_id
+    if variant_id:
+        node.variant_id = node.variant_id or variant_id
+
+    if agent_id:
+        node.agents.add(agent_id)
+
+    if event_type == "tool_start" and agent_id:
+        hot_key = f"{agent_id}@{conversation_id}"
+        world.hot_agents_until[hot_key] = frame + 12  # ~12 frames of emphasis
+
+def world_tick(world: WorldState, frame: int) -> None:
+    """
+    Cool down hot agents when frames advance.
+    """
+    expired = [k for k, until in world.hot_agents_until.items() if until <= frame]
+    for k in expired:
+        world.hot_agents_until.pop(k, None)
+
+def log_world_sessions(rollout_id: str, world: WorldState, frame: int) -> None:
+    """
+    Emit GraphNodes/GraphEdges representing variant → session → agent.
+    """
+    # Advance the "frame" timeline for scrubbable playback
+    rr.set_time_frame(frame)
+
+    VARIANT_RADIUS = 34.0
+    SESSION_RADIUS = 20.0
+    AGENT_RADIUS   = 10.0
+    HOT_AGENT_RADIUS = 16.0
+
+    nodes: List[str] = []
+    labels: List[str] = []
+    colors: List[List[int]] = []
+    radii: List[float] = []
+    edges: List[Tuple[str, str]] = []
+
+    # Aggregate variants
+    variants: set[str] = set()
+    for s in world.sessions.values():
+        variants.add(s.variant_id or "(no-variant)")
+
+    # Variant nodes
+    for v in sorted(variants):
+        nid = f"variant:{v}"
+        nodes.append(nid)
+        labels.append(v)
+        colors.append(_color_for_variant_idx(world, v))
+        radii.append(VARIANT_RADIUS)
+
+    # Sessions and agents
+    for sid, s in world.sessions.items():
+        v = s.variant_id or "(no-variant)"
+        s_node = f"session:{sid}"
+        short = sid if len(sid) <= 10 else f"{sid[:4]}…{sid[-4:]}"
+        nodes.append(s_node)
+        labels.append(short)
+        colors.append(_color_for_variant_idx(world, v))
+        radii.append(SESSION_RADIUS)
+
+        edges.append((f"variant:{v}", s_node))
+
+        for a in sorted(s.agents):
+            a_node = f"agent:{a}@{sid}"
+            nodes.append(a_node)
+            labels.append(a)
+            hot = world.hot_agents_until.get(f"{a}@{sid}", -1) >= frame
+            radii.append(HOT_AGENT_RADIUS if hot else AGENT_RADIUS)
+            base = _color_for_variant_idx(world, v)
+            colors.append([int(base[0] * 0.8), int(base[1] * 0.8), int(base[2] * 0.8), 255])
+            edges.append((s_node, a_node))
+
+    origin = f"{_rollout_path(rollout_id)}/world_sessions"
+    rr.graph(origin, nodes=nodes, labels=labels, colors=colors, radii=radii, edges=edges, directed=True)
+
+# -----------------------------------------------------------------------------
+# Mini “State Flow” ring (Points2D + fading edges)
+# -----------------------------------------------------------------------------
+
+_STATE_ORDER = [
+    "UserMessage",
+    "AssistantMessage",
+    "ToolCall",
+    "ToolResult",
+    "AgentCall",
+    "AgentResult",
+    "Waiting",
+    "Finished",
+]
+
+_STATE_COLORS: Dict[str, List[int]] = {
+    "UserMessage":      [55, 126, 184, 255],
+    "AssistantMessage": [77, 175, 74, 255],
+    "ToolCall":         [255, 127, 0, 255],
+    "ToolResult":       [152, 78, 163, 255],
+    "AgentCall":        [228, 26, 28, 255],
+    "AgentResult":      [251, 154, 153, 255],
+    "Waiting":          [153, 153, 153, 255],
+    "Finished":         [166, 86, 40, 255],
+}
+
+def _normalize_kind(kind: Optional[str]) -> Optional[str]:
+    """Permissive normalization: return a readable kind for any state-like string."""
+    if not kind:
+        return None
+    k = str(kind).strip()
+
+    # drop terminal suffixes
+    if k.endswith("State"):
+        k = k[:-5]
+    if k.endswith("Message"):
+        # keep "UserMessage"/"AssistantMessage" as-is
+        pass
+
+    m = k.lower()
+    # common canonicalizations
+    if m in ("assistant", "assistantmessage", "assistantmsg"):
+        return "AssistantMessage"
+    if m in ("user", "usermessage", "human", "humanmessage"):
+        return "UserMessage"
+    if m in ("toolcall",):
+        return "ToolCall"
+    if m in ("toolresult",):
+        return "ToolResult"
+    if m in ("agentcall",):
+        return "AgentCall"
+    if m in ("agentresult",):
+        return "AgentResult"
+    if m in ("waiting", "waitingstate"):
+        return "Waiting"
+    if m in ("finished", "finishedstate", "done", "complete"):
+        return "Finished"
+
+    # Title-case any other kind and allow it to be added dynamically
+    if not k:
+        return None
+    # Keep internal capitalization if looks like CamelCase, else Title-ize
+    if re.search(r"[A-Z][a-z]+", k):
+        return k
+    return k[:1].upper() + k[1:]
+
+class StatePulse:
+    """Fixed circle layout of states + a fading deque of recent transitions.
+       New/unknown kinds are added dynamically and the ring is recomputed."""
+    def __init__(self, max_edges: int = 200, radius: float = 220.0, center: tuple[float, float]=(0.0, 0.0)):
+        self.max_edges = max_edges
+        self.radius = radius
+        self.cx, self.cy = center
+        self.kinds = list(_STATE_ORDER)
+        self.positions: Dict[str, Tuple[float, float]] = {}
+        self.edges: deque[Tuple[str, str]] = deque(maxlen=max_edges)
+        self._recompute_layout()
+
+    def _recompute_layout(self):
+        self.positions = {}
+        n = len(self.kinds) or 1
+        for i, k in enumerate(self.kinds):
+            th = 2.0 * math.pi * (i / n)
+            x = self.cx + self.radius * math.cos(th)
+            y = self.cy + self.radius * math.sin(th)
+            self.positions[k] = (x, y)
+
+    def _ensure_kind(self, k: str):
+        if k not in self.kinds:
+            self.kinds.append(k)
+            self._recompute_layout()
+
+    def add(self, prev: Optional[str], cur: Optional[str]):
+        a = _normalize_kind(prev)
+        b = _normalize_kind(cur)
+        if not a or not b or a == b:
+            return
+        # dynamically add new kinds
+        self._ensure_kind(a)
+        self._ensure_kind(b)
+        # append transition
+        if a in self.positions and b in self.positions:
+            self.edges.append((a, b))
+
+def log_state_pulse(rollout_id: str, pulse: "StatePulse", *, frame: int) -> None:
+    """Render the ring as Points2D + a fading bundle of edges; advance 'frame' timeline."""
+    base = f"{_rollout_path(rollout_id)}/mini/state_flow"
+    rr.set_time_frame(frame)
+
+    # nodes
+    kinds = pulse.kinds
+    pos_list = [pulse.positions[k] for k in kinds]
+    radii = [16.0 if k != "Finished" else 18.0 for k in kinds]
+    colors = [_STATE_COLORS.get(k, [180, 180, 180, 255]) for k in kinds]
+    labels = [k for k in kinds]
+    rr.points2d(f"{base}/nodes", pos_list, radii=radii, colors=colors, labels=labels, timeless=True)
+
+    # fading edges (most recent most opaque)
+    strips: List[List[List[float]]] = []
+    edge_colors: List[List[int]] = []
+    n = len(pulse.edges)
+    if n:
+        for idx, (a, b) in enumerate(pulse.edges):
+            p1 = list(map(float, pulse.positions[a]))
+            p2 = list(map(float, pulse.positions[b]))
+            strips.append([p1, p2])
+            base_c = _STATE_COLORS.get(a, [120, 120, 120, 255])
+            alpha = int(40 + (idx / max(1, n - 1)) * 170)  # 40..210
+            edge_colors.append([base_c[0], base_c[1], base_c[2], alpha])
+    if strips:
+        rr.line_strips2d(f"{base}/edges", strips, colors=edge_colors, timeless=False)
 
 # -----------------------------------------------------------------------------
 # Generic docs & logs
@@ -448,7 +713,6 @@ def _update_graph_from_stack_line(
         elif kind == "ToolResult" and agent_id:
             builder.agent_activity[agent_id] += 0.5
 
-        # Re-render static graph snapshot with fresh layout
         if builder.agent_activity or builder.tool_usage:
             positions, node_meta, edges = builder.to_rerun_format()
             if positions:
@@ -527,10 +791,8 @@ def _log_graph_static_enhanced(
             colors_nodes.append(color)
             labels.append(label)
 
-        # Nodes
         rr.points2d(f"{base}/nodes", positions, radii=radii, colors=colors_nodes, labels=labels if any(labels) else None, timeless=True)
 
-        # Edges
         if edges:
             strips: List[List[List[float]]] = []
             colors_edges: List[List[int]] = []
@@ -538,15 +800,13 @@ def _log_graph_static_enhanced(
                 try:
                     p1 = positions[i]; p2 = positions[j]
                     strips.append([[float(p1[0]), float(p1[1])], [float(p2[0]), float(p2[1])]])
-                    # Color edge by source node tint, semi-transparent
                     c = colors_nodes[i]
                     colors_edges.append([c[0], c[1], c[2], 140])
                 except Exception:
                     continue
             if strips:
-                rr.line_strips2d(f"{base}/edges", strips, colors=colors_edges, timeless=True)
+                rr.line_strips2d(f"{base}/edges", [*strips], colors=colors_edges, timeless=True)
 
-        # Bounds rectangle
         halfW = float(os.getenv("WORLD_GRAPH_WIDTH", "1200")) * 0.5
         halfH = float(os.getenv("WORLD_GRAPH_HEIGHT", "750")) * 0.5
         bounds = [[-halfW, -halfH], [halfW, -halfH], [halfW, halfH], [-halfW, halfH], [-halfW, -halfH]]
@@ -637,38 +897,15 @@ def log_ledger_snapshot(rollout_id: str, label: str, snapshot: Dict[str, Any]) -
 # Blueprints
 # -----------------------------------------------------------------------------
 
-def send_default_blueprint() -> None:
-    try:
-        import rerun.blueprint as rrb
-    except Exception as e:
-        logger.debug("Blueprint import failed; skipping default layout: %s", e)
-        return
-    try:
-        bp = rrb.Blueprint(
-            rrb.TextDocumentView(origin=rr.abs_path("rollouts/**/config/*"), name="Rollout Configs"),
-            collapse_panels=True,
-        )
-        rr.send_blueprint(bp, make_active=False, make_default=True)
-    except Exception as e:
-        logger.debug("send_default_blueprint failed: %s", e)
-
 def send_rollout_blueprint(
     rollout_id: str,
     spec_name: str,
-    variants: Sequence[Tuple[str, str]],
+    variants: Sequence[Tuple[str, str]],  # [(team_id, variant_id), ...]
     teams: Sequence[str],
     *,
     make_active: bool = True,
     make_default: bool = True,
 ) -> None:
-    """
-    Left  = TextDocumentView (YAML)
-    Right = Vertical(
-              Spatial2DView           -> /graph/**  (WORLD graph: force-layouted Points2D)
-              TextLogView (all teams) -> /stacks/**
-              TextDocumentView        -> /reports/metrics_cli
-            )
-    """
     try:
         import rerun.blueprint as rrb
     except Exception as e:
@@ -676,50 +913,92 @@ def send_rollout_blueprint(
         return
 
     try:
-        left = rrb.TextDocumentView(
+        # LEFT column
+        left_cfg = rrb.TextDocumentView(
             origin=rr.abs_path(f"{_rollout_path(rollout_id)}/config/{spec_name}"),
             name="Rollout configuration",
         )
-
-        graph_view = rrb.Spatial2DView(
-            origin=rr.abs_path(f"{_rollout_path(rollout_id)}/graph"),
-            name="World graph",
+        left_state_flow = rrb.Spatial2DView(
+            origin=rr.abs_path(f"{_rollout_path(rollout_id)}/mini/state_flow"),
+            name="State flow",
         )
+        left = rrb.Vertical(left_cfg, left_state_flow)
 
-        TextLogView = getattr(rrb, "TextLogView", None)
-        TeamPaneView = TextLogView or rrb.TextDocumentView
+        # --- TOP-RIGHT: Team logs (one per variant) ---
+        has_textlog = hasattr(rrb, "TextLogView")
+        log_views = []
+        if has_textlog:
+            for team_id, variant_id in variants:
+                log_views.append(
+                    rrb.TextLogView(
+                        origin=rr.abs_path(
+                            f"{_rollout_path(rollout_id)}/stacks/{team_id}/{variant_id}/log"
+                        ),
+                        name=f"{team_id}/{variant_id}",
+                    )
+                )
+            if log_views:
+                Tabs = getattr(rrb, "Tabs", None)
+                Grid = getattr(rrb, "Grid", None)
+                if Tabs:
+                    team_logs = Tabs(*log_views, name="Team logs")
+                elif Grid:
+                    team_logs = Grid(*log_views, name="Team logs")
+                else:
+                    team_logs = rrb.Vertical(*log_views, name="Team logs")
+            else:
+                # very defensive fallback
+                team_logs = rrb.TextLogView(
+                    origin=rr.abs_path(f"{_rollout_path(rollout_id)}/stacks"),
+                    name="Team logs",
+                )
+        else:
+            # Old Rerun builds without TextLogView: show the stacks subtree as docs
+            team_logs = rrb.TextDocumentView(
+                origin=rr.abs_path(f"{_rollout_path(rollout_id)}/stacks"),
+                name="Team logs (fallback)",
+            )
 
-        teams_container = TeamPaneView(
-            origin=rr.abs_path(f"{_rollout_path(rollout_id)}/stacks"),
-            name="Team logs",
-        )
+        # --- MIDDLE-RIGHT: Team summaries ---
+        summary_views = [
+            rrb.TextDocumentView(
+                origin=rr.abs_path(f"{_rollout_path(rollout_id)}/stacks/{team}/summary"),
+                name=team,
+            )
+            for team in teams
+        ]
+        if summary_views:
+            Tabs = getattr(rrb, "Tabs", None)
+            team_summaries = Tabs(*summary_views, name="Team summaries") if Tabs else rrb.Vertical(*summary_views, name="Team summaries")
+        else:
+            team_summaries = rrb.TextDocumentView(
+                origin=rr.abs_path(f"{_rollout_path(rollout_id)}/stacks/*/summary"),
+                name="Team summaries",
+            )
 
+        # --- BOTTOM-RIGHT: CLI metrics ---
         metrics_doc = rrb.TextDocumentView(
             origin=rr.abs_path(f"{_rollout_path(rollout_id)}/reports/metrics_cli"),
             name="Metrics (CLI)",
         )
 
-        # Short description next to the graph (helps new users)
-        try:
-            desc = (
-                "# World Graph\n"
-                "- **Position**: computed via force layout\n"
-                "- **Color**: team/variant grouping\n"
-                "- **Size**: recent activity\n"
-                "- **Edges**: delegations (strong) & tool calls\n"
-            )
-            rr.text_doc(f"{_rollout_path(rollout_id)}/graph/description", desc, media_type="text/markdown", timeless=True)
-        except Exception:
-            pass
-
-        right = rrb.Vertical(graph_view, teams_container, metrics_doc)
+        # Whole layout
+        right = rrb.Vertical(team_logs, team_summaries, metrics_doc)
         bp = rrb.Blueprint(rrb.Horizontal(left, right), collapse_panels=True)
-
         rr.send_blueprint(bp, make_active=make_active, make_default=make_default)
+
+        # Initialize timelines
         try:
             rr.set_time_seconds("step", 0.0)
+            rr.set_time_frame(0)
         except Exception:
             pass
 
     except Exception as e:
         logger.debug("send_rollout_blueprint failed: %s", e)
+
+
+
+# https://chatgpt.com/share/68a4e0f0-6798-8008-888b-b5c64bc33d6a
+# lage bedre visuals, ellers ser det meste bra ut
+# Få inn frame sequence eller set time så vi kan starte på 0 sekunder?

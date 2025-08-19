@@ -361,9 +361,40 @@ class CantonLedgerService:
                     "reason": reason,
                     "transaction_id": transaction_id,
                     "conversation_id": conversation_id,
+                    "from_balance": from_wallet_new.balance,
+                    "to_balance": to_wallet_new.balance,
                     "timestamp": current_timestamp(),
                 },
             )
+            # Optional: nudge realtime stream tied to a rollout conversation
+            try:
+                if conversation_id:
+                    r = get_bus().redis
+                    rollout_id = r.get(f"{conversation_id}:rollout_id")
+                    if rollout_id:
+                        team_b = r.get(f"{conversation_id}:team")
+                        var_b = r.get(f"{conversation_id}:variant")
+                        r.xadd(
+                            "stream:stack_updates",
+                            {
+                                "type": "ledger_transfer",
+                                "conversation_id": conversation_id,
+                                "team_id": (team_b.decode() if isinstance(team_b, bytes) else team_b) or "",
+                                "variant_id": (var_b.decode() if isinstance(var_b, bytes) else var_b) or "",
+                                "rollout_id": rollout_id.decode() if isinstance(rollout_id, bytes) else rollout_id,
+                                "from_agent": from_agent,
+                                "to_agent": to_agent,
+                                "amount": amount,
+                                "from_balance": from_wallet_new.balance,
+                                "to_balance": to_wallet_new.balance,
+                                "timestamp": time.time(),
+                            },
+                            maxlen=10000,
+                            approximate=True,
+                        )
+            except Exception:
+                pass
+
             metrics.emit("ledger_transfer", amount, tags={"from_agent": from_agent, "to_agent": to_agent})
             logger.info(f"Transfer successful: {from_agent} -> {to_agent}: {amount}")
             return {
