@@ -2,11 +2,12 @@
 Enhanced Rerun visualizations for P2Engine rollouts.
 
 World graph improvements:
-- Shows agent interactions as a network
+- Force-directed layout for clean, organic structure (computed here, not in viewer)
 - Node size represents activity level
-- Edges show delegations and tool calls
+- Edges show delegations and tool calls (different strengths)
 - Colors represent teams/variants
 - Animated flow shows current activity
+- Aspect ratio aware canvas; stays readable regardless of window size
 """
 
 from __future__ import annotations
@@ -17,6 +18,7 @@ import os
 import math
 import hashlib
 import re
+import random
 from collections import defaultdict
 from dataclasses import dataclass
 
@@ -102,226 +104,260 @@ class GraphNode:
     label: str
     position: Tuple[float, float]
     size: float = 10.0
-    color: List[int] = None
-    activity_count: int = 0
-    team: str = None
-    
+    color: List[int] | None = None
+    activity_count: float = 0.0
+    team: str | None = None
+
 @dataclass 
 class GraphEdge:
     """Represents an edge in the world graph."""
     source: str
     target: str
     type: str  # 'delegation', 'tool_call', 'transition'
-    weight: int = 1
-    color: List[int] = None
+    weight: float = 1.0
+    color: List[int] | None = None
+
+# -----------------------------------------------------------------------------
+# Force-directed layout (Fruchterman–Reingold style)
+# -----------------------------------------------------------------------------
+
+class _ForceLayout:
+    """
+    Simple force-based layout that keeps a nice aspect ratio and is deterministic.
+    """
+    def __init__(self, width: float, height: float, seed: int = 42):
+        self.W = width
+        self.H = height
+        self.cx = 0.0
+        self.cy = 0.0
+        random.seed(seed)
+
+    def run(
+        self,
+        node_ids: List[str],
+        pos: Dict[str, Tuple[float, float]],
+        edges: List[Tuple[str, str]],
+        edge_strength: Dict[Tuple[str, str], float],
+        iterations: int = 30,
+    ) -> None:
+        n = max(1, len(node_ids))
+        area = self.W * self.H
+        k = math.sqrt(area / n)
+        # Cooling schedule
+        t0 = max(self.W, self.H) * 0.12
+        gravity = 0.02  # gentle pull to center
+        # Precompute edge list (u, v, weight)
+        e_list = [(u, v, max(0.2, edge_strength.get((u, v), 1.0))) for (u, v) in edges]
+
+        for it in range(iterations):
+            t = t0 * (1.0 - it / max(1, iterations))
+            disp: Dict[str, List[float]] = {nid: [0.0, 0.0] for nid in node_ids}
+
+            # Repulsion (O(n^2) – fine for ~few hundred nodes)
+            for i in range(n):
+                u = node_ids[i]
+                ux, uy = pos[u]
+                for j in range(i + 1, n):
+                    v = node_ids[j]
+                    vx, vy = pos[v]
+                    dx = ux - vx
+                    dy = uy - vy
+                    dist = math.hypot(dx, dy) or 1e-6
+                    # Fruchterman repulsive force ~ k^2 / d
+                    f = (k * k) / dist
+                    rx = (dx / dist) * f
+                    ry = (dy / dist) * f
+                    disp[u][0] += rx; disp[u][1] += ry
+                    disp[v][0] -= rx; disp[v][1] -= ry
+
+            # Attraction along edges
+            for u, v, w in e_list:
+                ux, uy = pos[u]
+                vx, vy = pos[v]
+                dx = ux - vx
+                dy = uy - vy
+                dist = math.hypot(dx, dy) or 1e-6
+                # Fruchterman attractive force ~ d^2 / k
+                f = (dist * dist) / k
+                f *= w  # strengthen delegations etc.
+                ax = (dx / dist) * f
+                ay = (dy / dist) * f
+                disp[u][0] -= ax; disp[u][1] -= ay
+                disp[v][0] += ax; disp[v][1] += ay
+
+            # Gravity to center + move with temperature cap
+            for nid in node_ids:
+                dx, dy = disp[nid]
+                # gentle gravity
+                px, py = pos[nid]
+                dx += (self.cx - px) * gravity
+                dy += (self.cy - py) * gravity
+
+                mag = math.hypot(dx, dy) or 1e-6
+                limit = t / mag
+                px += dx * min(1.0, limit)
+                py += dy * min(1.0, limit)
+
+                # clamp to canvas
+                halfW, halfH = self.W * 0.5, self.H * 0.5
+                px = max(-halfW, min(halfW, px))
+                py = max(-halfH, min(halfH, py))
+                pos[nid] = (px, py)
+
+# -----------------------------------------------------------------------------
+# Graph builder
+# -----------------------------------------------------------------------------
 
 class WorldGraphBuilder:
-    """Builds a comprehensive world graph from rollout data."""
+    """Builds & lays out the world graph from rollout data."""
     
     def __init__(self, rollout_id: str):
         self.rollout_id = rollout_id
         self.nodes: Dict[str, GraphNode] = {}
         self.edges: List[GraphEdge] = []
-        self.agent_positions: Dict[str, Tuple[float, float]] = {}
-        self.tool_positions: Dict[str, Tuple[float, float]] = {}
-        
+        # Cached positions (persist across updates)
+        self.positions: Dict[str, Tuple[float, float]] = {}
         # Track activity
-        self.agent_activity: Dict[str, int] = defaultdict(int)
-        self.tool_usage: Dict[str, int] = defaultdict(int)
-        self.delegations: List[Tuple[str, str, str]] = []  # (from_agent, to_agent, variant)
-        
-        # Track teams
+        self.agent_activity: Dict[str, float] = defaultdict(float)
+        self.tool_usage: Dict[str, float] = defaultdict(float)
+        self.delegations: List[Tuple[str, str, str]] = []  # (from, to, variant)
         self.agent_teams: Dict[str, str] = {}
+
+        # Canvas / aspect
+        self.W = float(os.getenv("WORLD_GRAPH_WIDTH", "1200"))
+        self.H = float(os.getenv("WORLD_GRAPH_HEIGHT", "750"))
+        self.layout = _ForceLayout(self.W, self.H, seed=17)
         
-    def add_agent_node(self, agent_id: str, team: str = None, variant: str = None):
-        """Add an agent node to the graph."""
+    def _ensure_pos(self, node_id: str) -> Tuple[float, float]:
+        if node_id not in self.positions:
+            # random but bounded initial positions (gives nicer settle)
+            halfW, halfH = self.W * 0.45, self.H * 0.45
+            self.positions[node_id] = (random.uniform(-halfW, halfW), random.uniform(-halfH, halfH))
+        return self.positions[node_id]
+
+    def add_agent_node(self, agent_id: str, team: str | None = None, variant: str | None = None):
         if agent_id not in self.nodes:
-            # Position agents in a circle
-            pos = self._get_agent_position(agent_id)
-            
-            # Color by team if available, otherwise by variant
-            if team:
-                color = _color_for_team(team)
-                self.agent_teams[agent_id] = team
-            elif variant:
-                color = _color_for_variant(variant)
-            else:
-                color = [100, 100, 200, 255]
-            
+            color = _color_for_team(team) if team else (_color_for_variant(variant) if variant else [100, 100, 200, 255])
+            self._ensure_pos(agent_id)
             self.nodes[agent_id] = GraphNode(
                 id=agent_id,
                 type='agent',
                 label=agent_id.replace('_', ' ').title(),
-                position=pos,
+                position=self.positions[agent_id],
                 size=15.0,
                 color=color,
                 team=team
             )
     
     def add_tool_node(self, tool_name: str):
-        """Add a tool node to the graph."""
         if tool_name not in self.nodes:
-            # Position tools in inner circle
-            pos = self._get_tool_position(tool_name)
-            
-            # Different colors for different tool types
             tool_colors = {
-                'delegate': [255, 100, 100, 200],  # Red for delegation
-                'transfer_funds': [100, 255, 100, 200],  # Green for money
-                'check_balance': [100, 200, 255, 200],  # Blue for info
-                'transaction_history': [100, 200, 255, 200],
-                'reward_agent': [255, 200, 100, 200],  # Orange for rewards
-                'get_weather': [200, 200, 100, 200],  # Yellow for data
+                'delegate': [255, 100, 100, 220],
+                'transfer_funds': [100, 255, 100, 220],
+                'check_balance': [100, 200, 255, 220],
+                'transaction_history': [100, 200, 255, 220],
+                'reward_agent': [255, 200, 100, 220],
+                'get_weather': [200, 200, 100, 220],
             }
-            
-            color = tool_colors.get(tool_name, [150, 150, 150, 200])
-            
+            color = tool_colors.get(tool_name, [160, 160, 160, 220])
+            self._ensure_pos(tool_name)
             self.nodes[tool_name] = GraphNode(
                 id=tool_name,
                 type='tool',
                 label=tool_name.replace('_', ' ').title(),
-                position=pos,
+                position=self.positions[tool_name],
                 size=8.0,
                 color=color
             )
     
-    def add_delegation(self, from_agent: str, to_agent: str, team: str = None, variant: str = None):
-        """Add a delegation edge between agents."""
-        self.add_agent_node(from_agent, team=team, variant=variant)
-        self.add_agent_node(to_agent)
-        
+    def add_delegation(self, src: str, dst: str, team: str | None = None, variant: str | None = None):
+        self.add_agent_node(src, team=team, variant=variant)
+        self.add_agent_node(dst)
         color = _color_for_variant(variant) if variant else [100, 100, 200, 150]
-        self.edges.append(GraphEdge(
-            source=from_agent,
-            target=to_agent,
-            type='delegation',
-            color=color
-        ))
-        
-        self.agent_activity[from_agent] += 1
-        self.agent_activity[to_agent] += 1
-        self.delegations.append((from_agent, to_agent, variant))
-        
-    def add_tool_call(self, agent_id: str, tool_name: str, team: str = None, variant: str = None):
-        """Add a tool call edge from agent to tool."""
+        self.edges.append(GraphEdge(source=src, target=dst, type='delegation', weight=1.6, color=color))
+        self.agent_activity[src] += 1.0
+        self.agent_activity[dst] += 1.0
+        self.delegations.append((src, dst, variant or ""))
+
+    def add_tool_call(self, agent_id: str, tool_name: str, team: str | None = None, variant: str | None = None):
         self.add_agent_node(agent_id, team=team, variant=variant)
         self.add_tool_node(tool_name)
-        
         color = _color_for_variant(variant) if variant else [100, 200, 100, 150]
-        self.edges.append(GraphEdge(
-            source=agent_id,
-            target=tool_name,
-            type='tool_call',
-            color=color
-        ))
+        self.edges.append(GraphEdge(source=agent_id, target=tool_name, type='tool_call', weight=1.0, color=color))
+        self.agent_activity[agent_id] += 1.0
+        self.tool_usage[tool_name] += 1.0
         
-        self.agent_activity[agent_id] += 1
-        self.tool_usage[tool_name] += 1
-        
-    def _get_agent_position(self, agent_id: str) -> Tuple[float, float]:
-        """Calculate position for an agent node."""
-        if agent_id not in self.agent_positions:
-            # Main agents in outer circle
-            agent_list = ['agent_alpha', 'agent_beta', 'treasurer', 'agent_helper', 'child', 'agent_lemy']
-            
-            # Position known agents in specific spots
-            if agent_id in agent_list:
-                idx = agent_list.index(agent_id)
-                total = len(agent_list)
-            else:
-                # Unknown agents go in between
-                idx = len(self.agent_positions)
-                total = max(8, len(self.agent_positions) + 1)
-            
-            angle = (2 * math.pi * idx) / total - math.pi / 2  # Start from top
-            radius = 300
-            x = radius * math.cos(angle)
-            y = radius * math.sin(angle)
-            self.agent_positions[agent_id] = (x, y)
-            
-        return self.agent_positions[agent_id]
-    
-    def _get_tool_position(self, tool_name: str) -> Tuple[float, float]:
-        """Calculate position for a tool node."""
-        if tool_name not in self.tool_positions:
-            # Tools in inner circle
-            tool_list = ['get_weather', 'delegate', 'check_balance', 'transfer_funds', 
-                        'transaction_history', 'reward_agent']
-            
-            if tool_name in tool_list:
-                idx = tool_list.index(tool_name)
-                total = len(tool_list)
-            else:
-                idx = len(self.tool_positions)
-                total = max(6, len(self.tool_positions) + 1)
-                
-            angle = (2 * math.pi * idx) / total - math.pi / 2
-            radius = 150
-            x = radius * math.cos(angle)
-            y = radius * math.sin(angle)
-            self.tool_positions[tool_name] = (x, y)
-            
-        return self.tool_positions[tool_name]
-    
-    def update_node_sizes(self):
-        """Update node sizes based on activity."""
-        max_activity = max(self.agent_activity.values()) if self.agent_activity else 1
-        max_usage = max(self.tool_usage.values()) if self.tool_usage else 1
-        
-        for agent_id, count in self.agent_activity.items():
-            if agent_id in self.nodes:
-                # Size between 10 and 30 based on activity
-                self.nodes[agent_id].size = 10 + (20 * count / max_activity)
-                self.nodes[agent_id].activity_count = count
-                
-        for tool_name, count in self.tool_usage.items():
-            if tool_name in self.nodes:
-                # Size between 5 and 15 based on usage
-                self.nodes[tool_name].size = 5 + (10 * count / max_usage)
-                self.nodes[tool_name].activity_count = count
-    
-    def to_rerun_format(self) -> Tuple[List[Tuple[float, float]], List[Dict], List[Tuple[int, int]]]:
-        """Convert to format expected by log_graph_static."""
-        self.update_node_sizes()
-        
-        # Sort nodes by type then name for consistent indexing
-        node_ids = sorted(self.nodes.keys(), key=lambda x: (self.nodes[x].type, x))
-        node_idx = {nid: i for i, nid in enumerate(node_ids)}
-        
-        positions = []
-        node_meta = []
-        
+    def update_node_sizes(self) -> None:
+        max_activity = max(self.agent_activity.values()) if self.agent_activity else 1.0
+        max_usage = max(self.tool_usage.values()) if self.tool_usage else 1.0
+        for aid, c in self.agent_activity.items():
+            if aid in self.nodes:
+                self.nodes[aid].size = 10.0 + (22.0 * c / max_activity)
+                self.nodes[aid].activity_count = c
+        for tool, c in self.tool_usage.items():
+            if tool in self.nodes:
+                self.nodes[tool].size = 7.0 + (10.0 * c / max_usage)
+                self.nodes[tool].activity_count = c
+
+    def _force_relayout(self, iterations: int = 22) -> None:
+        # Stable order: agents first, then tools by id
+        node_ids = sorted(self.nodes.keys(), key=lambda nid: (self.nodes[nid].type, nid))
+        # Ensure all have a starting pos & sync with .position
         for nid in node_ids:
-            node = self.nodes[nid]
-            positions.append(node.position)
-            
-            # Meta includes type info for better visualization
+            self._ensure_pos(nid)
+
+        # Build edge list & strengths
+        pair_edges: List[Tuple[str, str]] = []
+        strengths: Dict[Tuple[str, str], float] = {}
+        for e in self.edges:
+            pair_edges.append((e.source, e.target))
+            strengths[(e.source, e.target)] = e.weight
+
+        # Run layout on our shared positions map
+        self.layout.run(node_ids, self.positions, pair_edges, strengths, iterations=iterations)
+
+        # Push back into nodes
+        for nid in node_ids:
+            self.nodes[nid].position = self.positions[nid]
+
+    def to_rerun_format(self) -> Tuple[List[Tuple[float, float]], List[Dict], List[Tuple[int, int]]]:
+        # Refresh visuals
+        self.update_node_sizes()
+        # Do a few iterations each update for smooth convergence
+        self._force_relayout(iterations=14)
+
+        # Stable order
+        node_ids = sorted(self.nodes.keys(), key=lambda nid: (self.nodes[nid].type, nid))
+        idx = {nid: i for i, nid in enumerate(node_ids)}
+
+        positions: List[Tuple[float, float]] = [self.nodes[nid].position for nid in node_ids]
+        node_meta: List[Dict[str, str]] = []
+        for nid in node_ids:
+            n = self.nodes[nid]
             meta = {
-                "team": node.team or "world",
+                "team": n.team or "world",
                 "variant": nid,
-                "kind": node.type,
-                "label": node.label,
-                "latency": str(node.size / 10.0),  # Normalized for radius scaling
-                "activity": str(node.activity_count),
-                "color_r": str(node.color[0]) if node.color else "100",
-                "color_g": str(node.color[1]) if node.color else "100",
-                "color_b": str(node.color[2]) if node.color else "200",
+                "kind": n.type,
+                "label": n.label,
+                "latency": f"{n.size/10.0:.3f}",
+                "activity": f"{n.activity_count:.3f}",
+                "color_r": str(n.color[0] if n.color else 100),
+                "color_g": str(n.color[1] if n.color else 100),
+                "color_b": str(n.color[2] if n.color else 200),
             }
             node_meta.append(meta)
-        
-        # Convert edges to index pairs
-        edges = []
-        for edge in self.edges:
-            if edge.source in node_idx and edge.target in node_idx:
-                edges.append((node_idx[edge.source], node_idx[edge.target]))
-                
-        return positions, node_meta, edges
+
+        edges_idx: List[Tuple[int, int]] = []
+        for e in self.edges:
+            if e.source in idx and e.target in idx:
+                edges_idx.append((idx[e.source], idx[e.target]))
+
+        return positions, node_meta, edges_idx
 
 # Global graph builder instance
 _graph_builder: Optional[WorldGraphBuilder] = None
 
 def get_graph_builder(rollout_id: str) -> WorldGraphBuilder:
-    """Get or create the global graph builder."""
     global _graph_builder
     if _graph_builder is None or _graph_builder.rollout_id != rollout_id:
         _graph_builder = WorldGraphBuilder(rollout_id)
@@ -366,9 +402,6 @@ def log_stack_line(
     content: str,
     t_step: Optional[float] = None,
 ) -> None:
-    """
-    Stream a single stack line and update world graph.
-    """
     try:
         if t_step is not None:
             rr.set_time_seconds("step", t_step)
@@ -376,10 +409,7 @@ def log_stack_line(
         path = f"{_rollout_path(rollout_id)}/stacks/{team_id}/{variant_id}"
         snippet = content if len(content) <= 500 else (content[:497] + "…")
         rr.text_log(f"{path}/log", f"[{variant_id}][{idx:03d}] {kind:<12} {snippet}")
-        
-        # Update world graph based on this interaction
         _update_graph_from_stack_line(rollout_id, team_id, variant_id, kind, content)
-        
     except Exception as e:
         logger.debug("log_stack_line failed: %s", e)
 
@@ -390,63 +420,44 @@ def _update_graph_from_stack_line(
     kind: str,
     content: str
 ) -> None:
-    """Update world graph based on stack line content."""
     try:
         builder = get_graph_builder(rollout_id)
-        
-        # Infer the agent from team/variant
         agent_id = _infer_agent_from_variant(team_id, variant_id)
-        
-        # Parse different kinds of interactions
+
         if kind == "ToolCall":
-            # Extract tool name from content like "delegate({'agent_id': 'agent_helper', ...})"
             if '(' in content:
                 tool_name = content.split('(')[0].strip()
-                
                 if agent_id:
                     builder.add_tool_call(agent_id, tool_name, team=team_id, variant=variant_id)
-                
-                # Special handling for delegate tool
                 if tool_name == 'delegate' and '{' in content:
                     try:
-                        # Extract target agent from delegate call
-                        match = re.search(r"'agent_id':\s*'([^']+)'", content)
-                        if not match:
-                            match = re.search(r'"agent_id":\s*"([^"]+)"', content)
-                        
-                        if match and agent_id:
-                            target_agent = match.group(1)
-                            builder.add_delegation(agent_id, target_agent, team=team_id, variant=variant_id)
-                    except:
+                        m = re.search(r"'agent_id':\s*'([^']+)'", content) or re.search(r'"agent_id":\s*"([^"]+)"', content)
+                        if m and agent_id:
+                            builder.add_delegation(agent_id, m.group(1), team=team_id, variant=variant_id)
+                    except Exception:
                         pass
-                        
+
         elif kind == "AgentCall":
-            # Direct agent-to-agent call
             if agent_id:
-                # Try to extract target agent
-                match = re.search(r"agent[_\w]*", content.lower())
-                if match:
-                    target = match.group(0)
+                m = re.search(r"agent[_\w]*", content.lower())
+                if m:
+                    target = m.group(0)
                     if target != agent_id:
                         builder.add_delegation(agent_id, target, team=team_id, variant=variant_id)
-        
-        elif kind == "ToolResult":
-            # Track tool results to show activity
-            if agent_id:
-                builder.agent_activity[agent_id] += 0.5  # Half weight for results
-        
-        # Periodically update the graph visualization
+
+        elif kind == "ToolResult" and agent_id:
+            builder.agent_activity[agent_id] += 0.5
+
+        # Re-render static graph snapshot with fresh layout
         if builder.agent_activity or builder.tool_usage:
             positions, node_meta, edges = builder.to_rerun_format()
             if positions:
                 _log_graph_static_enhanced(rollout_id, positions, node_meta, edges)
-            
+
     except Exception as e:
         logger.debug("_update_graph_from_stack_line failed: %s", e)
 
 def _infer_agent_from_variant(team_id: str, variant_id: str) -> Optional[str]:
-    """Infer agent ID from team and variant info."""
-    # Common patterns in rollouts
     agent_map = {
         'joke_team': 'agent_alpha',
         'pun_team': 'agent_alpha',
@@ -456,17 +467,11 @@ def _infer_agent_from_variant(team_id: str, variant_id: str) -> Optional[str]:
         'management_team': 'agent_alpha',
         'reward_distributor': 'treasurer',
     }
-    
-    # Check if variant contains agent info
-    if 'alpha' in variant_id.lower():
-        return 'agent_alpha'
-    elif 'beta' in variant_id.lower():
-        return 'agent_beta'
-    elif 'treasurer' in variant_id.lower():
-        return 'treasurer'
-    elif 'helper' in variant_id.lower():
-        return 'agent_helper'
-    
+    v = variant_id.lower()
+    if 'alpha' in v: return 'agent_alpha'
+    if 'beta' in v: return 'agent_beta'
+    if 'treasurer' in v: return 'treasurer'
+    if 'helper' in v: return 'agent_helper'
     return agent_map.get(team_id)
 
 def log_cli_metrics(rollout_id: str, metrics_block_text: str) -> None:
@@ -477,7 +482,7 @@ def log_cli_metrics(rollout_id: str, metrics_block_text: str) -> None:
         logger.debug("log_cli_metrics failed: %s", e)
 
 # -----------------------------------------------------------------------------
-# Enhanced Graph logging
+# Static graph logging (using Points2D/LineStrips2D)
 # -----------------------------------------------------------------------------
 
 def _log_graph_static_enhanced(
@@ -486,97 +491,67 @@ def _log_graph_static_enhanced(
     node_meta: List[Dict[str, str]],
     edges: List[Tuple[int, int]],
 ) -> None:
-    """Enhanced static graph with better visuals."""
     try:
         base = f"{_rollout_path(rollout_id)}/graph"
-        
         radii: List[float] = []
         colors_nodes: List[List[int]] = []
         labels: List[str] = []
-        
+
         for meta in node_meta:
-            # Different visuals for different node types
-            node_type = meta.get("kind", "state")
-            
-            if node_type == "agent":
-                # Agents get team/variant colors and larger size
-                radius = float(meta.get("latency", 1.0)) * 15
+            k = meta.get("kind", "state")
+            if k == "agent":
+                radius = float(meta.get("latency", 1.0)) * 15.0
                 color = [
                     int(meta.get("color_r", 100)),
                     int(meta.get("color_g", 100)),
                     int(meta.get("color_b", 200)),
-                    255
+                    255,
                 ]
                 label = meta.get("label", meta.get("variant", ""))
-                
-            elif node_type == "tool":
-                # Tools get their specific colors and medium size
-                radius = float(meta.get("latency", 1.0)) * 10
+            elif k == "tool":
+                radius = float(meta.get("latency", 1.0)) * 10.0
                 color = [
                     int(meta.get("color_r", 150)),
                     int(meta.get("color_g", 150)),
                     int(meta.get("color_b", 150)),
-                    200
+                    210,
                 ]
                 label = meta.get("label", meta.get("variant", ""))
-                
             else:
-                # Fallback for state nodes
                 variant = meta.get("variant", "?")
-                radius = float(meta.get("latency", 1.0)) * 10
+                radius = float(meta.get("latency", 1.0)) * 10.0
                 color = _color_for_variant(variant)
                 label = meta.get("label", "")
-                
+
             radii.append(radius)
             colors_nodes.append(color)
             labels.append(label)
-        
-        # Log nodes with labels
-        rr.points2d(
-            f"{base}/nodes",
-            positions,
-            radii=radii,
-            colors=colors_nodes,
-            labels=labels if any(labels) else None,
-            timeless=True
-        )
-        
-        # Enhanced edges with different styles
+
+        # Nodes
+        rr.points2d(f"{base}/nodes", positions, radii=radii, colors=colors_nodes, labels=labels if any(labels) else None, timeless=True)
+
+        # Edges
         if edges:
             strips: List[List[List[float]]] = []
             colors_edges: List[List[int]] = []
-            
-            for i, j in edges:
+            for (i, j) in edges:
                 try:
-                    p1 = positions[i]
-                    p2 = positions[j]
+                    p1 = positions[i]; p2 = positions[j]
                     strips.append([[float(p1[0]), float(p1[1])], [float(p2[0]), float(p2[1])]])
-                    
-                    # Color based on source node type
-                    source_type = node_meta[i].get("kind", "state")
-                    if source_type == "agent":
-                        # Agent interactions are colored
-                        color = [
-                            int(node_meta[i].get("color_r", 100)),
-                            int(node_meta[i].get("color_g", 100)),
-                            int(node_meta[i].get("color_b", 200)),
-                            150
-                        ]
-                    else:
-                        # Other edges are semi-transparent gray
-                        color = [150, 150, 150, 100]
-                    
-                    colors_edges.append(color)
+                    # Color edge by source node tint, semi-transparent
+                    c = colors_nodes[i]
+                    colors_edges.append([c[0], c[1], c[2], 140])
                 except Exception:
                     continue
-                    
             if strips:
                 rr.line_strips2d(f"{base}/edges", strips, colors=colors_edges, timeless=True)
-        
-        # Bounds
-        bounds = [[-500, -500], [500, -500], [500, 500], [-500, 500], [-500, -500]]
-        rr.line_strips2d(f"{base}/bounds", [bounds], timeless=True)
-        
+
+        # Bounds rectangle
+        halfW = float(os.getenv("WORLD_GRAPH_WIDTH", "1200")) * 0.5
+        halfH = float(os.getenv("WORLD_GRAPH_HEIGHT", "750")) * 0.5
+        bounds = [[-halfW, -halfH], [halfW, -halfH], [halfW, halfH], [-halfW, halfH], [-halfW, -halfH]]
+        rr.line_strips2d(f"{base}/bounds", [bounds], colors=[[180,180,180,60]], timeless=True)
+
     except Exception as e:
         logger.debug("_log_graph_static_enhanced failed: %s", e)
 
@@ -586,7 +561,6 @@ def log_graph_static(
     node_meta: List[Dict[str, str]],
     edges: List[Tuple[int, int]],
 ) -> None:
-    """Timeless static graph - now enhanced version."""
     _log_graph_static_enhanced(rollout_id, positions, node_meta, edges)
 
 def log_graph_events(
@@ -595,43 +569,27 @@ def log_graph_events(
     *,
     timeline: str = "step",
 ) -> None:
-    """Bright animated edge + destination point at each event time."""
     try:
         base = f"{_rollout_path(rollout_id)}/graph"
-
         for ev in events:
             t = float(ev["t"])
             variant = str(ev.get("variant", "?"))
-
-            # Stamp ONLY the requested timeline (default: 'step')
             rr.set_time_seconds(timeline, t)
-
             strips = [[ev["p1"], ev["p2"]]]
             r, g, b, _ = _color_for_variant(variant)
             rr.line_strips2d(f"{base}/playhead_edge", strips, colors=[[r, g, b, 230]])
             rr.points2d(f"{base}/playhead_node", [ev["p2"]], radii=[12.0], colors=[[r, g, b, 240]], labels=None)
-
     except Exception as e:
         logger.debug("log_graph_events failed: %s", e)
 
 # -----------------------------------------------------------------------------
-# Rollout-level logging
+# Rollout-level logging (unchanged)
 # -----------------------------------------------------------------------------
 
 def log_rollout_start(rollout_id: str, teams: int, total_variants: int, config: Dict[str, Any]) -> None:
-    """
-    Record a 'started' marker + rollout config at the rollout root.
-    """
     base = _rollout_path(rollout_id)
     try:
-        rr.kv(
-            f"{base}/meta",
-            timeless=True,
-            status="started",
-            teams=int(teams),
-            total_variants=int(total_variants),
-            start_time=config.get("start_time"),
-        )
+        rr.kv(f"{base}/meta", timeless=True, status="started", teams=int(teams), total_variants=int(total_variants), start_time=config.get("start_time"))
         rr.json_doc(f"{base}/config", config, timeless=True)
     except Exception as e:
         logger.debug("log_rollout_start failed: %s", e)
@@ -649,10 +607,7 @@ def log_variant_metrics(rollout_id: str, team_id: str, variant_id: str, **metric
 
 def log_pareto_point(rollout_id: str, team_id: str, variant_id: str, *, score: float, cost: float, tokens: int) -> None:
     try:
-        rr.json_doc(
-            f"{_rollout_path(rollout_id)}/pareto/{team_id}_{variant_id}",
-            {"team": team_id, "variant": variant_id, "score": float(score), "cost": float(cost), "tokens": int(tokens), "label": f"{team_id}/{variant_id}"},
-        )
+        rr.json_doc(f"{_rollout_path(rollout_id)}/pareto/{team_id}_{variant_id}", {"team": team_id, "variant": variant_id, "score": float(score), "cost": float(cost), "tokens": int(tokens), "label": f"{team_id}/{variant_id}"})
     except Exception as e:
         logger.debug("log_pareto_point failed: %s", e)
 
@@ -688,7 +643,6 @@ def send_default_blueprint() -> None:
     except Exception as e:
         logger.debug("Blueprint import failed; skipping default layout: %s", e)
         return
-
     try:
         bp = rrb.Blueprint(
             rrb.TextDocumentView(origin=rr.abs_path("rollouts/**/config/*"), name="Rollout Configs"),
@@ -697,6 +651,7 @@ def send_default_blueprint() -> None:
         rr.send_blueprint(bp, make_active=False, make_default=True)
     except Exception as e:
         logger.debug("send_default_blueprint failed: %s", e)
+
 def send_rollout_blueprint(
     rollout_id: str,
     spec_name: str,
@@ -709,7 +664,7 @@ def send_rollout_blueprint(
     """
     Left  = TextDocumentView (YAML)
     Right = Vertical(
-              Spatial2DView           -> /graph/**  (WORLD graph: all teams)
+              Spatial2DView           -> /graph/**  (WORLD graph: force-layouted Points2D)
               TextLogView (all teams) -> /stacks/**
               TextDocumentView        -> /reports/metrics_cli
             )
@@ -734,7 +689,6 @@ def send_rollout_blueprint(
         TextLogView = getattr(rrb, "TextLogView", None)
         TeamPaneView = TextLogView or rrb.TextDocumentView
 
-        # Single pane listing ALL team logs (no tabs)
         teams_container = TeamPaneView(
             origin=rr.abs_path(f"{_rollout_path(rollout_id)}/stacks"),
             name="Team logs",
@@ -745,12 +699,23 @@ def send_rollout_blueprint(
             name="Metrics (CLI)",
         )
 
+        # Short description next to the graph (helps new users)
+        try:
+            desc = (
+                "# World Graph\n"
+                "- **Position**: computed via force layout\n"
+                "- **Color**: team/variant grouping\n"
+                "- **Size**: recent activity\n"
+                "- **Edges**: delegations (strong) & tool calls\n"
+            )
+            rr.text_doc(f"{_rollout_path(rollout_id)}/graph/description", desc, media_type="text/markdown", timeless=True)
+        except Exception:
+            pass
+
         right = rrb.Vertical(graph_view, teams_container, metrics_doc)
         bp = rrb.Blueprint(rrb.Horizontal(left, right), collapse_panels=True)
 
         rr.send_blueprint(bp, make_active=make_active, make_default=make_default)
-
-        # Best-effort: prime the time axis so the graph shows up immediately
         try:
             rr.set_time_seconds("step", 0.0)
         except Exception:
