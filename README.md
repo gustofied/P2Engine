@@ -1,5 +1,7 @@
 <!-- Hero -->
 
+What could P2Engine become, a test-bed for collective game theory monetry incetives cot style system at global level reasonging allignemt
+
 Lets have that P2 Logo on top of here
 
 <h1 align="center">P2Engine — Multi-Agent System (WIP)</h1>
