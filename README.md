@@ -1,15 +1,25 @@
 <!-- Hero -->
 
 <h1 align="center">P2Engine — Multi-Agent System (WIP)</h1>
+
 <p align="center">
-  Orchestrate many AI agents with <i>observable</i> workflows, <i>adaptive</i> evaluation loops, and an <i>auditable</i> trail.
+  Orchestrate many AI agents with <i>observable</i> workflows, 
+  <i>adaptive</i> evaluation loops, and an <i>auditable</i> trail.
 </p>
 
 <p align="center">
-  <a href="https://img.shields.io/badge/status-WIP-orange"> <img src="https://img.shields.io/badge/status-WIP-orange" alt="Status: WIP"> </a>
-  <a href="https://img.shields.io/badge/framework-Exploratory-blueviolet"> <img src="https://img.shields.io/badge/framework-Exploratory-blueviolet" alt="Framework: Exploratory"> </a>
-  <a href="https://img.shields.io/badge/license-Academic-lightgrey"> <img src="https://img.shields.io/badge/license-Academic-lightgrey" alt="License: Academic"> </a>
-  <a href="https://img.shields.io/badge/python-3.11%2B-informational"> <img src="https://img.shields.io/badge/python-3.11%2B-informational" alt="Python 3.11+"> </a>
+  <a href="https://img.shields.io/badge/status-WIP-orange">
+    <img src="https://img.shields.io/badge/status-WIP-orange" alt="Status: WIP">
+  </a>
+  <a href="https://img.shields.io/badge/framework-Exploratory-blueviolet">
+    <img src="https://img.shields.io/badge/framework-Exploratory-blueviolet" alt="Framework: Exploratory">
+  </a>
+  <a href="https://img.shields.io/badge/license-Academic-lightgrey">
+    <img src="https://img.shields.io/badge/license-Academic-lightgrey" alt="License: Academic">
+  </a>
+  <a href="https://img.shields.io/badge/python-3.11%2B-informational">
+    <img src="https://img.shields.io/badge/python-3.11%2B-informational" alt="Python 3.11+">
+  </a>
 </p>
 
 <p align="center">
@@ -23,9 +33,11 @@
 
 ---
 
-P2Engine explores how multiple AI agents can coordinate, critique, and improve each other in open-ended tasks. You can think of it as a <em>framework</em> for multi-agent systems—but we’re still letting it find its final form. This repo is actively evolving and remains a work-in-progress.
+P2Engine explores how multiple AI agents can coordinate, critique, and improve each other in open-ended tasks.  
+Think of it as a <em>framework</em> for multi-agent systems — but still evolving and work-in-progress.
 
-P2Engine focuses on four pillars: **orchestration**, **observability**, **adaptation**, and **auditability**. Agents collaborate through non-rigid workflows, log everything for inspection, learn via judge/rollout loops, and leave a tamper-evident trail for accountability.
+The framework emphasizes four pillars: **orchestration**, **observability**, **adaptation**, and **auditability**.  
+Agents collaborate through flexible workflows, log everything for inspection, learn via judge/rollout loops, and leave a tamper-evident trail for accountability.
 
 ---
 
@@ -39,37 +51,40 @@ P2Engine focuses on four pillars: **orchestration**, **observability**, **adapta
 
 ## Primer
 
-[**Test the framework on GitHub**](REPO_URL) — P2Engine is a multi-agent system framework that emerged as the primary artefact of my master’s thesis. This page is a mosaic of that work: we sketch the design, show demos, and point you to what’s most relevant via the contents below. We describe P2Engine’s pillars, provide runnable examples, and will keep expanding this as the project evolves.
+[**Test the framework on GitHub**](REPO_URL) —  
+P2Engine is the main artefact of a master’s thesis project. This page gives you a snapshot:  
+we sketch the design, show demos, and point to what’s most relevant.  
+Expect this repo to grow and evolve as the framework matures.
 
 ### Why it matters
 
-- **Agentic workflows** without rigid pipelines.
-- **See what happened** (full runs are observable + auditable).
-- **Get better over time** via judge/rollout-driven adaptation loops.
+- **Agentic workflows** without rigid pipelines.  
+- **Transparency** — full runs are observable and auditable.  
+- **Self-improvement** via judge/rollout-driven adaptation loops.  
 
 ---
 
 ## Gallery — Four Validation Scenarios (2×2)
 
-> Placeholders for now. Drop your GIFs/MP4s into `demos/` and update filenames.
+> Drop your GIFs/MP4s into `demos/` and update filenames.
 
 **Row 1**
 
-| E1 — Orchestration                                         | E2 — Observability                                                                      |
-| ---------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| [![E1 Orchestration](demos/banner.gif)](demos/banner.gif)  | [![E2 Observability (placeholder)](demos/placeholder-e2.gif)](demos/placeholder-e2.mp4) |
+| E1 — Orchestration                                                                                 | E2 — Observability                                                                      |
+| -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| <p align="center"><img src="demos/banner.gif" alt="E1 Orchestration Demo" width="420"></p>          | <p align="center"><img src="demos/placeholder-e2.gif" alt="E2 Observability Demo" width="420"></p> |
 
 **Row 2**
 
-| E3 — Adaptation Loops                                                                | E4 — Audit Layer                                                                       |
-| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
-| [![E3 Adaptation (placeholder)](demos/placeholder-e3.gif)](demos/placeholder-e3.mp4) | [![E4 Auditability (placeholder)](demos/placeholder-e4.gif)](demos/placeholder-e4.mp4) |
+| E3 — Adaptation Loops                                                                              | E4 — Audit Layer                                                                        |
+| -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| <p align="center"><img src="demos/placeholder-e3.gif" alt="E3 Adaptation Demo" width="420"></p>    | <p align="center"><img src="demos/placeholder-e4.gif" alt="E4 Auditability Demo" width="420"></p> |
 
 ---
 
 ## Getting Started
 
-> Local dev only for now.
+> Local development only for now.
 
 ```bash
 # 1) Clone
