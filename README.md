@@ -1,14 +1,5 @@
 <!-- Hero -->
 
-<p align="center">
-  <img src="demos/banner.gif" alt="P2Engine Banner" width="100%">
-</p>
-
-<p align="center"><em>
-What could P2Engine become — a test-bed for collective game theory, monetary incentives, 
-cot-style systems, and global-level reasoning alignment?
-</em></p>
-
 <h1 align="center">P2Engine — Multi-Agent System (WIP)</h1>
 <p align="center">
   Orchestrate many AI agents with <i>observable</i> workflows, <i>adaptive</i> evaluation loops, and an <i>auditable</i> trail.
@@ -64,9 +55,9 @@ P2Engine focuses on four pillars: **orchestration**, **observability**, **adapta
 
 **Row 1**
 
-| E1 — Orchestration                                                                      | E2 — Observability                                                                      |
-| --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| [![E1 Orchestration (placeholder)](demos/placeholder-e1.gif)](demos/placeholder-e1.mp4) | [![E2 Observability (placeholder)](demos/placeholder-e2.gif)](demos/placeholder-e2.mp4) |
+| E1 — Orchestration                                         | E2 — Observability                                                                      |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| [![E1 Orchestration](demos/banner.gif)](demos/banner.gif)  | [![E2 Observability (placeholder)](demos/placeholder-e2.gif)](demos/placeholder-e2.mp4) |
 
 **Row 2**
 
