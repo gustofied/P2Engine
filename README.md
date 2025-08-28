@@ -68,17 +68,17 @@ Expect this repo to grow and evolve as the framework matures.
 
 > Temporary: all cells use `demos/banner.gif` for consistent feel.
 
-**Row 1**
+<div align="center">
 
 | E1 — Orchestration                                                                 | E2 — Observability                                                                 |
 | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | <div align="center"><img src="demos/banner.gif" alt="E1 Orchestration" width="320"></div> | <div align="center"><img src="demos/banner.gif" alt="E2 Observability" width="320"></div> |
 
-**Row 2**
-
 | E3 — Adaptation Loops                                                              | E4 — Audit Layer                                                                   |
 | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | <div align="center"><img src="demos/banner.gif" alt="E3 Adaptation Loops" width="320"></div> | <div align="center"><img src="demos/banner.gif" alt="E4 Audit Layer" width="320"></div> |
+
+</div>
 
 ---
 
