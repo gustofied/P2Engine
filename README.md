@@ -1,8 +1,13 @@
 <!-- Hero -->
 
-What could P2Engine become, a test-bed for collective game theory monetry incetives cot style system at global level reasonging allignemt
+<p align="center">
+  <img src="demos/banner.gif" alt="P2Engine Banner" width="100%">
+</p>
 
-Lets have that P2 Logo on top of here
+<p align="center"><em>
+What could P2Engine become — a test-bed for collective game theory, monetary incentives, 
+cot-style systems, and global-level reasoning alignment?
+</em></p>
 
 <h1 align="center">P2Engine — Multi-Agent System (WIP)</h1>
 <p align="center">
@@ -86,4 +91,3 @@ pip install -e .
 
 # 3) Run a demo
 python -m demos.e1_orchestration
-```
