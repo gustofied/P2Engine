@@ -66,19 +66,19 @@ Expect this repo to grow and evolve as the framework matures.
 
 ## Gallery — Four Validation Scenarios (2×2)
 
-> Drop your GIFs/MP4s into `demos/` and update filenames.
+> Temporary: all cells use `demos/banner.gif` for consistent feel.
 
 **Row 1**
 
-| E1 — Orchestration                                                                                 | E2 — Observability                                                                      |
-| -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| <p align="center"><img src="demos/banner.gif" alt="E1 Orchestration Demo" width="420"></p>          | <p align="center"><img src="demos/placeholder-e2.gif" alt="E2 Observability Demo" width="420"></p> |
+| E1 — Orchestration                                                                 | E2 — Observability                                                                 |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| <div align="center"><img src="demos/banner.gif" alt="E1 Orchestration" width="320"></div> | <div align="center"><img src="demos/banner.gif" alt="E2 Observability" width="320"></div> |
 
 **Row 2**
 
-| E3 — Adaptation Loops                                                                              | E4 — Audit Layer                                                                        |
-| -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| <p align="center"><img src="demos/placeholder-e3.gif" alt="E3 Adaptation Demo" width="420"></p>    | <p align="center"><img src="demos/placeholder-e4.gif" alt="E4 Auditability Demo" width="420"></p> |
+| E3 — Adaptation Loops                                                              | E4 — Audit Layer                                                                   |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| <div align="center"><img src="demos/banner.gif" alt="E3 Adaptation Loops" width="320"></div> | <div align="center"><img src="demos/banner.gif" alt="E4 Audit Layer" width="320"></div> |
 
 ---
 
