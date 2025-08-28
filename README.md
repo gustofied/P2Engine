@@ -2,6 +2,10 @@
 
 <h1 align="center">P2Engine — Multi-Agent System (WIP)</h1>
 
+<p align="center"><strong>
+A framework + runtime to build, run, and evaluate multi-agent systems. Extended with the Canton Network to enable monetary incentives, payments, and audits.
+</strong></p>
+
 <p align="center">
   Orchestrate many AI agents with <i>observable</i> workflows, 
   <i>adaptive</i> evaluation loops, and an <i>auditable</i> trail.
@@ -17,8 +21,8 @@
   <a href="https://img.shields.io/badge/license-Academic-lightgrey">
     <img src="https://img.shields.io/badge/license-Academic-lightgrey" alt="License: Academic">
   </a>
-  <a href="https://img.shields.io/badge/python-3.11%2B-informational">
-    <img src="https://img.shields.io/badge/python-3.11%2B-informational" alt="Python 3.11+">
+  <a href="https://img.shields.io/badge/python-3.9%2B-informational">
+    <img src="https://img.shields.io/badge/python-3.9%2B-informational" alt="Python 3.9+">
   </a>
 </p>
 
@@ -37,14 +41,15 @@ P2Engine explores how multiple AI agents can coordinate, critique, and improve e
 Think of it as a <em>framework</em> for multi-agent systems — but still evolving and work-in-progress.
 
 The framework emphasizes four pillars: **orchestration**, **observability**, **adaptation**, and **auditability**.  
-Agents collaborate through flexible workflows, log everything for inspection, learn via judge/rollout loops, and leave a tamper-evident trail for accountability.
+Agents collaborate through flexible workflows, log everything for inspection, learn via judge/rollout loops, and leave a tamper-evident trail for accountability. A DAML/Canton ledger integration enables balances, transfers, rewards, and an auditable payment trail between agents.
 
 ---
 
 ## Quicklinks
 
 - **Test it now:** [GitHub Repo](REPO_URL) · Examples in [`demos/`](demos/)
-- **Docs (stub):** [`p2engine/README.md`](p2engine/README.md)
+- **Docs (stubs):** [`docs/`](docs/)
+- **Ledger guide:** [`ledger.md`](ledger.md)
 - **Contact:** adam.sioud@protonmail.com · surya.b.kathayat@ntnu.no
 
 ---
@@ -52,15 +57,14 @@ Agents collaborate through flexible workflows, log everything for inspection, le
 ## Primer
 
 [**Test the framework on GitHub**](REPO_URL) —  
-P2Engine is the main artefact of a master’s thesis project. This page gives you a snapshot:  
-we sketch the design, show demos, and point to what’s most relevant.  
-Expect this repo to grow and evolve as the framework matures.
+P2Engine is a framework + runtime for multi-agent orchestration. Wire up LLM, rule-based, and human-in-loop agents; execute conversations through an auditable interaction stack; capture tool calls and results as artifacts; run judge/eval rollouts; and (optionally) settle incentives on a Canton ledger.
 
 ### Why it matters
 
 - **Agentic workflows** without rigid pipelines.  
 - **Transparency** — full runs are observable and auditable.  
 - **Self-improvement** via judge/rollout-driven adaptation loops.  
+- **Incentives** — balances, transfers, and rewards via Canton.
 
 ---
 
