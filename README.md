@@ -38,6 +38,7 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
  <a href="#extended-features">View Extended Features</a>
 </div>
 
+
 <div align="center">
 
 | F1 — Real-time Analytics                                                           | F2 — Custom Integrations                                                           |
@@ -50,31 +51,15 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
 
 </div>
 
----
-## Hello
-
-[**Test the framework on GitHub**](REPO_URL) —  
-P2Engine is a framework + runtime for multi-agent orchestration. Wire up LLM, rule-based, and human-in-loop agents; execute conversations through an auditable interaction stack; capture tool calls and results as artifacts; run judge/eval rollouts; and (optionally) settle incentives on a Canton ledger.
-
-- **Test it now:** [GitHub Repo](REPO_URL) · Examples in [`demos/`](demos/)
-- **Docs (stubs):** [`docs/`](docs/)
-- **Ledger guide:** [`ledger.md`](ledger.md)
-- **Contact:** adam.sioud@protonmail.com · surya.b.kathayat@ntnu.no
 
 
-- **Agentic workflows** without rigid pipelines.  
-- **Transparency** — full runs are observable and auditable.  
-- **Self-improvement** via judge/rollout-driven adaptation loops.  
-- **Incentives** — balances, transfers, and rewards via Canton.
+<p align="center">
+ Orchestrate many AI agents with <i>observable</i> workflows, 
+ - **Contact:** adam.sioud@protonmail.com · surya.b.kathayat@ntnu.no
+</p>
 
-P2Engine explores how multiple AI agents can coordinate, critique, and improve each other in open-ended tasks.  
-Think of it as a <em>framework</em> for multi-agent systems — but still evolving and work-in-progress.
+<h1 align="center">Future</h1>
 
-The framework emphasizes four pillars: **orchestration**, **observability**, **adaptation**, and **auditability**.  
-Agents collaborate through flexible workflows, log everything for inspection, learn via judge/rollout loops, and leave a tamper-evident trail for accountability. A DAML/Canton ledger integration enables balances, transfers, rewards, and an auditable payment trail between agents.
-
----
-
-## Future
-
-> Have a little future ramble here
+<div align="center">
+ <p>Explore advanced capabilities and enterprise features with our extended suite.</p>
+</div>
