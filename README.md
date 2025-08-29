@@ -42,11 +42,11 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
 
 | F1 — Real-time Analytics                                                           | F2 — Custom Integrations                                                           |
 | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| <div align="center"><img src="p2engine/docs/execution-sequence.png" alt="F1 Real-time Analytics" width="320"></div> | <div align="center"><img src="https://via.placeholder.com/320x180/50c878/ffffff?text=Custom+Integrations" alt="F2 Custom Integrations" width="320"></div> |
+| <div align="center"><img src="p2engine/docs/execution-sequence.png" alt="F1 Real-time Analytics" width="320"></div> | <div align="center"><img src="p2engine/docs/observability-events.png" alt="F2 Custom Integrations" width="320"></div> |
 
 | F3 — Enterprise Security                                                           | F4 — Global Deployment                                                             |
 | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| <div align="center"><img src="https://via.placeholder.com/320x180/ff6b6b/ffffff?text=Enterprise+Security" alt="F3 Enterprise Security" width="320"></div> | <div align="center"><img src="https://via.placeholder.com/320x180/feca57/ffffff?text=Global+Deployment" alt="F4 Global Deployment" width="320"></div> |
+| <div align="center"><img src="p2engine/docs/orchestration-fsm.png" alt="F3 Enterprise Security" width="320"></div> | <div align="center"><img src="p2engine/docs/p2engine_transaction_flow.png" alt="F4 Global Deployment" width="320"></div> |
 
 </div>
 
