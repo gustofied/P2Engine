@@ -15,16 +15,11 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
 <p align="center">
   <a href="#quicklinks">Quick Links</a> •
   <a href="#primer">Primer</a> •
-  <a href="#gallery--four-validation-scenarios-22">Gallery</a> •
   <a href="#getting-started">Getting Started</a> •
   <a href="#roadmap">Roadmap</a> •
   <a href="#research--publication">Research</a>
 </p>
 
-
----
-
-## Gallery — Four Validation Scenarios (2×2)
 
 <div align="center">
 
