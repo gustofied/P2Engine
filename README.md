@@ -42,7 +42,7 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
 
 | F1 — Real-time Analytics                                                           | F2 — Custom Integrations                                                           |
 | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| <div align="center"><img src="https://via.placeholder.com/320x180/4a90e2/ffffff?text=Real-time+Analytics" alt="F1 Real-time Analytics" width="320"></div> | <div align="center"><img src="https://via.placeholder.com/320x180/50c878/ffffff?text=Custom+Integrations" alt="F2 Custom Integrations" width="320"></div> |
+| <div align="center"><img src="p2engine/docs/execution-sequence.png" alt="F1 Real-time Analytics" width="320"></div> | <div align="center"><img src="https://via.placeholder.com/320x180/50c878/ffffff?text=Custom+Integrations" alt="F2 Custom Integrations" width="320"></div> |
 
 | F3 — Enterprise Security                                                           | F4 — Global Deployment                                                             |
 | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
