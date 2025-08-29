@@ -21,21 +21,10 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
   <a href="#research--publication">Research</a>
 </p>
 
----
-
-P2Engine explores how multiple AI agents can coordinate, critique, and improve each other in open-ended tasks.  
-Think of it as a <em>framework</em> for multi-agent systems — but still evolving and work-in-progress.
-
-The framework emphasizes four pillars: **orchestration**, **observability**, **adaptation**, and **auditability**.  
-Agents collaborate through flexible workflows, log everything for inspection, learn via judge/rollout loops, and leave a tamper-evident trail for accountability. A DAML/Canton ledger integration enables balances, transfers, rewards, and an auditable payment trail between agents.
-
----
 
 ---
 
 ## Gallery — Four Validation Scenarios (2×2)
-
-> Temporary: all cells use `demos/banner.gif` for consistent feel.
 
 <div align="center">
 
@@ -59,6 +48,17 @@ Agents collaborate through flexible workflows, log everything for inspection, le
 - **Contact:** adam.sioud@protonmail.com · surya.b.kathayat@ntnu.no
 
 ---
+---
+
+P2Engine explores how multiple AI agents can coordinate, critique, and improve each other in open-ended tasks.  
+Think of it as a <em>framework</em> for multi-agent systems — but still evolving and work-in-progress.
+
+The framework emphasizes four pillars: **orchestration**, **observability**, **adaptation**, and **auditability**.  
+Agents collaborate through flexible workflows, log everything for inspection, learn via judge/rollout loops, and leave a tamper-evident trail for accountability. A DAML/Canton ledger integration enables balances, transfers, rewards, and an auditable payment trail between agents.
+
+---
+
+
 
 ## Primer
 
