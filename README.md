@@ -13,11 +13,11 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
 
 
 <p align="center">
-  <a href="#quicklinks">Quick Links</a> •
-  <a href="#primer">Primer</a> •
-  <a href="#getting-started">Getting Started</a> •
-  <a href="#roadmap">Roadmap</a> •
-  <a href="#research--publication">Research</a>
+  <a href="/p2engine/README.md">Try it Out</a> •
+  <a href="#primer">Demos</a> •
+  <a href="#quicklinks">Article</a> •
+  <a href="#roadmap">Hello</a> •
+  <a href="#future">Future</a>
 </p>
 
 
@@ -34,16 +34,21 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
 </div>
 
 ---
+## Hello
 
-## Quicklinks
+[**Test the framework on GitHub**](REPO_URL) —  
+P2Engine is a framework + runtime for multi-agent orchestration. Wire up LLM, rule-based, and human-in-loop agents; execute conversations through an auditable interaction stack; capture tool calls and results as artifacts; run judge/eval rollouts; and (optionally) settle incentives on a Canton ledger.
 
 - **Test it now:** [GitHub Repo](REPO_URL) · Examples in [`demos/`](demos/)
 - **Docs (stubs):** [`docs/`](docs/)
 - **Ledger guide:** [`ledger.md`](ledger.md)
 - **Contact:** adam.sioud@protonmail.com · surya.b.kathayat@ntnu.no
 
----
----
+
+- **Agentic workflows** without rigid pipelines.  
+- **Transparency** — full runs are observable and auditable.  
+- **Self-improvement** via judge/rollout-driven adaptation loops.  
+- **Incentives** — balances, transfers, and rewards via Canton.
 
 P2Engine explores how multiple AI agents can coordinate, critique, and improve each other in open-ended tasks.  
 Think of it as a <em>framework</em> for multi-agent systems — but still evolving and work-in-progress.
@@ -53,34 +58,8 @@ Agents collaborate through flexible workflows, log everything for inspection, le
 
 ---
 
+## Future
+
+> Have a little future ramble here
 
 
-## Primer
-
-[**Test the framework on GitHub**](REPO_URL) —  
-P2Engine is a framework + runtime for multi-agent orchestration. Wire up LLM, rule-based, and human-in-loop agents; execute conversations through an auditable interaction stack; capture tool calls and results as artifacts; run judge/eval rollouts; and (optionally) settle incentives on a Canton ledger.
-
-### Why it matters
-
-- **Agentic workflows** without rigid pipelines.  
-- **Transparency** — full runs are observable and auditable.  
-- **Self-improvement** via judge/rollout-driven adaptation loops.  
-- **Incentives** — balances, transfers, and rewards via Canton.
-
----
-
-## Getting Started
-
-> Local development only for now.
-
-```bash
-# 1) Clone
-git clone <REPO_URL> && cd p2engine
-
-# 2) Create env & install
-python -m venv .venv && source .venv/bin/activate
-pip install -U pip wheel
-pip install -e .
-
-# 3) Run a demo
-python -m demos.e1_orchestration
