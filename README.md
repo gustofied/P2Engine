@@ -13,7 +13,7 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
 
 
 <p align="center">
-  <a href="/p2engine/README.md">Try it Out</a> •
+  <a href="/p2engine/">Try it Out</a> •
   <a href="#primer">Demos</a> •
   <a href="#quicklinks">Article</a> •
   <a href="#roadmap">Hello</a> •
