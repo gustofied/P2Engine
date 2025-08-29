@@ -7,17 +7,17 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
 </strong></p>
 
 <p align="center">
-  Orchestrate many AI agents with <i>observable</i> workflows, 
-  <i>adaptive</i> evaluation loops, and an <i>auditable</i> trail.
+ Orchestrate many AI agents with <i>observable</i> workflows, 
+ <i>adaptive</i> evaluation loops, and an <i>auditable</i> trail.
 </p>
 
 
 <p align="center">
-  <a href="/p2engine/">Try it Out</a> •
-  <a href="#primer">Demos</a> •
-  <a href="https://www.adamsioud.com/projects/p2engine.html">Article</a> •
-  <a href="#roadmap">Hello</a> •
-  <a href="#future">Future</a>
+ <a href="/p2engine/">Try it Out</a> •
+ <a href="#primer">Demos</a> •
+ <a href="https://www.adamsioud.com/projects/p2engine.html">Article</a> •
+ <a href="#roadmap">Hello</a> •
+ <a href="#future">Future</a>
 </p>
 
 
@@ -30,6 +30,23 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
 | E3 — Adaptation Loops                                                              | E4 — Audit Layer                                                                   |
 | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | <div align="center"><img src="demos/banner.gif" alt="E3 Adaptation Loops" width="320"></div> | <div align="center"><img src="demos/banner.gif" alt="E4 Audit Layer" width="320"></div> |
+
+</div>
+
+<div align="center">
+ <p>Explore advanced capabilities and enterprise features with our extended suite.</p>
+ <a href="#extended-features">View Extended Features</a>
+</div>
+
+<div align="center">
+
+| F1 — Real-time Analytics                                                           | F2 — Custom Integrations                                                           |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| <div align="center"><img src="https://via.placeholder.com/320x180/4a90e2/ffffff?text=Real-time+Analytics" alt="F1 Real-time Analytics" width="320"></div> | <div align="center"><img src="https://via.placeholder.com/320x180/50c878/ffffff?text=Custom+Integrations" alt="F2 Custom Integrations" width="320"></div> |
+
+| F3 — Enterprise Security                                                           | F4 — Global Deployment                                                             |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| <div align="center"><img src="https://via.placeholder.com/320x180/ff6b6b/ffffff?text=Enterprise+Security" alt="F3 Enterprise Security" width="320"></div> | <div align="center"><img src="https://via.placeholder.com/320x180/feca57/ffffff?text=Global+Deployment" alt="F4 Global Deployment" width="320"></div> |
 
 </div>
 
@@ -61,4 +78,3 @@ Agents collaborate through flexible workflows, log everything for inspection, le
 ## Future
 
 > Have a little future ramble here
-
