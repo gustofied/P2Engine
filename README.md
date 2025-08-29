@@ -11,20 +11,6 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
   <i>adaptive</i> evaluation loops, and an <i>auditable</i> trail.
 </p>
 
-<p align="center">
-  <a href="https://img.shields.io/badge/status-WIP-orange">
-    <img src="https://img.shields.io/badge/status-WIP-orange" alt="Status: WIP">
-  </a>
-  <a href="https://img.shields.io/badge/framework-Exploratory-blueviolet">
-    <img src="https://img.shields.io/badge/framework-Exploratory-blueviolet" alt="Framework: Exploratory">
-  </a>
-  <a href="https://img.shields.io/badge/license-Academic-lightgrey">
-    <img src="https://img.shields.io/badge/license-Academic-lightgrey" alt="License: Academic">
-  </a>
-  <a href="https://img.shields.io/badge/python-3.9%2B-informational">
-    <img src="https://img.shields.io/badge/python-3.9%2B-informational" alt="Python 3.9+">
-  </a>
-</p>
 
 <p align="center">
   <a href="#quicklinks">Quick Links</a> •
