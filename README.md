@@ -25,25 +25,27 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
 
 | E1 — Orchestration                                                                 | E2 — Observability                                                                 |
 | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E1 Orchestration" width="320" style="display:block;"></div> | <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E2 Observability" width="320" style="display:block;"></div> |
+| <div align="center"><img src="https://placehold.co/640x360.gif?text=E1+Orchestration+GIF" alt="E1 Orchestration" width="320" style="display:block;"></div> | <div align="center"><img src="https://placehold.co/640x360.gif?text=E2+Observability+GIF" alt="E2 Observability" width="320" style="display:block;"></div> |
 
 | E3 — Adaptation Loops                                                              | E4 — Audit Layer                                                                   |
 | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E3 Adaptation Loops" width="320" style="display:block;"></div> | <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E4 Audit Layer" width="320" style="display:block;"></div> |
+| <div align="center"><img src="https://placehold.co/640x360.gif?text=E3+Adaptation+Loops+GIF" alt="E3 Adaptation Loops" width="320" style="display:block;"></div> | <div align="center"><img src="https://placehold.co/640x360.gif?text=E4+Audit+Layer+GIF" alt="E4 Audit Layer" width="320" style="display:block;"></div> |
 
 </div>
 
-<div align="center" style="font-size: 24px; line-height: 1; margin: 12px 0;">•</div>
+<div style="display:flex; justify-content:center; align-items:center; margin:12px 0;">
+  <span style="font-size:24px; line-height:1;">•</span>
+</div>
 
 <div align="center">
 
 | E1 — Orchestration                                                                 | E2 — Observability                                                                 |
 | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E1 Orchestration" width="320" style="display:block;"></div> | <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E2 Observability" width="320" style="display:block;"></div> |
+| <div align="center"><img src="https://placehold.co/640x360/png?text=Mock+Image" alt="E1 Orchestration" style="display:block; width:100%; height:auto;"></div> | <div align="center"><img src="https://placehold.co/640x360/png?text=Mock+Image" alt="E2 Observability" style="display:block; width:100%; height:auto;"></div> |
 
 | E3 — Adaptation Loops                                                              | E4 — Audit Layer                                                                   |
 | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E3 Adaptation Loops" width="320" style="display:block;"></div> | <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E4 Audit Layer" width="320" style="display:block;"></div> |
+| <div align="center"><img src="https://placehold.co/640x360/png?text=Mock+Image" alt="E3 Adaptation Loops" style="display:block; width:100%; height:auto;"></div> | <div align="center"><img src="https://placehold.co/640x360/png?text=Mock+Image" alt="E4 Audit Layer" style="display:block; width:100%; height:auto;"></div> |
 
 </div>
 
