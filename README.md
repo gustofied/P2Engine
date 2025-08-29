@@ -15,7 +15,7 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
 <p align="center">
   <a href="/p2engine/">Try it Out</a> •
   <a href="#primer">Demos</a> •
-  <a href="https://www.adamsioud.com/projects/p2engine.html">Article</a> •
+  <a href="#quicklinks">Article</a> •
   <a href="#roadmap">Hello</a> •
   <a href="#future">Future</a>
 </p>
@@ -25,11 +25,25 @@ A framework + runtime to build, run, and evaluate multi-agent systems. Extended 
 
 | E1 — Orchestration                                                                 | E2 — Observability                                                                 |
 | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| <div align="center"><img src="demos/banner.gif" alt="E1 Orchestration" width="320"></div> | <div align="center"><img src="demos/banner.gif" alt="E2 Observability" width="320"></div> |
+| <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E1 Orchestration" width="320" style="display:block;"></div> | <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E2 Observability" width="320" style="display:block;"></div> |
 
 | E3 — Adaptation Loops                                                              | E4 — Audit Layer                                                                   |
 | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| <div align="center"><img src="demos/banner.gif" alt="E3 Adaptation Loops" width="320"></div> | <div align="center"><img src="demos/banner.gif" alt="E4 Audit Layer" width="320"></div> |
+| <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E3 Adaptation Loops" width="320" style="display:block;"></div> | <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E4 Audit Layer" width="320" style="display:block;"></div> |
+
+</div>
+
+<div align="center" style="font-size: 24px; line-height: 1; margin: 12px 0;">•</div>
+
+<div align="center">
+
+| E1 — Orchestration                                                                 | E2 — Observability                                                                 |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E1 Orchestration" width="320" style="display:block;"></div> | <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E2 Observability" width="320" style="display:block;"></div> |
+
+| E3 — Adaptation Loops                                                              | E4 — Audit Layer                                                                   |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E3 Adaptation Loops" width="320" style="display:block;"></div> | <div align="center"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%236b7280'%3EMock Image%3C/text%3E%3C/svg%3E" alt="E4 Audit Layer" width="320" style="display:block;"></div> |
 
 </div>
 
@@ -61,5 +75,3 @@ Agents collaborate through flexible workflows, log everything for inspection, le
 ## Future
 
 > Have a little future ramble here
-
-
