@@ -31,6 +31,26 @@ Agents collaborate through flexible workflows, log everything for inspection, le
 
 ---
 
+---
+
+## Gallery — Four Validation Scenarios (2×2)
+
+> Temporary: all cells use `demos/banner.gif` for consistent feel.
+
+<div align="center">
+
+| E1 — Orchestration                                                                 | E2 — Observability                                                                 |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| <div align="center"><img src="demos/banner.gif" alt="E1 Orchestration" width="320"></div> | <div align="center"><img src="demos/banner.gif" alt="E2 Observability" width="320"></div> |
+
+| E3 — Adaptation Loops                                                              | E4 — Audit Layer                                                                   |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| <div align="center"><img src="demos/banner.gif" alt="E3 Adaptation Loops" width="320"></div> | <div align="center"><img src="demos/banner.gif" alt="E4 Audit Layer" width="320"></div> |
+
+</div>
+
+---
+
 ## Quicklinks
 
 - **Test it now:** [GitHub Repo](REPO_URL) · Examples in [`demos/`](demos/)
@@ -51,24 +71,6 @@ P2Engine is a framework + runtime for multi-agent orchestration. Wire up LLM, ru
 - **Transparency** — full runs are observable and auditable.  
 - **Self-improvement** via judge/rollout-driven adaptation loops.  
 - **Incentives** — balances, transfers, and rewards via Canton.
-
----
-
-## Gallery — Four Validation Scenarios (2×2)
-
-> Temporary: all cells use `demos/banner.gif` for consistent feel.
-
-<div align="center">
-
-| E1 — Orchestration                                                                 | E2 — Observability                                                                 |
-| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| <div align="center"><img src="demos/banner.gif" alt="E1 Orchestration" width="320"></div> | <div align="center"><img src="demos/banner.gif" alt="E2 Observability" width="320"></div> |
-
-| E3 — Adaptation Loops                                                              | E4 — Audit Layer                                                                   |
-| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| <div align="center"><img src="demos/banner.gif" alt="E3 Adaptation Loops" width="320"></div> | <div align="center"><img src="demos/banner.gif" alt="E4 Audit Layer" width="320"></div> |
-
-</div>
 
 ---
 
