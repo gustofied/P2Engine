@@ -11,7 +11,7 @@ Orchestrate many AI agents with <i>observable</i> workflows,
 <a href="/p2engine/">Try it Out</a> •
 <a href="/demos">Demos</a> •
 <a href="https://www.adamsioud.com/projects/p2engine.html">Article</a> •
-<a href="#hello">Hello</a> •
+<a href="#hello">What it Does</a> •
 <a href="#future">Future</a>
 </p>
 
