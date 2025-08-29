@@ -1,6 +1,6 @@
 <!-- Hero -->
 
-<h1 align="center">P2Engine — Multi-Agent System (WIP)</h1>
+<h1 align="center">P2Engine: A Multi-Agent System Framework</h1>
 
 <p align="center"><strong>
 A framework + runtime to build, run, and evaluate multi-agent systems. Extended with the Canton Network to enable monetary incentives, payments, and audits.
