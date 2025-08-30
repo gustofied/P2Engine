@@ -1,4 +1,4 @@
-Now that the ledger integration is fixed, here's a comprehensive guide to all the commands and agent interactions you can test:
+some commands, experimental ways to test
 
 # Now run the rollouts
 

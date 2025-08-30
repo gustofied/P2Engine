@@ -22,7 +22,6 @@ and even update results in such text log too to see results from the rollout
 maybe it is rollouts we are in most interest to showcase get rerun on, add rollout with rerun flag?
 
 --- REVIEWS
-- YOU HAVE TO GO THROGUH THEM ALL ONCE MORE WEEKEND
 - Review of agents and tools
 - Review of cli
 - Review of infra 
