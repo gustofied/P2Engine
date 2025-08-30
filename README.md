@@ -2,6 +2,10 @@
 
 <p align="center"><strong>A framework + runtime to build, run, and evaluate multi-agent systems. Extended with the Canton Network to enable monetary incentives, payments, and audits.</strong></p>
 
+<p align="center"><strong>The primary entry point is p2engine/README.md, which offers setup
+instructions and full overview of the framework.
+</strong></p>
+
 <p align="center">Orchestrate many AI agents with <em>observable</em> workflows, <em>adaptive</em> evaluation loops, and an <em>auditable</em> trail.</p>
 
 <p align="center">
