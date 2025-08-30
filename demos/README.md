@@ -1,3 +1,5 @@
 
-Click around on the different videos, the filename indicitates what the demo is about!
+<p align="center">
+Click around on the different videos. The filename indicates what the demo is about!
+</p>
 
