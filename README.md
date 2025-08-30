@@ -17,11 +17,11 @@
 
 <div align="center">
 
-| E1 — Orchestration | E2 — Observability |
-| :----------------: | :----------------: |
-| <img src="demos/banner.gif" alt="E1 Orchestration" width="320"> | <img src="demos/banner.gif" alt="E2 Observability" width="320"> |
-| **E3 — Adaptation Loops** | **E4 — Audit Layer** |
-| <img src="demos/banner.gif" alt="E3 Adaptation Loops" width="320"> | <img src="demos/banner.gif" alt="E4 Audit Layer" width="320"> |
+|                         E1 — Orchestration                         |                       E2 — Observability                        |
+| :----------------------------------------------------------------: | :-------------------------------------------------------------: |
+|  <img src="demos/banner.gif" alt="E1 Orchestration" width="320">   | <img src="demos/banner.gif" alt="E2 Observability" width="320"> |
+|                     **E3 — Adaptation Loops**                      |                      **E4 — Audit Layer**                       |
+| <img src="demos/banner.gif" alt="E3 Adaptation Loops" width="320"> |  <img src="demos/banner.gif" alt="E4 Audit Layer" width="320">  |
 
 </div>
 
@@ -91,7 +91,7 @@
 
 - **Real-time Monitoring** — Live agent performance tracking
 - **Dynamic Scaling** — Auto-adjustment based on workload
-- **Cross-Platform Support** — Works across all major platforms  
+- **Cross-Platform Support** — Works across all major platforms
 - **Plugin Architecture** — Extensible agent development framework
 - **Smart Contracts** — Automated payment and incentive systems
 - **Enterprise Ready** — Production-grade security and reliability
@@ -106,11 +106,11 @@
 
 <div align="center">
 
-| F1 — Real-time Analytics | F2 — Custom Integrations |
-| :----------------------: | :----------------------: |
-| <img src="p2engine/docs/execution-sequence.png" alt="F1 Real-time Analytics" width="320"> | <img src="p2engine/docs/observability-events.png" alt="F2 Custom Integrations" width="320"> |
-| **F3 — Enterprise Security** | **F4 — Global Deployment** |
-| <img src="p2engine/docs/orchestration-fsm.png" alt="F3 Enterprise Security" width="320"> | <img src="p2engine/docs/p2engine_transaction_flow.png" alt="F4 Global Deployment" width="320"> |
+|                                 F1 — Real-time Analytics                                  |                                    F2 — Custom Integrations                                    |
+| :---------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------: |
+| <img src="p2engine/docs/execution-sequence.png" alt="F1 Real-time Analytics" width="320"> |  <img src="p2engine/docs/observability-events.png" alt="F2 Custom Integrations" width="320">   |
+|                               **F3 — Enterprise Security**                                |                                   **F4 — Global Deployment**                                   |
+| <img src="p2engine/docs/orchestration-fsm.png" alt="F3 Enterprise Security" width="320">  | <img src="p2engine/docs/p2engine_transaction_flow.png" alt="F4 Global Deployment" width="320"> |
 
 </div>
 
@@ -174,7 +174,7 @@ Built for researchers, developers, and enterprises who need to coordinate comple
 <td width="50%" align="center">
 
 - **Research-Grade Precision** — Built for academic and industrial research
-- **Developer-Friendly** — Intuitive APIs and comprehensive documentation  
+- **Developer-Friendly** — Intuitive APIs and comprehensive documentation
 - **Enterprise Security** — SOC2 compliant with advanced encryption
 - **Scalable Architecture** — From prototype to production-ready deployments
 - **Real-time Analytics** — Live performance monitoring and insights
@@ -206,17 +206,25 @@ P2Engine is evolving toward a comprehensive ecosystem for autonomous agent colla
 
 **Enterprise-Grade Security** — Advanced compliance frameworks and security features designed for mission-critical applications.
 
-*Join us in shaping the future of multi-agent systems.*
+_Join us in shaping the future of multi-agent systems._
 
 </td>
 <td width="50%" align="center">
 
-- **Q1 2025:** Advanced reasoning modules and multi-modal agent support
-- **Q2 2025:** Enhanced Canton Network integration with smart contract templates  
-- **Q3 2025:** Enterprise-grade security features and compliance frameworks
-- **Q4 2025:** Global deployment infrastructure with edge computing support
-- **Beyond 2025:** Autonomous agent ecosystems and self-improving systems
-- **Community-Driven:** Open source contributions and collaborative development
+Like a list like this and people could easy get into things! Evals nice wording
+
+- [Quick Start](#quick-start)
+- [What run_project.sh does](#what-run_projectsh-does)
+- [Basic Usage](#basic-usage)
+- [Rollouts](#rollouts)
+- [Evals](#evals)
+- [Agents](#agents-configagentsyml)
+- [Tools](#tools)
+- [Ledger Operations](#ledger-operations)
+- [Branching](#branching)
+- [Configuration Overrides](#configuration-overrides)
+- [Logs, Checks, Health of The System](#logs-checks-health-of-the-system)
+- [Core Modules](#core-modules)
 
 </td>
 </tr>
