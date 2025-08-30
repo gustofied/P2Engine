@@ -1,115 +1,18 @@
 # P2Engine: A Multi-Agent System Framework
 
-<div align="center">
+I need a little toc so you can click thouth the raeadmeher, every place with #### should be toc and clicked through
 
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Poetry](https://img.shields.io/badge/dependency%20management-poetry-blueviolet)](https://python-poetry.org/)
-[![Redis](https://img.shields.io/badge/cache-redis-red)](https://redis.io/)
-[![Celery](https://img.shields.io/badge/task%20queue-celery-green)](https://docs.celeryproject.org/)
-[![Daml](https://img.shields.io/badge/ledger-daml-blue)](https://www.digitalasset.com/developers)
+#### Quick Start
 
-**A Modular Framework**
-
-</div>
-
-## 🌟 Overview
-
-P2Engine is a research framework that seeks to realize fully autonomous systems through the integration of multi-agent systems (MAS) with distributed ledger technology (DLT). The platform demonstrates how autonomous agents can operate with verifiable accountability while also enabling the posibility for adaptation.
-
-### Core Capabilities
-
-- **FSM-Orchestrated Multi-Agent Systems**: Finite-state machine coordination enabling precise, observable agent workflows
-- **Auditable Infrastructure via DLT**: Canton/Daml integration providing immutable audit trails and privacy-aware operations
-- **Adaptation**: MCTS/RL-based reasoners with automated evaluation for continuous improvement
-- **Distributed Task Execution**: Celery-based architecture for scalable agent operations
-- **Effect System**: Controlled side-effect management ensuring system integrity
-- **Comprehensive Observability**: Real-time monitoring, tracing, and debugging capabilities
-
-
-## 🏗️ Architecture
-
-P2Engine is organized into several core modules, each with its own comprehensive documentation:
-
-### Core Modules
-
-- **[`/agents`](./agents/README.md)** - Agent implementations and framework
-
-  - LLM, rule-based, and human-in-loop agents
-  - Tool registration and decorators
-  - Persona system and templates
-  - Agent factory and plugin system
-
-- **[`/orchestrator`](./orchestrator/README.md)** - Conversation flow management
-
-  - Interaction stack with branching support
-  - State machine and transitions
-  - LLM-compatible message rendering
-  - Agent and tool registries
-
-- **[`/runtime`](./runtime/README.md)** - Execution engine and task processing
-
-  - Agent runtime and state handlers
-  - Effect system for side effects
-  - Celery-based task distribution
-  - Rollout and evaluation execution
-
-- **[`/infra`](./infra/README.md)** - Core infrastructure components
-
-  - Configuration management
-  - Artifact bus for event storage
-  - LLM client abstraction
-  - Evaluation framework
-  - Session management
-
-- **[`/tools`](./tools/README.md)** - Extensible tool system
-
-  - Tool creation guide
-  - Built-in tools (delegate, ledger, weather)
-  - Caching and deduplication
-  - Post-effects system
-
-- **[`/services`](./services/README.md)** - Service layer and DI container
-
-  - ServiceContainer for dependency injection
-  - Canton/Daml ledger integration
-  - Thread-safe service management
-
-- **[`/cli`](./cli/README.md)** - Command-line interface
-  - Interactive chat system
-  - Configuration management
-  - Conversation inspection
-  - Rollout execution
-
-### System Flow
-
-1. **Agents** execute tasks based on FSM-defined workflows
-2. **Orchestrator** manages state transitions and coordination
-3. **Runtime** handles execution, effects, and learning feedback
-4. **DLT** provides verifiable infrastructure for all operations
-5. **Evaluators** assess quality and trigger adaptation
-6. **Reasoners** optimize future strategies based on outcomes
-
-### Understanding the System
-
-For a deep understanding of P2Engine:
-
-1. **Start with [`/agents/README.md`](./agents/README.md)** to understand how agents work
-2. **Read [`/orchestrator/README.md`](./orchestrator/README.md)** to learn about conversation flow
-3. **Study [`/runtime/README.md`](./runtime/README.md)** for execution details
-4. **Review [`/tools/README.md`](./tools/README.md)** to create custom tools
-5. **Check [`/infra/README.md`](./infra/README.md)** for infrastructure details
-
-## 🚀 Quick Start
-
-### Prerequisites
+##### Prerequisites
 
 - Python 3.9+
 - Redis
-- Poetry (for dependency management)
+- Poetry
 - Daml SDK (optional, for ledger features)
 - OpenAI API key
 
-### Installation
+###### Installation
 
 ```bash
 # Clone the repository
@@ -179,7 +82,7 @@ ARTIFACT_DRIVER=fs
 
 ### Running the System
 
-The **primary way** to run P2Engine is through the orchestration script:
+The **primary way** to run P2Engine is through our run_proejct script:
 
 ```bash
 # This single command starts EVERYTHING:
@@ -205,38 +108,66 @@ The **primary way** to run P2Engine is through the orchestration script:
 6. **Engine**: Starts the main runtime engine
 7. **CLI**: Launches the interactive shell
 
-The script handles all the complex orchestration and provides:
+The script handles all the complex setups and provides:
 
 - Automatic log rotation with timestamped directories
 - Process monitoring with PIDs
 - Graceful shutdown on Ctrl+C
 - Health checks for all services
 
-#### Manual Component Start (Advanced)
+##### Core Modules
 
-If you need to run components separately for debugging:
+Here is what you could expect at the different modules
 
-```bash
-# 1. Redis
-redis-server
+- **[`/agents`](./agents/README.md)** - Agent implementations and framework
 
-# 2. Canton (if using ledger)
-./scripts/start_canton.sh
+  - LLM, rule-based, and human-in-loop agents
+  - Tool registration and decorators
+  - Persona system and templates
+  - Agent factory and plugin system
 
-# 3. Celery workers
-poetry run celery -A runtime.tasks.celery_app worker -Q ticks -n ticks@%h
-poetry run celery -A runtime.tasks.celery_app worker -Q tools -n tools@%h
-poetry run celery -A runtime.tasks.celery_app worker -Q evals -n evals@%h
-poetry run celery -A runtime.tasks.celery_app worker -Q rollouts -n rollouts@%h
+- **[`/orchestrator`](./orchestrator/README.md)** - Conversation flow management
 
-# 4. Engine
-poetry run python runtime/engine.py
+  - Interaction stack with branching support
+  - State machine and transitions
+  - LLM-compatible message rendering
+  - Agent and tool registries
 
-# 5. CLI
-poetry run p2engine shell
-```
+- **[`/runtime`](./runtime/README.md)** - Execution engine and task processing
 
-## 💬 Basic Usage
+  - Agent runtime and state handlers
+  - Effect system for side effects
+  - Celery-based task distribution
+  - Rollout and evaluation execution
+
+- **[`/infra`](./infra/README.md)** - Core infrastructure components
+
+  - Configuration management
+  - Artifact bus for event storage
+  - LLM client abstraction
+  - Evaluation framework
+  - Session management
+
+- **[`/tools`](./tools/README.md)** - Extensible tool system
+
+  - Tool creation guide
+  - Built-in tools (delegate, ledger, weather)
+  - Caching and deduplication
+  - Post-effects system
+
+- **[`/services`](./services/README.md)** - Service layer and DI container
+
+  - ServiceContainer for dependency injection
+  - Canton/Daml ledger integration
+  - Thread-safe service management
+
+- **[`/cli`](./cli/README.md)** - Command-line interface
+  - Interactive chat system
+  - Configuration management
+  - Conversation inspection
+  - Rollout execution
+
+##### Basic Usage
 
 ### Starting a Chat
 
@@ -592,9 +523,6 @@ tail -f logs/run_*/workers/*.log
 tail -f logs/canton/*.log
 ```
 
-
 **Tech (bare-bones):** [LiteLLM](https://docs.litellm.ai/), [Celery](https://docs.celeryq.dev/), [Redis](https://redis.io/), [Canton](https://www.canton.network/), [Daml](https://docs.daml.com/), [Poetry](https://python-poetry.org/), [Typer](https://typer.tiangolo.com/), [Rich](https://github.com/Textualize/rich), [Pydantic](https://docs.pydantic.dev/latest/), [OpenAI API](https://platform.openai.com/docs), [Jinja2](https://jinja.palletsprojects.com/), [JSON Schema](https://json-schema.org/).
 
-
 ---
-
