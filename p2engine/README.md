@@ -24,6 +24,8 @@ First let's make sure we have these:
 - Daml SDK (optional, for ledger features)
 - OpenAI API key
 
+_I run things on my Mac, you might/will need to do some tiny tweaks if you're on a different setup!_
+
 ##### Installation
 
 Then we clone, install the dependencies and set up the environment variables.
