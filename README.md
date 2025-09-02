@@ -10,7 +10,7 @@ instructions and a full overview of the framework.</strong></p>
 <p align="center">
 <a href="p2engine/">Try it Out</a> •
 <a href="demos/">Demos</a> •
-<a href="https://www.adamsioud.com/projects/p2engine.html">Article</a> •
+<a href="https://www.adamsioud.com/projects/p2engine.html" target="_blank" rel="noopener">Article</a> •
 <a href="#functionalities">Functionalities</a> •
 <a href="#rollout">Rollout</a> •
 <a href="#architectures">Architectures</a> •
@@ -23,26 +23,42 @@ instructions and a full overview of the framework.</strong></p>
 <table>
 <tr>
 <td align="center" width="50%">
-<video width="480" height="270" controls muted playsinline loop preload="none"
-       src="demos/newer/1_delegation_sub_agent_demo_4x.mp4"></video><br>
-<strong>E1 — Agent Delegation</strong>
+  <a href="https://www.adamsioud.com/projects/p2engine.html" target="_blank" rel="noopener">
+    <img src="demos/newer/1_delegation_sub_agent_demo_short.gif"
+         alt="E1 — Agent Delegation (click for full)"
+         width="480" height="270" loading="lazy" decoding="async">
+  </a><br>
+  <small>5s preview — click for full</small><br>
+  <strong>E1 — Agent Delegation</strong>
 </td>
 <td align="center" width="50%">
-<video width="480" height="270" controls muted playsinline loop preload="none"
-       src="demos/newer/2_rewind_branches_demo_4x.mp4"></video><br>
-<strong>E2 — Branch Rewind</strong>
+  <a href="https://www.adamsioud.com/projects/p2engine.html" target="_blank" rel="noopener">
+    <img src="demos/newer/1_delegation_sub_agent_demo_short.gif"
+         alt="E2 — Branch Rewind (click for full)"
+         width="480" height="270" loading="lazy" decoding="async">
+  </a><br>
+  <small>5s preview — click for full</small><br>
+  <strong>E2 — Branch Rewind</strong>
 </td>
 </tr>
 <tr>
 <td align="center" width="50%">
-<video width="480" height="270" controls muted playsinline loop preload="none"
-       src="demos/newer/3_rollout_with_rerun_demo_4x.mp4"></video><br>
-<strong>E3 — Rollout with Rerun</strong>
+  <a href="https://www.adamsioud.com/projects/p2engine.html" target="_blank" rel="noopener">
+    <img src="demos/newer/1_delegation_sub_agent_demo_short.gif"
+         alt="E3 — Rollout with Rerun (click for full)"
+         width="480" height="270" loading="lazy" decoding="async">
+  </a><br>
+  <small>5s preview — click for full</small><br>
+  <strong>E3 — Rollout with Rerun</strong>
 </td>
 <td align="center" width="50%">
-<video width="480" height="270" controls muted playsinline loop preload="none"
-       src="demos/newer/4_ledge_demo_4x.mp4"></video><br>
-<strong>E4 — Ledger Operations</strong>
+  <a href="https://www.adamsioud.com/projects/p2engine.html" target="_blank" rel="noopener">
+    <img src="demos/newer/1_delegation_sub_agent_demo_short.gif"
+         alt="E4 — Ledger Operations (click for full)"
+         width="480" height="270" loading="lazy" decoding="async">
+  </a><br>
+  <small>5s preview — click for full</small><br>
+  <strong>E4 — Ledger Operations</strong>
 </td>
 </tr>
 </table>
@@ -82,9 +98,12 @@ instructions and a full overview of the framework.</strong></p>
 </td>
 <td width="50%" align="center">
 
-<video width="480" height="580" controls muted playsinline loop preload="none"
-       src="demos/newer/rollout_rerun_4x.mp4"></video>
-<br><em>Global Rollout Demo</em>
+<a href="https://www.adamsioud.com/projects/p2engine.html" target="_blank" rel="noopener">
+  <img src="demos/newer/1_delegation_sub_agent_demo_short.gif"
+       alt="Global Rollout Demo (click for full)"
+       width="480" height="270" loading="lazy" decoding="async">
+</a>
+<br><em>Global Rollout Demo — 5s preview</em>
 
 </td>
 </tr>
