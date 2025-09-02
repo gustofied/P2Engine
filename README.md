@@ -21,11 +21,11 @@ instructions and full overview of the framework.
 
 <div align="center">
 
-|                         E1 — Orchestration                         |                       E2 — Observability                        |
-| :----------------------------------------------------------------: | :-------------------------------------------------------------: |
-|  <img src="demos/banner.gif" alt="E1 Orchestration" width="320">   | <img src="demos/banner.gif" alt="E2 Observability" width="320"> |
-|                     **E3 — Adaptation Loops**                      |                      **E4 — Audit Layer**                       |
-| <img src="demos/banner.gif" alt="E3 Adaptation Loops" width="320"> |  <img src="demos/banner.gif" alt="E4 Audit Layer" width="320">  |
+|                                                          E1 — Agent Delegation                                                           |                                                        E2 — Branch Rewind                                                        |
+| :--------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------: |
+| <img src="demos/newer/1_delegation_sub_agent_demo_4x.gif" alt="E1 Agent Delegation" width="480" height="270" style="object-fit: cover;"> | <img src="demos/newer/2_rewind_branches_demo_4x.gif" alt="E2 Branch Rewind" width="480" height="270" style="object-fit: cover;"> |
+|                                                       **E3 — Rollout with Rerun**                                                        |                                                    **E4 — Ledger Operations**                                                    |
+| <img src="demos/newer/3_rollout_with_rerun_demo_4x.gif" alt="E3 Rollout with Rerun" width="480" height="270" style="object-fit: cover;"> |    <img src="demos/newer/4_ledge_demo_4x.gif" alt="E4 Ledger Operations" width="480" height="270" style="object-fit: cover;">    |
 
 </div>
 
@@ -62,7 +62,7 @@ instructions and full overview of the framework.
 </td>
 <td width="50%" align="center">
 
-<img src="demos/banner.gif" alt="Global Rollout Demo" width="400" height="300">
+<img src="demos/newer/rollout_rerun_showcase_4x.gif" alt="Global Rollout Demo" width="480" height="580">
 
 </td>
 </tr>
@@ -110,11 +110,11 @@ instructions and full overview of the framework.
 
 <div align="center">
 
-|                                 F1 — Real-time Analytics                                  |                                    F2 — Custom Integrations                                    |
-| :---------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------: |
-| <img src="p2engine/docs/execution-sequence.png" alt="F1 Real-time Analytics" width="320"> |  <img src="p2engine/docs/observability-events.png" alt="F2 Custom Integrations" width="320">   |
-|                               **F3 — Enterprise Security**                                |                                   **F4 — Global Deployment**                                   |
-| <img src="p2engine/docs/orchestration-fsm.png" alt="F3 Enterprise Security" width="320">  | <img src="p2engine/docs/p2engine_transaction_flow.png" alt="F4 Global Deployment" width="320"> |
+|                                                            F1 — Real-time Analytics                                                            |                                                             F2 — Custom Integrations                                                             |
+| :--------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------: |
+| <img src="p2engine/docs/architecture/execution-sequence.png" alt="F1 Real-time Analytics" width="400" height="300" style="object-fit: cover;"> | <img src="p2engine/docs/architecture/observability-events.png" alt="F2 Custom Integrations" width="400" height="300" style="object-fit: cover;"> |
+|                                                          **F3 — Enterprise Security**                                                          |                                                            **F4 — Global Deployment**                                                            |
+| <img src="p2engine/docs/architecture/orchestration-fsm.png" alt="F3 Enterprise Security" width="400" height="300" style="object-fit: cover;">  |    <img src="p2engine/docs/architecture/transaction_flow.png" alt="F4 Global Deployment" width="400" height="300" style="object-fit: cover;">    |
 
 </div>
 

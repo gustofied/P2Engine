@@ -210,9 +210,9 @@ class RealtimeStackMonitor:
                 idx=int(ln.idx),
                 kind=cur_kind,
                 content=getattr(ln, "content", ""),
-                t_step=self.t_anim,
+                t_step=self.frame_idx,  # drive the 'step' sequence with the frame index
             )
-            self.t_anim += self.step_sec * 0.5
+            self.t_anim += self.step_sec * 0.5  # keep for edge animation timing
 
             # Mini state-flow ring: feed transition and render one frame per interaction
             try:
@@ -241,18 +241,19 @@ class RealtimeStackMonitor:
             if positions:
                 rr_viz.log_graph_static(self.rollout_id, positions, meta, edges)
                 
-                # Animate transitions
+                # Animate transitions with discrete step indices
                 events = []
-                for a, b in zip(new_lines[:-1], new_lines[1:]):
+                base_step = max(0, self.frame_idx - len(new_lines))  # align first transition with first processed line
+                for i, (a, b) in enumerate(zip(new_lines[:-1], new_lines[1:])):
                     ka = getattr(a, "kind", "")
                     kb = getattr(b, "kind", "")
                     pos_map = {m["variant"]: positions[i] for i, m in enumerate(meta)}
                     if ka in pos_map and kb in pos_map:
                         events.append({
-                            "t": self.t_anim,
+                            "step": base_step + i,  # prefer discrete step over seconds
                             "variant": variant,
                             "p1": list(pos_map[ka]),
-                            "p2": list(pos_map[kb])
+                            "p2": list(pos_map[kb]),
                         })
                         self.t_anim += self.step_sec
                         

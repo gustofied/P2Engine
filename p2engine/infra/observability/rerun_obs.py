@@ -4,6 +4,7 @@ Zero coupling — silently no-ops if Rerun isn't available.
 
 Adds:
 - set_time_seconds(...) to drive timeline playback.
+- set_time_sequence(...) to use a discrete "sequence" timeline (no 1970!).
 - set_time_frame(...) to use an integer "frame" timeline.
 - points2d(...) with radii/colors/labels.
 - line_strips2d(...) with per-strip colors.
@@ -132,12 +133,24 @@ def abs_path(p: str) -> str:
 # Time helpers — safe no-ops if backend isn't initialized
 # -----------------------------------------------------------------------------
 def set_time_seconds(timeline: str, t: float) -> None:
-    """Set the current time on a named timeline (e.g. 'step')."""
+    """Set the current time on a named timeline (wall/epoch-like)."""
     if not _backend:
         return
     _, rr = _backend
     with contextlib.suppress(Exception):
         rr.set_time_seconds(timeline, float(t))
+
+
+def set_time_sequence(timeline: str, step: int | float) -> None:
+    """
+    Set the current time on a named timeline as a discrete SEQUENCE index.
+    This avoids epoch rendering (no more 1970 for step=0).
+    """
+    if not _backend:
+        return
+    _, rr = _backend
+    with contextlib.suppress(Exception):
+        rr.set_time(timeline, sequence=int(step))
 
 
 def set_time_frame(frame: int | float) -> None:
@@ -270,7 +283,12 @@ def graph(
     with contextlib.suppress(Exception):
         rr.log(_path(origin), rr.GraphNodes(nodes, labels=labels, colors=colors, radii=radii))
         if edges:
-            rr.log(_path(origin), rr.GraphEdges(edges, graph_type=rr.GraphType.Directed if directed else "undirected"))
+            graph_type_enum = getattr(rr, "GraphType", None)
+            if graph_type_enum is not None:
+                gt = graph_type_enum.Directed if directed else getattr(graph_type_enum, "Undirected", "undirected")
+            else:
+                gt = "directed" if directed else "undirected"
+            rr.log(_path(origin), rr.GraphEdges(edges, graph_type=gt))
 
 
 def send_blueprint(blueprint: Any, make_active: bool = True, make_default: bool = False) -> None:

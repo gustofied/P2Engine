@@ -73,6 +73,28 @@ def _rollout_path(rollout_id: str, team: Optional[str] = None, variant: Optional
     return "/".join(parts)
 
 # -----------------------------------------------------------------------------
+# Time helpers
+# -----------------------------------------------------------------------------
+
+def _set_step(step: int | float) -> None:
+    """Set a discrete, scrub-friendly 'step' timeline and mirror to frame index."""
+    s = int(step)
+    # Prefer a true sequence timeline when available (no epoch dates)
+    try:
+        rr.set_time_sequence("step", s)  # newer Rerun builds
+    except Exception:
+        # Fallback to numeric seconds on a 'step' timeline if needed
+        try:
+            rr.set_time_seconds("step", float(s))
+        except Exception:
+            pass
+    # Always mirror onto frame for scrubbable playback
+    try:
+        rr.set_time_frame(s)
+    except Exception:
+        pass
+
+# -----------------------------------------------------------------------------
 # Coloring utilities
 # -----------------------------------------------------------------------------
 
@@ -505,8 +527,6 @@ _STATE_ORDER = [
     "AssistantMessage",
     "ToolCall",
     "ToolResult",
-    "AgentCall",
-    "AgentResult",
     "Waiting",
     "Finished",
 ]
@@ -516,8 +536,6 @@ _STATE_COLORS: Dict[str, List[int]] = {
     "AssistantMessage": [77, 175, 74, 255],
     "ToolCall":         [255, 127, 0, 255],
     "ToolResult":       [152, 78, 163, 255],
-    "AgentCall":        [228, 26, 28, 255],
-    "AgentResult":      [251, 154, 153, 255],
     "Waiting":          [153, 153, 153, 255],
     "Finished":         [166, 86, 40, 255],
 }
@@ -669,7 +687,7 @@ def log_stack_line(
 ) -> None:
     try:
         if t_step is not None:
-            rr.set_time_seconds("step", t_step)
+            _set_step(t_step)
 
         path = f"{_rollout_path(rollout_id)}/stacks/{team_id}/{variant_id}"
         snippet = content if len(content) <= 500 else (content[:497] + "…")
@@ -827,14 +845,15 @@ def log_graph_events(
     rollout_id: str,
     events: List[Dict[str, Any]],
     *,
-    timeline: str = "step",
+    timeline: str = "step",  # kept for backwards compatibility; ignored
 ) -> None:
     try:
         base = f"{_rollout_path(rollout_id)}/graph"
         for ev in events:
-            t = float(ev["t"])
+            # Prefer integer 'step' if present, else fall back to 't'
+            step = int(ev.get("step", ev.get("t", 0)))
             variant = str(ev.get("variant", "?"))
-            rr.set_time_seconds(timeline, t)
+            _set_step(step)
             strips = [[ev["p1"], ev["p2"]]]
             r, g, b, _ = _color_for_variant(variant)
             rr.line_strips2d(f"{base}/playhead_edge", strips, colors=[[r, g, b, 230]])
@@ -979,7 +998,7 @@ def send_rollout_blueprint(
         # --- BOTTOM-RIGHT: CLI metrics ---
         metrics_doc = rrb.TextDocumentView(
             origin=rr.abs_path(f"{_rollout_path(rollout_id)}/reports/metrics_cli"),
-            name="Metrics (CLI)",
+            name="Metrics",
         )
 
         # Whole layout
@@ -987,10 +1006,9 @@ def send_rollout_blueprint(
         bp = rrb.Blueprint(rrb.Horizontal(left, right), collapse_panels=True)
         rr.send_blueprint(bp, make_active=make_active, make_default=make_default)
 
-        # Initialize timelines
+        # Initialize timelines at step/frame 0 (no epoch timestamps)
         try:
-            rr.set_time_seconds("step", 0.0)
-            rr.set_time_frame(0)
+            _set_step(0)
         except Exception:
             pass
 
@@ -1002,3 +1020,5 @@ def send_rollout_blueprint(
 # https://chatgpt.com/share/68a4e0f0-6798-8008-888b-b5c64bc33d6a
 # lage bedre visuals, ellers ser det meste bra ut
 # Få inn frame sequence eller set time så vi kan starte på 0 sekunder?
+
+

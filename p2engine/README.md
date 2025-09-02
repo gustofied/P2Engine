@@ -165,11 +165,12 @@ Then try a few of them out! If you type something incorrectly, the shell will gi
 p2engine▸ help
 p2engine▸ agent list
 p2engine▸ conversation list
-p2engine▸ conversation stack <conversation_name>
+p2engine▸ conversation stack <conversation_name> # see state history, messages, tool-calls ..
+p2engine▸ chat resume <conversation_name> # resume a previous conversation
 p2engine▸ ledger balance agent_alpha
 p2engine▸ rollout start config/demo_rollout.yml
-p2engine▸ exit    # Exit the P2Engine shell entirely
-You: exit         # Exit the current conversation, but stay in the shell
+p2engine▸ exit # Exit the P2Engine shell entirely
+You: exit # Exit the current conversation, but stay in the shell
 ```
 
 #### Rollouts
