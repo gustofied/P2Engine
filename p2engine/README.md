@@ -9,26 +9,26 @@
 - [Ledger Operations](#ledger-operations)
 - [Branching](#branching)
 - [Configuration Overrides](#configuration-overrides)
-- [Logs, Checks, Health of The System](#logs-checks-health-of-the-system)
+- [Health of the System](#health-of-the-system)
 - [Core Modules](#core-modules)
 
 #### Quick Start
 
 ##### Prerequisites
 
-Firts let's make sure we have these
+First let's make sure we have these:
 
 - Python 3.9+
 - Redis
 - Poetry
 - Daml SDK (optional, for ledger features)
-- OpenAI API keyi8
+- OpenAI API key
 
 ##### Installation
 
 Then we clone, install the dependencies and set up the environment variables.
-There are a lot of options here, but it's the OpenAI KEY that is the key;) here
-And if you want ledger on or not.
+There are a lot of options here, but the OpenAI API key is the important one..
+and decide whether you want the ledger enabled (true/false).
 
 ```bash
 # Clone the repository
@@ -48,7 +48,7 @@ cp .env.example .env
 
 ##### Environment Configuration (.env)
 
-The `.env` file contains all critical configuration for the system. Here's a complete guide:
+The `.env` file contains all of the critical configurations for the system. Here's a complete guide:
 
 ```bash
 # Configuration file path (optional - defaults to config/config.json)
@@ -98,7 +98,7 @@ ARTIFACT_DRIVER=fs
 
 ##### Running the System
 
-The **primary way** to run P2Engine is through the run_proejct script:
+The **primary way** to run P2Engine is through the run_project script:
 
 ```bash
 # This single command starts EVERYTHING:
@@ -124,7 +124,7 @@ The **primary way** to run P2Engine is through the run_proejct script:
 6. **Engine**: Starts the main runtime engine
 7. **CLI**: Launches the interactive shell
 
-So yes when the script is ran, we are dropped into the interactive CLI of P2Engine. And it's here we can start playing around.
+So yes, when the script is run, you are dropped into the interactive CLI of P2Engine, where you can start experimenting.
 
 #### Basic Usage
 
@@ -132,35 +132,32 @@ So yes when the script is ran, we are dropped into the interactive CLI of P2Engi
 
 ```bash
 # Start a conversation with an agent
-p2engine chat with agent_alpha
+p2engine▸ chat with agent_alpha
 
 # any agent name works
-p2engine chat with x
+p2engine▸ chat with x
 
 #  Some agents, such as agent_alpha are preconfigured with
 #  personas/tools/temperatures etc which you can define in config/agents.yml
 
 # In the chat:
-You> Hello! What can you do?
-You> Transfer 25 to agent_beta for helping with analysis
-You> What's the weather in Paris?
+You: Hello! What can you do?
+You: Transfer 25 to agent_beta for helping with analysis
+You: What's the weather in Paris?
 ```
 
 ##### Delegation, make use of sub-agents
 
 ```bash
 # Agents can delegate to each other
-You> Delegate to agent_helper: What's the weather in Tokyo?
-You> If they did well, reward them 20 units
+You: Delegate to agent_helper: What's the weather in Tokyo?
+You: If they did well, reward them 20 units
 ```
 
-##### Some example commands in our P2Engine Shell to try
+##### Example Commands to Try in the P2Engine Shell
 
-I recommend to do, help in the CLI, you will get to see all the commands
-Then try some out, it will give feedback if done wrong, and how to do
-correctly:)
-
-examples of commands
+Start by running the help command, it will list all available commands.
+Then try a few of them out! If you type something incorrectly, the shell will give you feedback and show you how to run it correctly.
 
 ```bash
 p2engine▸ help
@@ -173,66 +170,67 @@ p2engine▸ rollout start config/demo_rollout.yml
 
 #### Rollouts
 
-We have rollouts in P2Engine, we can configure teams, agents, variants, the task, what is the eval, the rubric, and who is the judge. P2Engine supports
-dynamic swapping, so we could modify or add new rollouts whilst the P2Engine is running.
+There are rollouts in P2Engine that let you configure teams, agents, task variants, evaluation criteria, rubrics, and the judge. P2Engine also supports dynamic swapping, so you can modify or add new rollouts while the system is running.
 
 ##### Example Learning Configuration
 
 ```yaml
-# config/learning_rollout.yml
 teams:
-  autonomous_team:
-    initial_message: "Solve this complex multi-step problem"
+  joke_story_team:
+    initial_message: >
+      Write a hilarious 10-sentence story describing life on the ISS.
+      Finish with a clever pun as the final sentence.
     base:
       agent_id: agent_alpha
-      model: openai/gpt-4o
-    variants:
-      - tools: ["analyze", "delegate", "verify"]
-        temperature: 0.3
-        search_depth: 10
-      - tools: ["analyze", "delegate", "verify", "learn"]
-        temperature: 0.7
-        search_depth: 20
     eval:
-      evaluator_id: comprehensive_judge
-      metrics: ["correctness", "efficiency", "collaboration"]
-      feedback_loop: true
+      evaluator_id: gpt4_judge
       rubric: |
-        Evaluate based on:
-        - Solution correctness (0.4)
-        - Execution efficiency (0.3)
-        - Effective delegation (0.3)
+        Evaluate humor quality:
+        - Funny? (0.6)
+        - Creative/original? (0.3)
+        - Followed instructions? (0.1)
+      metric: score
+    variants:
+      - id: gpt4o_lowtemp
+        model: openai/gpt-4o
+        temperature: 0.3
+      - id: gpt35_hightemp
+        model: openai/gpt-3.5-turbo
+        temperature: 0.8
 ```
 
 ##### Here are some examples rollouts you could test
 
+> **⚠️ Note:**  
+> The example rollouts below are mainly for showcasing P2Engine’s features (rollouts, ledger transfers, agent interactions), which I needed for my thesis :)  
+> They are not meant as proper A/B experiments or full evaluation runs, but I’ll be adapting them to create more useful trajectories soon, because well that is what rollouts are for.
+
 ```bash
 # Run all example rollouts
-p2engine rollout start config/demo_rollout.yml
-p2engine rollout start config/rollout_task_with_payment.yml
-p2engine rollout start config/rollout_competitive_payment.yml
-p2engine rollout start config/rollout_hierarchical_distribution.yml
+p2engine▸ rollout start config/demo_rollout.yml
+p2engine▸ rollout start config/rollout_task_with_payment.yml
+p2engine▸ rollout start config/rollout_competitive_payment.yml
+p2engine▸ rollout start config/rollout_hierarchical_distribution.yml
 
 # Check results
-# If ledger is on, and rollout has transactions, it's cool to use these, after a run.
-p2engine ledger overview
-p2engine ledger audit
+# If ledger is on, and rollout has transactions, it's cool to use these to inspect after a run.
+p2engine▸ ledger overview
+p2engine▸ ledger audit
 ```
 
 ##### Running Rollouts
 
-The best way to run rollouts is with follow flag, and also if you want
-a new visual i'm working on do --rerun flag :)
+The best way to run rollouts is with the --follow flag. If you want to try a new experimental visualization I'm working on, add --rerun as well :)
 
 ```bash
 # Start a rollout
-p2engine rollout start config/rollout_joke.yml
-p2engine rollout start config/rollout_joke.yml --follow
-p2engine rollout start config/rollout_joke.yml --rerun
-p2engine rollout start config/rollout_joke.yml --rerun --follow
+p2engine▸ rollout start config/rollout_joke.yml
+p2engine▸ rollout start config/rollout_joke.yml --follow
+p2engine▸ rollout start config/rollout_joke.yml --rerun
+p2engine▸ rollout start config/rollout_joke.yml --rerun --follow
 
 # View results
-p2engine eval top <session_id> --metric score
+p2engine▸ eval top <session_id> --metric score
 ```
 
 Rollouts is the key thing I would like to improve on and currently has a lot
@@ -244,7 +242,7 @@ P2Engine includes a pretty proper evaluation framework that is configurable:
 
 ##### Built-in Evaluators
 
-- P2Engine has a **gpt4_judge**: Can use it for general quality evaluation
+- P2Engine has a **gpt4_judge**: Use it for general quality evaluation
 - And custom rubrics for specific use cases
 
 ##### Creating Custom Evaluators
@@ -312,47 +310,48 @@ def search_database(query: str, limit: int = 10) -> dict:
 
 #### Ledger Operations
 
-And yes P2Engine is extended with a full ledger, it uses Canton Network, and DAML as the smart contracting language..
+And yes P2Engine is extended with a full ledger, it uses Canton Network, and DAML as the smart contract language..
 
 ##### Initialize Wallets
 
 ```bash
 # Initialize all agent wallets with starting balance
-p2engine ledger init --balance 100.0
+# This step is handled automatically by run_project.sh
+p2engine▸ ledger init --balance 100.0
 ```
 
 ##### Check Balances
 
 ```bash
 # Check specific agent balance
-p2engine ledger balance agent_alpha
+p2engine▸ ledger balance agent_alpha
 
 # Check system metrics
-p2engine ledger metrics
+p2engine▸ ledger metrics
 
 # View all wallets
-p2engine ledger overview
+p2engine▸ ledger overview
 ```
 
 ##### Transfer Funds
 
 ```bash
 # Direct transfer via CLI
-p2engine ledger transfer agent_alpha agent_beta 25.0 --reason "Payment for services"
+p2engine▸ ledger transfer agent_alpha agent_beta 25.0 --reason "Payment for services"
 
 # Or through agent conversation
-p2engine chat with agent_alpha
-You> Transfer 50 to treasurer for management fees
+p2engine▸ chat with agent_alpha
+You: Transfer 50 to treasurer for management fees
 ```
 
 ##### Transaction History
 
 ```bash
 # View agent's transaction history
-p2engine ledger history agent_alpha --limit 20
+p2engine▸ ledger history agent_alpha --limit 20
 
 # Audit trail for all ledger events
-p2engine ledger audit
+p2engine▸ ledger audit
 ```
 
 #### Branching
@@ -361,31 +360,31 @@ One cool thing about P2Engine is that it supports branching on our conversations
 
 ```bash
 # View conversation branches
-p2engine conversation branches <conversation_name>
+p2engine▸ conversation branches <conversation_name>
 
 # Rewind to a previous state
-p2engine conversation rewind <conversation_name> 10 --branch
+p2engine▸ conversation rewind <conversation_name> 10 --branch
 
 # Checkout a different branch
-p2engine conversation checkout <conversation_name> <branch_id>
+p2engine▸ conversation checkout <conversation_name> <branch_id>
 ```
 
 #### Configuration Overrides
 
-During run we might want to set new personas or tools for an agent, then we can use these commands.
+While P2Engine is running, you can update an agent’s persona or tools using these commands:
 
 ```bash
 # Change agent behavior
-p2engine config set-behavior <conversation> weather_expert
+p2engine▸ config set-behavior <conversation> weather_expert
 
 # Override tools
-p2engine config set-tools <conversation> get_weather,delegate,check_balance
+p2engine▸ config set-tools <conversation> get_weather,delegate,check_balance
 
 # View current overrides
-p2engine config show-overrides <conversation>
+p2engine▸ config show-overrides <conversation>
 ```
 
-#### Logs, Checks, Health of The System
+#### Health of the System
 
 ##### Canton Connection Issues
 
@@ -394,7 +393,7 @@ p2engine config show-overrides <conversation>
 ./scripts/canton-health-check.sh
 
 # Debug ledger connection
-p2engine ledger debug
+p2engine▸ ledger debug
 
 # Restart Canton services
 pkill -f canton
@@ -474,4 +473,3 @@ Here is what you could expect at the different modules
   - Interactive chat system
   - Configuration management
   - Conversation inspection
-  - Rollout execution
