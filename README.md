@@ -22,10 +22,7 @@ instructions and a full overview of the framework.</strong></p>
 
 <div align="center">
 
-<a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener">
-  <img src="demos/rollout_rerun_showcase_4x_short.gif" alt="Rollout with Rerun — Showcase (click for full viewer)" width="960" />
-</a>
-<br />
+
 <em>Click the banner to view the full “Rollout with Rerun” demo on our site.</em>
 
 </div>
