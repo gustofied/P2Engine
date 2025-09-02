@@ -10,7 +10,7 @@ instructions and a full overview of the framework.</strong></p>
 <p align="center">
 <a href="p2engine/">Try it Out</a> •
 <a href="demos/">Demos</a> •
-<a href="https://www.adamsioud.com/projects/p2engine.html" target="_blank" rel="noopener">Article</a> •
+<a href="https://www.adamsioud.com/projects/p2engine.html">Article</a> •
 <a href="#functionalities">Functionalities</a> •
 <a href="#rollout">Rollout</a> •
 <a href="#architectures">Architectures</a> •
@@ -18,46 +18,56 @@ instructions and a full overview of the framework.</strong></p>
 <a href="#future">Future</a>
 </p>
 
+---
+
+<div align="center">
+
+<a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener">
+  <img src="demos/rollout_rerun_showcase_4x_short.gif" alt="Rollout with Rerun — Showcase (click for full viewer)" width="960" />
+</a>
+<br />
+<em>Click the banner to view the full “Rollout with Rerun” demo on our site.</em>
+
+</div>
+
+---
+
 <div align="center">
 
 <table>
 <tr>
 <td align="center" width="50%">
-  <a href="https://www.adamsioud.com/projects/p2engine.html" target="_blank" rel="noopener">
-    <img src="demos/newer/1_delegation_sub_agent_demo_short.gif"
-         alt="E1 — Agent Delegation (click for full)"
-         width="480" height="270" loading="lazy" decoding="async">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e1" target="_blank" rel="noopener">
+    <img src="demos/1_delegation_sub_agent_demo_4x_short.gif"
+         alt="E1 — Agent Delegation (click for full viewer)"
+         width="480" />
   </a><br>
-  <small>5s preview — click for full</small><br>
   <strong>E1 — Agent Delegation</strong>
 </td>
 <td align="center" width="50%">
-  <a href="https://www.adamsioud.com/projects/p2engine.html" target="_blank" rel="noopener">
-    <img src="demos/newer/1_delegation_sub_agent_demo_short.gif"
-         alt="E2 — Branch Rewind (click for full)"
-         width="480" height="270" loading="lazy" decoding="async">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e2" target="_blank" rel="noopener">
+    <img src="demos/2_rewind_branches_demo_4x_short.gif"
+         alt="E2 — Branch Rewind (click for full viewer)"
+         width="480" />
   </a><br>
-  <small>5s preview — click for full</small><br>
   <strong>E2 — Branch Rewind</strong>
 </td>
 </tr>
 <tr>
 <td align="center" width="50%">
-  <a href="https://www.adamsioud.com/projects/p2engine.html" target="_blank" rel="noopener">
-    <img src="demos/newer/1_delegation_sub_agent_demo_short.gif"
-         alt="E3 — Rollout with Rerun (click for full)"
-         width="480" height="270" loading="lazy" decoding="async">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener">
+    <img src="demos/3_rollout_with_rerun_demo_4x_short.gif"
+         alt="E3 — Rollout with Rerun (click for full viewer)"
+         width="480" />
   </a><br>
-  <small>5s preview — click for full</small><br>
   <strong>E3 — Rollout with Rerun</strong>
 </td>
 <td align="center" width="50%">
-  <a href="https://www.adamsioud.com/projects/p2engine.html" target="_blank" rel="noopener">
-    <img src="demos/newer/1_delegation_sub_agent_demo_short.gif"
-         alt="E4 — Ledger Operations (click for full)"
-         width="480" height="270" loading="lazy" decoding="async">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e4" target="_blank" rel="noopener">
+    <img src="demos/4_ledger_demo_4x.gif"
+         alt="E4 — Ledger Operations (click for full viewer)"
+         width="480" />
   </a><br>
-  <small>5s preview — click for full</small><br>
   <strong>E4 — Ledger Operations</strong>
 </td>
 </tr>
@@ -72,6 +82,8 @@ instructions and a full overview of the framework.</strong></p>
 [**View Extended Features →**](#extended-features)
 
 </div>
+
+---
 
 <h2 align="center" id="rollout">Rollout</h2>
 
@@ -98,12 +110,12 @@ instructions and a full overview of the framework.</strong></p>
 </td>
 <td width="50%" align="center">
 
-<a href="https://www.adamsioud.com/projects/p2engine.html" target="_blank" rel="noopener">
-  <img src="demos/newer/1_delegation_sub_agent_demo_short.gif"
-       alt="Global Rollout Demo (click for full)"
-       width="480" height="270" loading="lazy" decoding="async">
+<a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener">
+  <img src="demos/3_rollout_with_rerun_demo_4x_short.gif"
+       alt="Global Rollout Demo (click for full viewer)"
+       width="480" />
 </a>
-<br><em>Global Rollout Demo — 5s preview</em>
+<br><em>Global Rollout Demo — click to open full viewer</em>
 
 </td>
 </tr>
@@ -151,13 +163,15 @@ instructions and a full overview of the framework.</strong></p>
 
 <div align="center">
 
-|                                                              F1 — Real-time Analytics                                                               |                                                               F2 — Custom Integrations                                                                |
-| :-------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------: |
-| <img src="p2engine/docs/architecture/execution-sequence.png" alt="F1 Real-time Analytics" width="400" height="300" loading="lazy" decoding="async"> | <img src="p2engine/docs/architecture/observability-events.png" alt="F2 Custom Integrations" width="400" height="300" loading="lazy" decoding="async"> |
-|                                                            **F3 — Enterprise Security**                                                             |                                                              **F4 — Global Deployment**                                                               |
-| <img src="p2engine/docs/architecture/orchestration-fsm.png" alt="F3 Enterprise Security" width="400" height="300" loading="lazy" decoding="async">  |    <img src="p2engine/docs/architecture/transaction_flow.png" alt="F4 Global Deployment" width="400" height="300" loading="lazy" decoding="async">    |
+|                                              F1 — Real-time Analytics                                               |                                               F2 — Custom Integrations                                                |
+| :-----------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------: |
+| <img src="p2engine/docs/architecture/execution-sequence.png" alt="F1 Real-time Analytics" width="400" height="300"> | <img src="p2engine/docs/architecture/observability-events.png" alt="F2 Custom Integrations" width="400" height="300"> |
+|                                            **F3 — Enterprise Security**                                             |                                              **F4 — Global Deployment**                                               |
+| <img src="p2engine/docs/architecture/orchestration-fsm.png" alt="F3 Enterprise Security" width="400" height="300">  |    <img src="p2engine/docs/architecture/transaction_flow.png" alt="F4 Global Deployment" width="400" height="300">    |
 
 </div>
+
+---
 
 <h2 align="center" id="architectures">Architectures</h2>
 
