@@ -425,7 +425,7 @@ tail -f logs/canton/*.log
 
 #### Core Modules
 
-Here is what you could expect at the different modules
+Here is what you could expect at the different modules:
 
 - **[`/agents`](./agents/README.md)** - Agent implementations and framework
 
