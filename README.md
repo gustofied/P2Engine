@@ -108,7 +108,7 @@ instructions and a full overview of the framework.</strong></p>
 <td width="50%" align="center">
 
 <a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener">
-  <img src="demos/3_rollout_with_rerun_demo_4x_short.gif"
+  <img src="demos/rollout_rerun_showcase_4x_short.gif"
        alt="Global Rollout Demo (click for full viewer)"
        width="480" />
 </a>
