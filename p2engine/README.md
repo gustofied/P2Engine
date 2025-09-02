@@ -166,7 +166,8 @@ p2engine▸ conversation list
 p2engine▸ conversation stack <conversation_name>
 p2engine▸ ledger balance agent_alpha
 p2engine▸ rollout start config/demo_rollout.yml
-p2engine▸ exit # use exit to exit a conversation, and to exit P2Engine
+p2engine▸ exit    # Exit the P2Engine shell entirely
+You: exit         # Exit the current conversation, but stay in the shell
 ```
 
 #### Rollouts
