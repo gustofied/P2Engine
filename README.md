@@ -2,15 +2,14 @@
 
 <p align="center"><strong>A framework + runtime to build, run, and evaluate multi-agent systems. Extended with the Canton Network to enable monetary incentives, payments, and audits.</strong></p>
 
-<p align="center"><strong>The primary entry point is p2engine/README.md, which offers setup
-instructions and full overview of the framework.
-</strong></p>
+<p align="center"><strong>The primary entry point is <code>p2engine/README.md</code>, which offers setup
+instructions and a full overview of the framework.</strong></p>
 
 <p align="center">Orchestrate many AI agents with <em>observable</em> workflows, <em>adaptive</em> evaluation loops, and an <em>auditable</em> trail.</p>
 
 <p align="center">
-<a href="/p2engine/">Try it Out</a> •
-<a href="/demos">Demos</a> •
+<a href="p2engine/">Try it Out</a> •
+<a href="demos/">Demos</a> •
 <a href="https://www.adamsioud.com/projects/p2engine.html">Article</a> •
 <a href="#functionalities">Functionalities</a> •
 <a href="#rollout">Rollout</a> •
@@ -21,11 +20,32 @@ instructions and full overview of the framework.
 
 <div align="center">
 
-|                                                          E1 — Agent Delegation                                                           |                                                        E2 — Branch Rewind                                                        |
-| :--------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------: |
-| <img src="demos/newer/1_delegation_sub_agent_demo_4x.gif" alt="E1 Agent Delegation" width="480" height="270" style="object-fit: cover;"> | <img src="demos/newer/2_rewind_branches_demo_4x.gif" alt="E2 Branch Rewind" width="480" height="270" style="object-fit: cover;"> |
-|                                                       **E3 — Rollout with Rerun**                                                        |                                                    **E4 — Ledger Operations**                                                    |
-| <img src="demos/newer/3_rollout_with_rerun_demo_4x.gif" alt="E3 Rollout with Rerun" width="480" height="270" style="object-fit: cover;"> |    <img src="demos/newer/4_ledge_demo_4x.gif" alt="E4 Ledger Operations" width="480" height="270" style="object-fit: cover;">    |
+<table>
+<tr>
+<td align="center" width="50%">
+<video width="480" height="270" controls muted playsinline loop preload="none"
+       src="demos/newer/1_delegation_sub_agent_demo_4x.mp4"></video><br>
+<strong>E1 — Agent Delegation</strong>
+</td>
+<td align="center" width="50%">
+<video width="480" height="270" controls muted playsinline loop preload="none"
+       src="demos/newer/2_rewind_branches_demo_4x.mp4"></video><br>
+<strong>E2 — Branch Rewind</strong>
+</td>
+</tr>
+<tr>
+<td align="center" width="50%">
+<video width="480" height="270" controls muted playsinline loop preload="none"
+       src="demos/newer/3_rollout_with_rerun_demo_4x.mp4"></video><br>
+<strong>E3 — Rollout with Rerun</strong>
+</td>
+<td align="center" width="50%">
+<video width="480" height="270" controls muted playsinline loop preload="none"
+       src="demos/newer/4_ledge_demo_4x.mp4"></video><br>
+<strong>E4 — Ledger Operations</strong>
+</td>
+</tr>
+</table>
 
 </div>
 
@@ -37,7 +57,7 @@ instructions and full overview of the framework.
 
 </div>
 
-<h2 align="center">Rollout</h2>
+<h2 align="center" id="rollout">Rollout</h2>
 
 <div align="center">
 
@@ -47,7 +67,7 @@ instructions and full overview of the framework.
 <tr>
 <td width="50%" valign="middle">
 
-**Experience seamless deployment across multiple environments with our comprehensive rollout strategy. From local development to enterprise-scale production.**
+**Experience seamless deployment across multiple environments with our comprehensive rollout strategy—from local development to enterprise-scale production.**
 
 **Multi-Environment Support** — Development, staging, and production deployments with consistent configuration management across all environments.
 
@@ -62,7 +82,9 @@ instructions and full overview of the framework.
 </td>
 <td width="50%" align="center">
 
-<img src="demos/newer/rollout_rerun_showcase_4x.gif" alt="Global Rollout Demo" width="480" height="580">
+<video width="480" height="580" controls muted playsinline loop preload="none"
+       src="demos/newer/rollout_rerun_4x.mp4"></video>
+<br><em>Global Rollout Demo</em>
 
 </td>
 </tr>
@@ -72,7 +94,7 @@ instructions and full overview of the framework.
 
 ---
 
-<h2 align="center">Functionalities</h2>
+<h2 align="center" id="functionalities">Functionalities</h2>
 
 <div align="center">
 
@@ -110,15 +132,15 @@ instructions and full overview of the framework.
 
 <div align="center">
 
-|                                                            F1 — Real-time Analytics                                                            |                                                             F2 — Custom Integrations                                                             |
-| :--------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------: |
-| <img src="p2engine/docs/architecture/execution-sequence.png" alt="F1 Real-time Analytics" width="400" height="300" style="object-fit: cover;"> | <img src="p2engine/docs/architecture/observability-events.png" alt="F2 Custom Integrations" width="400" height="300" style="object-fit: cover;"> |
-|                                                          **F3 — Enterprise Security**                                                          |                                                            **F4 — Global Deployment**                                                            |
-| <img src="p2engine/docs/architecture/orchestration-fsm.png" alt="F3 Enterprise Security" width="400" height="300" style="object-fit: cover;">  |    <img src="p2engine/docs/architecture/transaction_flow.png" alt="F4 Global Deployment" width="400" height="300" style="object-fit: cover;">    |
+|                                                              F1 — Real-time Analytics                                                               |                                                               F2 — Custom Integrations                                                                |
+| :-------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------: |
+| <img src="p2engine/docs/architecture/execution-sequence.png" alt="F1 Real-time Analytics" width="400" height="300" loading="lazy" decoding="async"> | <img src="p2engine/docs/architecture/observability-events.png" alt="F2 Custom Integrations" width="400" height="300" loading="lazy" decoding="async"> |
+|                                                            **F3 — Enterprise Security**                                                             |                                                              **F4 — Global Deployment**                                                               |
+| <img src="p2engine/docs/architecture/orchestration-fsm.png" alt="F3 Enterprise Security" width="400" height="300" loading="lazy" decoding="async">  |    <img src="p2engine/docs/architecture/transaction_flow.png" alt="F4 Global Deployment" width="400" height="300" loading="lazy" decoding="async">    |
 
 </div>
 
-<h2 align="center">Architectures</h2>
+<h2 align="center" id="architectures">Architectures</h2>
 
 <div align="center">
 
@@ -154,7 +176,7 @@ instructions and full overview of the framework.
 
 ---
 
-<h2 align="center">Hello</h2>
+<h2 align="center" id="hello">Hello</h2>
 
 <div align="center">
 
@@ -192,7 +214,7 @@ Built for researchers, developers, and enterprises who need to coordinate comple
 
 ---
 
-<h2 align="center">Future</h2>
+<h2 align="center" id="future">Future</h2>
 
 <div align="center">
 
@@ -215,10 +237,10 @@ _Join us in shaping the future of multi-agent systems._
 </td>
 <td width="50%" align="center">
 
-Like a list like this and people could easy get into things! Evals nice wording
+Like a list like this and people could easily get into things! Evals nice wording
 
 - [Quick Start](#quick-start)
-- [What run_project.sh does](#what-run_projectsh-does)
+- [What <code>run_project.sh</code> does](#what-run_projectsh-does)
 - [Basic Usage](#basic-usage)
 - [Rollouts](#rollouts)
 - [Evals](#evals)
@@ -242,6 +264,6 @@ Like a list like this and people could easy get into things! Evals nice wording
 
 **Ready to get started?**
 
-[**Documentation**](/docs) • [**API Reference**](/api) • [**Community**](/community) • [**Support**](/support)
+[**Documentation**](docs/) • [**API Reference**](api/) • [**Community**](community/) • [**Support**](support/)
 
 </div>
