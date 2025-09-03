@@ -24,62 +24,43 @@ instructions and a full overview of the framework.</strong></p>
 
 <table>
 <tr>
-<td align="center" width="50%" style="vertical-align:top;">
-  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e1" target="_blank" rel="noopener" style="text-decoration:none;">
-    <div style="width:320px;height:180px;overflow:hidden;border-radius:8px;
-                background:#000 url('demos/thumbs/1_delegation_sub_agent_demo_4x_short_thumb_480.jpg') center/cover no-repeat;
-                margin:0 auto;">
-      <img src="demos/1_delegation_sub_agent_demo_4x_short.gif"
-           alt="E1 — Agent Delegation (click for full viewer)"
-           loading="lazy" decoding="async"
-           style="width:100%;height:100%;display:block;object-fit:cover;">
-    </div>
-  </a>
-  <br><strong>E1 — Agent Delegation</strong>
+<td align="center" width="50%" valign="top">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e1" target="_blank" rel="noopener">
+    <img
+      src="demos/1_delegation_sub_agent_demo_4x_short.gif"
+      alt="E1 — Agent Delegation (click for full viewer)"
+      width="320" height="180" loading="lazy" decoding="async">
+  </a><br>
+  <strong>E1 — Agent Delegation</strong>
 </td>
-
-<td align="center" width="50%" style="vertical-align:top;">
-  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e2" target="_blank" rel="noopener" style="text-decoration:none;">
-    <div style="width:320px;height:180px;overflow:hidden;border-radius:8px;
-                background:#000 url('demos/thumbs/2_rewind_branches_demo_4x_short_thumb_480.jpg') center/cover no-repeat;
-                margin:0 auto;">
-      <img src="demos/2_rewind_branches_demo_4x_short.gif"
-           alt="E2 — Branch Rewind (click for full viewer)"
-           loading="lazy" decoding="async"
-           style="width:100%;height:100%;display:block;object-fit:cover;">
-    </div>
-  </a>
-  <br><strong>E2 — Branch Rewind</strong>
+<td align="center" width="50%" valign="top">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e2" target="_blank" rel="noopener">
+    <img
+      src="demos/2_rewind_branches_demo_4x_short.gif"
+      alt="E2 — Branch Rewind (click for full viewer)"
+      width="320" height="180" loading="lazy" decoding="async">
+  </a><br>
+  <strong>E2 — Branch Rewind</strong>
 </td>
 </tr>
-
 <tr>
-<td align="center" width="50%" style="vertical-align:top;">
-  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener" style="text-decoration:none;">
-    <div style="width:320px;height:180px;overflow:hidden;border-radius:8px;
-                background:#000 url('demos/thumbs/3_rollout_with_rerun_demo_4x_short_thumb_480.jpg') center/cover no-repeat;
-                margin:0 auto;">
-      <img src="demos/3_rollout_with_rerun_demo_4x_short.gif"
-           alt="E3 — Rollout with Rerun (click for full viewer)"
-           loading="lazy" decoding="async"
-           style="width:100%;height:100%;display:block;object-fit:cover;">
-    </div>
-  </a>
-  <br><strong>E3 — Rollout with Rerun</strong>
+<td align="center" width="50%" valign="top">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener">
+    <img
+      src="demos/3_rollout_with_rerun_demo_4x_short.gif"
+      alt="E3 — Rollout with Rerun (click for full viewer)"
+      width="320" height="180" loading="lazy" decoding="async">
+  </a><br>
+  <strong>E3 — Rollout with Rerun</strong>
 </td>
-
-<td align="center" width="50%" style="vertical-align:top;">
-  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e4" target="_blank" rel="noopener" style="text-decoration:none;">
-    <div style="width:320px;height:180px;overflow:hidden;border-radius:8px;
-                background:#000 url('demos/thumbs/4_ledger_demo_4x_thumb_480.jpg') center/cover no-repeat;
-                margin:0 auto;">
-      <img src="demos/4_ledger_demo_4x.gif"
-           alt="E4 — Ledger Operations (click for full viewer)"
-           loading="lazy" decoding="async"
-           style="width:100%;height:100%;display:block;object-fit:cover;">
-    </div>
-  </a>
-  <br><strong>E4 — Ledger Operations</strong>
+<td align="center" width="50%" valign="top">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e4" target="_blank" rel="noopener">
+    <img
+      src="demos/4_ledger_demo_4x.gif"
+      alt="E4 — Ledger Operations (click for full viewer)"
+      width="320" height="180" loading="lazy" decoding="async">
+  </a><br>
+  <strong>E4 — Ledger Operations</strong>
 </td>
 </tr>
 </table>
@@ -88,9 +69,10 @@ instructions and a full overview of the framework.</strong></p>
 
 <div align="center">
 
-**Explore advanced capabilities and enterprise features with our extended suite.**
+<strong>Explore advanced capabilities and enterprise features with our extended suite.</strong>
 
-[**View Extended Features →**](#extended-features)
+<br><br>
+<a href="#extended-features"><strong>View Extended Features →</strong></a>
 
 </div>
 
@@ -100,39 +82,33 @@ instructions and a full overview of the framework.</strong></p>
 
 <div align="center">
 
-### Global Rollout Strategy
+<h3>Global Rollout Strategy</h3>
 
 <table width="100%">
 <tr>
 <td width="50%" valign="middle">
 
-**Experience seamless deployment across multiple environments with our comprehensive rollout strategy—from local development to enterprise-scale production.**
+<p><strong>Experience seamless deployment across multiple environments with our comprehensive rollout strategy—from local development to enterprise-scale production.</strong></p>
 
-**Multi-Environment Support** — Development, staging, and production deployments with consistent configuration management across all environments.
+<p><strong>Multi-Environment Support</strong> — Development, staging, and production deployments with consistent configuration management across all environments.</p>
 
-**Scalable Infrastructure** — Auto-scaling based on demand with intelligent load distribution and resource optimization.
+<p><strong>Scalable Infrastructure</strong> — Auto-scaling based on demand with intelligent load distribution and resource optimization.</p>
 
-**Global Distribution** — Edge computing and regional deployment options for reduced latency and improved performance worldwide.
+<p><strong>Global Distribution</strong> — Edge computing and regional deployment options for reduced latency and improved performance worldwide.</p>
 
-**Enterprise Integration** — Seamless connection with existing enterprise systems through standardized APIs and protocols.
+<p><strong>Enterprise Integration</strong> — Seamless connection with existing enterprise systems through standardized APIs and protocols.</p>
 
-[**Learn More About Deployment →**](#deployment)
+<p><a href="#deployment"><strong>Learn More About Deployment →</strong></a></p>
 
 </td>
 <td width="50%" align="center">
-
-<a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener" style="text-decoration:none;">
-  <div style="width:320px;height:320px;overflow:hidden;border-radius:8px;
-              background:#000 url('demos/thumbs/rollout_rerun_showcase_4x_short_thumb_480.jpg') center/cover no-repeat;
-              margin:0 auto;">
-    <img src="demos/rollout_rerun_showcase_4x_short.gif"
-         alt="Rerun Showcase — click for full viewer"
-         loading="lazy" decoding="async"
-         style="width:100%;height:100%;display:block;object-fit:cover;">
-  </div>
-</a>
-<br><em>Rerun Showcase — click to open full viewer</em>
-
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener">
+    <img
+      src="demos/rollout_rerun_showcase_4x_short.gif"
+      alt="Rerun Showcase — click for full viewer"
+      width="320" height="180" loading="lazy" decoding="async">
+  </a>
+  <br><em>Rerun Showcase — click to open full viewer</em>
 </td>
 </tr>
 </table>
@@ -149,25 +125,27 @@ instructions and a full overview of the framework.</strong></p>
 <tr>
 <td width="50%" valign="middle">
 
-### Core Platform Features
+<h3>Core Platform Features</h3>
 
-**Multi-Agent Orchestration** — Coordinate complex workflows across multiple AI agents with dynamic task allocation and load balancing for real-time agent communication and collaboration.
+<p><strong>Multi-Agent Orchestration</strong> — Coordinate complex workflows across multiple AI agents with dynamic task allocation and load balancing for real-time agent communication and collaboration.</p>
 
-**Observable Operations** — Comprehensive monitoring dashboards provide real-time performance metrics and debugging capabilities to trace agent decision paths.
+<p><strong>Observable Operations</strong> — Comprehensive monitoring dashboards provide real-time performance metrics and debugging capabilities to trace agent decision paths.</p>
 
-**Adaptive Learning** — Continuous improvement through feedback loops, performance optimization algorithms, and automated model fine-tuning.
+<p><strong>Adaptive Learning</strong> — Continuous improvement through feedback loops, performance optimization algorithms, and automated model fine-tuning.</p>
 
-**Audit & Compliance** — Complete transaction logging with Canton Network integration for financial transparency and regulatory compliance reporting.
+<p><strong>Audit & Compliance</strong> — Complete transaction logging with Canton Network integration for financial transparency and regulatory compliance reporting.</p>
 
 </td>
 <td width="50%" align="center">
 
-- **Real-time Monitoring** — Live agent performance tracking
-- **Dynamic Scaling** — Auto-adjustment based on workload
-- **Cross-Platform Support** — Works across all major platforms
-- **Plugin Architecture** — Extensible agent development framework
-- **Smart Contracts** — Automated payment and incentive systems
-- **Enterprise Ready** — Production-grade security and reliability
+<ul>
+<li><strong>Real-time Monitoring</strong> — Live agent performance tracking</li>
+<li><strong>Dynamic Scaling</strong> — Auto-adjustment based on workload</li>
+<li><strong>Cross-Platform Support</strong> — Works across all major platforms</li>
+<li><strong>Plugin Architecture</strong> — Extensible agent development framework</li>
+<li><strong>Smart Contracts</strong> — Automated payment and incentive systems</li>
+<li><strong>Enterprise Ready</strong> — Production-grade security and reliability</li>
+</ul>
 
 </td>
 </tr>
@@ -179,11 +157,28 @@ instructions and a full overview of the framework.</strong></p>
 
 <div align="center">
 
-|                                              F1 — Real-time Analytics                                               |                                               F2 — Custom Integrations                                                |
-| :-----------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------: |
-| <img src="p2engine/docs/architecture/execution-sequence.png" alt="F1 Real-time Analytics" width="400" height="300"> | <img src="p2engine/docs/architecture/observability-events.png" alt="F2 Custom Integrations" width="400" height="300"> |
-|                                            **F3 — Enterprise Security**                                             |                                              **F4 — Global Deployment**                                               |
-| <img src="p2engine/docs/architecture/orchestration-fsm.png" alt="F3 Enterprise Security" width="400" height="300">  |    <img src="p2engine/docs/architecture/transaction_flow.png" alt="F4 Global Deployment" width="400" height="300">    |
+<table>
+<tr>
+<td align="center" width="50%">
+  <img src="p2engine/docs/architecture/execution-sequence.png" alt="F1 Real-time Analytics" width="400" height="300"><br>
+  <strong>F1 — Real-time Analytics</strong>
+</td>
+<td align="center" width="50%">
+  <img src="p2engine/docs/architecture/observability-events.png" alt="F2 Custom Integrations" width="400" height="300"><br>
+  <strong>F2 — Custom Integrations</strong>
+</td>
+</tr>
+<tr>
+<td align="center" width="50%">
+  <img src="p2engine/docs/architecture/orchestration-fsm.png" alt="F3 Enterprise Security" width="400" height="300"><br>
+  <strong>F3 — Enterprise Security</strong>
+</td>
+<td align="center" width="50%">
+  <img src="p2engine/docs/architecture/transaction_flow.png" alt="F4 Global Deployment" width="400" height="300"><br>
+  <strong>F4 — Global Deployment</strong>
+</td>
+</tr>
+</table>
 
 </div>
 
@@ -197,25 +192,27 @@ instructions and a full overview of the framework.</strong></p>
 <tr>
 <td width="50%" valign="middle">
 
-### System Architecture Overview
+<h3>System Architecture Overview</h3>
 
-**Distributed Computing Layer** — Microservices-based architecture with container orchestration using Kubernetes for auto-scaling and load distribution.
+<p><strong>Distributed Computing Layer</strong> — Microservices-based architecture with container orchestration using Kubernetes for auto-scaling and load distribution.</p>
 
-**AI Agent Framework** — Plugin-based agent development with multi-modal agent support and cross-platform compatibility for maximum flexibility.
+<p><strong>AI Agent Framework</strong> — Plugin-based agent development with multi-modal agent support and cross-platform compatibility for maximum flexibility.</p>
 
-**Blockchain Integration** — Canton Network integration for financial operations, smart contract templates, and decentralized identity management.
+<p><strong>Blockchain Integration</strong> — Canton Network integration for financial operations, smart contract templates, and decentralized identity management.</p>
 
-**Data & Analytics** — Real-time data processing with advanced analytics, reporting capabilities, and machine learning pipeline integration.
+<p><strong>Data & Analytics</strong> — Real-time data processing with advanced analytics, reporting capabilities, and machine learning pipeline integration.</p>
 
 </td>
 <td width="50%" align="center">
 
-- **Microservices Architecture** — Scalable and maintainable design
-- **Container Orchestration** — Kubernetes-based deployment
-- **API-First Design** — RESTful and GraphQL endpoints
-- **Event-Driven Architecture** — Real-time event processing
-- **Security by Design** — Built-in security at every layer
-- **Cloud Native** — Optimized for modern cloud platforms
+<ul>
+<li><strong>Microservices Architecture</strong> — Scalable and maintainable design</li>
+<li><strong>Container Orchestration</strong> — Kubernetes-based deployment</li>
+<li><strong>API-First Design</strong> — RESTful and GraphQL endpoints</li>
+<li><strong>Event-Driven Architecture</strong> — Real-time event processing</li>
+<li><strong>Security by Design</strong> — Built-in security at every layer</li>
+<li><strong>Cloud Native</strong> — Optimized for modern cloud platforms</li>
+</ul>
 
 </td>
 </tr>
@@ -233,27 +230,29 @@ instructions and a full overview of the framework.</strong></p>
 <tr>
 <td width="50%" valign="middle">
 
-### What P2Engine Does
+<h3>What P2Engine Does</h3>
 
-P2Engine represents a new paradigm in multi-agent orchestration, combining the power of distributed AI systems with the transparency and auditability of blockchain technology.
+<p>P2Engine represents a new paradigm in multi-agent orchestration, combining the power of distributed AI systems with the transparency and auditability of blockchain technology.</p>
 
-Built for researchers, developers, and enterprises who need to coordinate complex AI workflows while maintaining full visibility into agent interactions, decision-making processes, and resource allocation.
+<p>Built for researchers, developers, and enterprises who need to coordinate complex AI workflows while maintaining full visibility into agent interactions, decision-making processes, and resource allocation.</p>
 
-**Observable Workflows** — Real-time monitoring and debugging of agent interactions with complete visibility into decision-making processes.
+<p><strong>Observable Workflows</strong> — Real-time monitoring and debugging of agent interactions with complete visibility into decision-making processes.</p>
 
-**Adaptive Evaluation** — Continuous learning and optimization loops that improve system performance over time.
+<p><strong>Adaptive Evaluation</strong> — Continuous learning and optimization loops that improve system performance over time.</p>
 
-**Auditable Trail** — Complete transaction history with Canton Network integration for transparency and compliance.
+<p><strong>Auditable Trail</strong> — Complete transaction history with Canton Network integration for transparency and compliance.</p>
 
 </td>
 <td width="50%" align="center">
 
-- **Research-Grade Precision** — Built for academic and industrial research
-- **Developer-Friendly** — Intuitive APIs and comprehensive documentation
-- **Enterprise Security** — SOC2 compliant with advanced encryption
-- **Scalable Architecture** — From prototype to production-ready deployments
-- **Real-time Analytics** — Live performance monitoring and insights
-- **Global Community** — Supported by researchers and developers worldwide
+<ul>
+<li><strong>Research-Grade Precision</strong> — Built for academic and industrial research</li>
+<li><strong>Developer-Friendly</strong> — Intuitive APIs and comprehensive documentation</li>
+<li><strong>Enterprise Security</strong> — SOC2 compliant with advanced encryption</li>
+<li><strong>Scalable Architecture</strong> — From prototype to production-ready deployments</li>
+<li><strong>Real-time Analytics</strong> — Live performance monitoring and insights</li>
+<li><strong>Global Community</strong> — Supported by researchers and developers worldwide</li>
+</ul>
 
 </td>
 </tr>
@@ -271,35 +270,35 @@ Built for researchers, developers, and enterprises who need to coordinate comple
 <tr>
 <td width="50%" valign="middle">
 
-### Roadmap & Vision
+<h3>Roadmap & Vision</h3>
 
-P2Engine is evolving toward a comprehensive ecosystem for autonomous agent collaboration. Our upcoming developments focus on enhanced interoperability, advanced reasoning capabilities, and seamless integration with existing enterprise systems.
+<p>P2Engine is evolving toward a comprehensive ecosystem for autonomous agent collaboration. Our upcoming developments focus on enhanced interoperability, advanced reasoning capabilities, and seamless integration with existing enterprise systems.</p>
 
-**Advanced Reasoning Modules** — Next-generation AI capabilities with multi-modal agent support and enhanced decision-making frameworks.
+<p><strong>Advanced Reasoning Modules</strong> — Next-generation AI capabilities with multi-modal agent support and enhanced decision-making frameworks.</p>
 
-**Enhanced Canton Network Integration** — Smart contract templates and improved blockchain integration for seamless financial operations.
+<p><strong>Enhanced Canton Network Integration</strong> — Smart contract templates and improved blockchain integration for seamless financial operations.</p>
 
-**Enterprise-Grade Security** — Advanced compliance frameworks and security features designed for mission-critical applications.
+<p><strong>Enterprise-Grade Security</strong> — Advanced compliance frameworks and security features designed for mission-critical applications.</p>
 
-_Join us in shaping the future of multi-agent systems._
+<p><em>Join us in shaping the future of multi-agent systems.</em></p>
 
 </td>
 <td width="50%" align="center">
 
-Like a list like this and people could easily get into things! Evals nice wording
-
-- [Quick Start](#quick-start)
-- [What <code>run_project.sh</code> does](#what-run_projectsh-does)
-- [Basic Usage](#basic-usage)
-- [Rollouts](#rollouts)
-- [Evals](#evals)
-- [Agents](#agents-configagentsyml)
-- [Tools](#tools)
-- [Ledger Operations](#ledger-operations)
-- [Branching](#branching)
-- [Configuration Overrides](#configuration-overrides)
-- [Logs, Checks, Health of The System](#logs-checks-health-of-the-system)
-- [Core Modules](#core-modules)
+<ul>
+<li><a href="#quick-start">Quick Start</a></li>
+<li><a href="#what-run_projectsh-does">What <code>run_project.sh</code> does</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#rollouts">Rollouts</a></li>
+<li><a href="#evals">Evals</a></li>
+<li><a href="#agents-configagentsyml">Agents</a></li>
+<li><a href="#tools">Tools</a></li>
+<li><a href="#ledger-operations">Ledger Operations</a></li>
+<li><a href="#branching">Branching</a></li>
+<li><a href="#configuration-overrides">Configuration Overrides</a></li>
+<li><a href="#logs-checks-health-of-the-system">Logs, Checks, Health of The System</a></li>
+<li><a href="#core-modules">Core Modules</a></li>
+</ul>
 
 </td>
 </tr>
@@ -311,8 +310,7 @@ Like a list like this and people could easily get into things! Evals nice wordin
 
 <div align="center">
 
-**Ready to get started?**
-
-[**Documentation**](docs/) • [**API Reference**](api/) • [**Community**](community/) • [**Support**](support/)
+<strong>Ready to get started?</strong><br><br>
+<a href="docs/">Documentation</a> • <a href="api/">API Reference</a> • <a href="community/">Community</a> • <a href="support/">Support</a>
 
 </div>
