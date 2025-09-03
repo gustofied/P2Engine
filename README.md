@@ -24,59 +24,62 @@ instructions and a full overview of the framework.</strong></p>
 
 <table>
 <tr>
-<td align="center" width="50%">
-  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e1" target="_blank" rel="noopener">
-    <img
-      src="demos/1_delegation_sub_agent_demo_4x_short.gif"
-      alt="E1 — Agent Delegation (click for full viewer)"
-      width="360" height="203"
-      loading="lazy" decoding="async"
-      style="display:block;border-radius:8px;
-             background:#000 url('demos/thumbs/1_delegation_sub_agent_demo_4x_short_thumb_480.jpg')
-             center/cover no-repeat;max-width:100%;">
-  </a><br>
-  <strong>E1 — Agent Delegation</strong>
+<td align="center" width="50%" style="vertical-align:top;">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e1" target="_blank" rel="noopener" style="text-decoration:none;">
+    <div style="width:320px;height:180px;overflow:hidden;border-radius:8px;
+                background:#000 url('demos/thumbs/1_delegation_sub_agent_demo_4x_short_thumb_480.jpg') center/cover no-repeat;
+                margin:0 auto;">
+      <img src="demos/1_delegation_sub_agent_demo_4x_short.gif"
+           alt="E1 — Agent Delegation (click for full viewer)"
+           loading="lazy" decoding="async"
+           style="width:100%;height:100%;display:block;object-fit:cover;">
+    </div>
+  </a>
+  <br><strong>E1 — Agent Delegation</strong>
 </td>
-<td align="center" width="50%">
-  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e2" target="_blank" rel="noopener">
-    <img
-      src="demos/2_rewind_branches_demo_4x_short.gif"
-      alt="E2 — Branch Rewind (click for full viewer)"
-      width="360" height="203"
-      loading="lazy" decoding="async"
-      style="display:block;border-radius:8px;
-             background:#000 url('demos/thumbs/2_rewind_branches_demo_4x_short_thumb_480.jpg')
-             center/cover no-repeat;max-width:100%;">
-  </a><br>
-  <strong>E2 — Branch Rewind</strong>
+
+<td align="center" width="50%" style="vertical-align:top;">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e2" target="_blank" rel="noopener" style="text-decoration:none;">
+    <div style="width:320px;height:180px;overflow:hidden;border-radius:8px;
+                background:#000 url('demos/thumbs/2_rewind_branches_demo_4x_short_thumb_480.jpg') center/cover no-repeat;
+                margin:0 auto;">
+      <img src="demos/2_rewind_branches_demo_4x_short.gif"
+           alt="E2 — Branch Rewind (click for full viewer)"
+           loading="lazy" decoding="async"
+           style="width:100%;height:100%;display:block;object-fit:cover;">
+    </div>
+  </a>
+  <br><strong>E2 — Branch Rewind</strong>
 </td>
 </tr>
+
 <tr>
-<td align="center" width="50%">
-  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener">
-    <img
-      src="demos/3_rollout_with_rerun_demo_4x_short.gif"
-      alt="E3 — Rollout with Rerun (click for full viewer)"
-      width="360" height="203"
-      loading="lazy" decoding="async"
-      style="display:block;border-radius:8px;
-             background:#000 url('demos/thumbs/3_rollout_with_rerun_demo_4x_short_thumb_480.jpg')
-             center/cover no-repeat;max-width:100%;">
-  </a><br>
-  <strong>E3 — Rollout with Rerun</strong>
+<td align="center" width="50%" style="vertical-align:top;">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener" style="text-decoration:none;">
+    <div style="width:320px;height:180px;overflow:hidden;border-radius:8px;
+                background:#000 url('demos/thumbs/3_rollout_with_rerun_demo_4x_short_thumb_480.jpg') center/cover no-repeat;
+                margin:0 auto;">
+      <img src="demos/3_rollout_with_rerun_demo_4x_short.gif"
+           alt="E3 — Rollout with Rerun (click for full viewer)"
+           loading="lazy" decoding="async"
+           style="width:100%;height:100%;display:block;object-fit:cover;">
+    </div>
+  </a>
+  <br><strong>E3 — Rollout with Rerun</strong>
 </td>
-<td align="center" width="50%">
-  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e4" target="_blank" rel="noopener">
-    <img
-      src="demos/4_ledger_demo_4x.gif"
-      alt="E4 — Ledger Operations (click for full viewer)"
-      width="360" height="203"
-      loading="lazy" decoding="async"
-      style="display:block;border-radius:8px;
-             background:#000 url('demos/thumbs/4_ledger_demo_4x_thumb_480.jpg')
-             center/cover no-repeat;max-width:100%;">
-  </a><br>
-  <strong>E4 — Ledger Operations</strong>
+
+<td align="center" width="50%" style="vertical-align:top;">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e4" target="_blank" rel="noopener" style="text-decoration:none;">
+    <div style="width:320px;height:180px;overflow:hidden;border-radius:8px;
+                background:#000 url('demos/thumbs/4_ledger_demo_4x_thumb_480.jpg') center/cover no-repeat;
+                margin:0 auto;">
+      <img src="demos/4_ledger_demo_4x.gif"
+           alt="E4 — Ledger Operations (click for full viewer)"
+           loading="lazy" decoding="async"
+           style="width:100%;height:100%;display:block;object-fit:cover;">
+    </div>
+  </a>
+  <br><strong>E4 — Ledger Operations</strong>
 </td>
 </tr>
 </table>
@@ -118,15 +121,15 @@ instructions and a full overview of the framework.</strong></p>
 </td>
 <td width="50%" align="center">
 
-<a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener">
-  <img
-    src="demos/rollout_rerun_showcase_4x_short.gif"
-    alt="Rerun Showcase — click for full viewer"
-    width="360" height="360"
-    loading="lazy" decoding="async"
-    style="display:block;border-radius:8px;object-fit:cover;
-           background:#000 url('demos/thumbs/rollout_rerun_showcase_4x_short_thumb_480.jpg')
-           center/cover no-repeat;max-width:100%;">
+<a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener" style="text-decoration:none;">
+  <div style="width:320px;height:320px;overflow:hidden;border-radius:8px;
+              background:#000 url('demos/thumbs/rollout_rerun_showcase_4x_short_thumb_480.jpg') center/cover no-repeat;
+              margin:0 auto;">
+    <img src="demos/rollout_rerun_showcase_4x_short.gif"
+         alt="Rerun Showcase — click for full viewer"
+         loading="lazy" decoding="async"
+         style="width:100%;height:100%;display:block;object-fit:cover;">
+  </div>
 </a>
 <br><em>Rerun Showcase — click to open full viewer</em>
 
