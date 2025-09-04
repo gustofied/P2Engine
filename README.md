@@ -2,27 +2,33 @@
 
 **A framework + runtime to build, run, and evaluate multi-agent systems. Extended with the Canton Network to enable monetary incentives, payments, and audits.**
 
-**The primary entry point is `p2engine/README.md`, which offers setup instructions and a full overview of the framework.**
+**The framework is located in the `p2engine/` directory, with setup instructions and full documentation in `p2engine/README.md`.**
 
-Orchestrate many AI agents with _observable_ workflows, _adaptive_ evaluation loops, and an _auditable_ trail.
+Coordinate agents, evaluate each step, store trajectories, replay & observe.
 
-[Try it Out](p2engine/) • [Demos](demos/) • [Article](https://www.adamsioud.com/projects/p2engine.html) • [Functionalities](#functionalities) • [Rollout](#rollout) • [Architectures](#architectures) • [What it Does](#hello) • [Future](#future)
+Read the [full backstory, vision, and technical deep-dive](https://www.adamsioud.com/projects/p2engine.html) to understand the motivation and design philosophy behind P2Engine.
+
+[Section 1](#section-1) • [Section 2](#section-2) • [Section 3](#section-3) • [Section 4](#section-4)
 
 ---
 
-## Demo Showcase
+_Click any demo below for a full video demonstration_
 
-|                                           **E1 — Agent Delegation**                                            |                                           **E2 — Branch Rewind**                                            |
-| :------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: |
-| [![E1 — Agent Delegation](demos/thumbs/e1_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e1) | [![E2 — Branch Rewind](demos/thumbs/e2_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e2) |
+|                                           **Agent Delegation**                                            |                                           **Branch Rewind**                                            |
+| :-------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: |
+| [![Agent Delegation](demos/thumbs/e1_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e1) | [![Branch Rewind](demos/thumbs/e2_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e2) |
 
-|                                           **E3 — Rollout with Rerun**                                            |                                           **E4 — Ledger Operations**                                            |
-| :--------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------: |
-| [![E3 — Rollout with Rerun](demos/thumbs/e3_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e3) | [![E4 — Ledger Operations](demos/thumbs/e4_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e4) |
+|                                           **Rollout with Rerun**                                            |                                           **Ledger Operations**                                            |
+| :---------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------: |
+| [![Rollout with Rerun](demos/thumbs/e3_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e3) | [![Ledger Operations](demos/thumbs/e4_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e4) |
 
-**Explore advanced capabilities and enterprise features with our extended suite.**
+**Agent Delegation** — Agents are orchestrated via FSMs, delegate subtasks to specialists, and track conversation state through branching.
 
-**[View Extended Features →](#extended-features)**
+**Branch Rewind** — Every agent action and tool invocation is captured in real time, with session and branch identifiers preserving causality.
+
+**Rollout with Rerun** — You can configure rubrics, agent teams, and variants, and then test them across different scenarios and tools.
+
+**Ledger Operations** — Agents maintain wallets on Canton Network, perform autonomous transfers, and all transactions are immutably recorded.
 
 ---
 
