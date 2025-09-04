@@ -25,25 +25,41 @@ instructions and a full overview of the framework.</strong></p>
 <tr>
 <td align="center" width="50%" valign="top">
   <a href="https://www.adamsioud.com/projects/p2engine.html?v=e1">
-    <img src="demos/thumbs/e1_320x180.gif" alt="E1 — Agent Delegation" width="320" height="180" loading="lazy" decoding="async">
-  </a><br><strong>E1 — Agent Delegation</strong>
+    <img
+      src="demos/1_delegation_sub_agent_demo_4x_short.gif"
+      alt="E1 — Agent Delegation (click for full viewer)"
+      width="320" height="180" loading="lazy" decoding="async">
+  </a><br>
+  <strong>E1 — Agent Delegation</strong>
 </td>
 <td align="center" width="50%" valign="top">
   <a href="https://www.adamsioud.com/projects/p2engine.html?v=e2">
-    <img src="demos/thumbs/e2_320x180.gif" alt="E2 — Branch Rewind" width="320" height="180" loading="lazy" decoding="async">
-  </a><br><strong>E2 — Branch Rewind</strong>
+    <img
+      src="demos/2_rewind_branches_demo_4x_short.gif"
+      alt="E2 — Branch Rewind (click for full viewer)"
+      width="320" height="180" loading="lazy" decoding="async">
+  </a><br>
+  <strong>E2 — Branch Rewind</strong>
 </td>
 </tr>
 <tr>
 <td align="center" width="50%" valign="top">
   <a href="https://www.adamsioud.com/projects/p2engine.html?v=e3">
-    <img src="demos/thumbs/e3_320x180.gif" alt="E3 — Rollout with Rerun" width="320" height="180" loading="lazy" decoding="async">
-  </a><br><strong>E3 — Rollout with Rerun</strong>
+    <img
+      src="demos/3_rollout_with_rerun_demo_4x_short.gif"
+      alt="E3 — Rollout with Rerun (click for full viewer)"
+      width="320" height="180" loading="lazy" decoding="async">
+  </a><br>
+  <strong>E3 — Rollout with Rerun</strong>
 </td>
 <td align="center" width="50%" valign="top">
   <a href="https://www.adamsioud.com/projects/p2engine.html?v=e4">
-    <img src="demos/thumbs/e4_320x180.gif" alt="E4 — Ledger Operations" width="320" height="180" loading="lazy" decoding="async">
-  </a><br><strong>E4 — Ledger Operations</strong>
+    <img
+      src="demos/4_ledger_demo_4x.gif"
+      alt="E4 — Ledger Operations (click for full viewer)"
+      width="320" height="180" loading="lazy" decoding="async">
+  </a><br>
+  <strong>E4 — Ledger Operations</strong>
 </td>
 </tr>
 </table>
@@ -92,7 +108,6 @@ instructions and a full overview of the framework.</strong></p>
   </a>
   <br><em>Rerun Showcase — click to open full viewer</em>
 </td>
-
 </tr>
 </table>
 
@@ -147,17 +162,17 @@ instructions and a full overview of the framework.</strong></p>
   <strong>F1 — Real-time Analytics</strong>
 </td>
 <td align="center" width="50%">
-  <img src="p2engine/docs/architecture/transaction_flow_whitefill.png" alt="F2 Custom Integrations" width="400" loading="lazy" decoding="async"><br>
+  <img src="p2engine/docs/architecture/observability-events.png" alt="F2 Custom Integrations" width="400" loading="lazy" decoding="async"><br>
   <strong>F2 — Custom Integrations</strong>
 </td>
 </tr>
 <tr>
 <td align="center" width="50%">
-  <img src="p2engine/docs/architecture/orchestration-fsm_whitefill.png" alt="F3 Enterprise Security" width="400" loading="lazy" decoding="async"><br>
+  <img src="p2engine/docs/architecture/orchestration-fsm.png" alt="F3 Enterprise Security" width="400" loading="lazy" decoding="async"><br>
   <strong>F3 — Enterprise Security</strong>
 </td>
 <td align="center" width="50%">
-  <img src="p2engine/docs/architecture/observability-events.png" alt="F4 Global Deployment" width="400" loading="lazy" decoding="async"><br>
+  <img src="p2engine/docs/architecture/transaction_flow.png" alt="F4 Global Deployment" width="400" loading="lazy" decoding="async"><br>
   <strong>F4 — Global Deployment</strong>
 </td>
 </tr>
