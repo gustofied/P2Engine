@@ -60,40 +60,28 @@ instructions and a full overview of the framework.</strong></p>
 
 ---
 
-<h2 align="center" id="rollout">Rollout</h2>
+<h2 id="rollout" style="text-align:center;">Rollout</h2>
 
-<div align="center">
+<div style="display:flex; flex-wrap:wrap; justify-content:center; gap:2rem;">
 
-<h3>Global Rollout Strategy</h3>
+  <div style="flex:1 1 60%; min-width:250px;">
+    <h3>Global Rollout Strategy</h3>
+    <p><strong>Experience seamless deployment...</strong></p>
+    <p><strong>Multi-Environment Support</strong> — Development, staging, production...</p>
+    <p><strong>Scalable Infrastructure</strong> — Auto-scaling, intelligent load distribution...</p>
+    <p><strong>Global Distribution</strong> — Edge computing, regional deployments...</p>
+    <p><strong>Enterprise Integration</strong> — API-driven enterprise system support.</p>
+    <p><a href="#deployment"><strong>Learn More About Deployment →</strong></a></p>
+  </div>
 
-<table width="100%">
-<tr>
-<td width="50%" valign="middle">
-
-<p><strong>Experience seamless deployment across multiple environments with our comprehensive rollout strategy—from local development to enterprise-scale production.</strong></p>
-
-<p><strong>Multi-Environment Support</strong> — Development, staging, and production deployments with consistent configuration management across all environments.</p>
-
-<p><strong>Scalable Infrastructure</strong> — Auto-scaling based on demand with intelligent load distribution and resource optimization.</p>
-
-<p><strong>Global Distribution</strong> — Edge computing and regional deployment options for reduced latency and improved performance worldwide.</p>
-
-<p><strong>Enterprise Integration</strong> — Seamless connection with existing enterprise systems through standardized APIs and protocols.</p>
-
-<p><a href="#deployment"><strong>Learn More About Deployment →</strong></a></p>
-
-</td>
-<td width="50%" align="center">
-  <a href="https://www.adamsioud.com/projects/p2engine.html?v=hero">
-    <img
-      src="demos/rollout_rerun_showcase_4x_short.gif"
-      alt="Rerun Showcase — click for full viewer"
-      width="320" loading="lazy" decoding="async">
-  </a>
-  <br><em>Rerun Showcase — click to open full viewer</em>
-</td>
-</tr>
-</table>
+  <div style="flex:1 1 30%; min-width:250px; text-align:center;">
+    <a href="https://www.adamsioud.com/projects/p2engine.html?v=hero">
+      <img src="demos/rollout_rerun_showcase_4x_short.gif"
+           alt="Animated demo of Rerun Showcase — click to open full viewer"
+           style="max-width:100%; height:auto;">
+    </a>
+    <p><em>Rerun Showcase — click to open full viewer</em></p>
+  </div>
 
 </div>
 
