@@ -8,7 +8,7 @@ The framework is located in the `p2engine/` directory, with setup instructions a
 
 I wrote an article. Read the [full backstory, vision, and technical deep-dive](https://www.adamsioud.com/projects/p2engine.html) to understand the motivation and design philosophy behind P2Engine.
 
-[Section 1](#section-1) • [Section 2](#section-2) • [Section 3](#section-3) • [Section 4](#section-4)
+[Section 1](#section-1) • [Section 2](#section-2) • [Section 3](#section-3) • [Section 4](#section-4) \*[Section 5](#section-5) • [Section 5](#section-5)
 
 ---
 
@@ -63,6 +63,22 @@ Rollouts set the stage for adaptation methods. The rollout system provides A/B t
 ---
 
 ## Section 4
+
+### Ledger
+
+Canton Network, The network of networks as they say, currently in our framework here it serves as a great enable to test out working with a ledger for some basic stuff. It gives us and it has the functions which something like P2Engine in the future will happen to like to explore such as, more on this and why -> artilce
+
+<br>
+
+In addition to all these great stuff, With Eriks ideas we have something that, and it made it simple to extend it with canton network for us. Here we do.. We extend P2Engine with the integration of distributed-ledger technology to provide immutable audit trails, privacy-aware operations, and verifiable accountability for all agent actions and financial transactions. This pillar ensures that the system maintains a permanent, tamper-evident record of all significant operations, supporting both regulatory compliance and its own system verification.
+
+- Canton Network/DAML integration: Ledger operations implemented in services/canton_ledger_service.py.
+- Financial accountability: Agent wallets, transfers, and transaction history logged on-chain.
+- Complete audit trails: Every interaction and side-effect routed through ledger hooks in infra/ledger_hooks.py.
+
+---
+
+## Section 5
 
 ### Architecture Diagrams
 
@@ -135,34 +151,32 @@ The transaction flow ensures that all financial operations follow a consistent p
 
 ---
 
-## Getting Started
+## Sectoin 6
 
-```bash
-# Clone the repository
-git clone https://github.com/your-username/p2engine.git
+### Future
 
-# Navigate to the project directory
-cd p2engine
+Next, completing a minimal learning loop (prompt/RL-style) that tunes prompts/tools(what they could use)using stored trajectories.
 
-# Install dependencies
-npm install
+So what’s in store for P2Engine? I think it makes sense to focus on one core functionality and make it great. To start, that means improving rollouts and completing the feedback loop so rewards can feed back into the system and drive adjustments.
 
-# Start the development server
-npm run dev
-```
+A good first step is for the root/router agent to change parameters, models, or the system prompt, essentially acting as an approach optimizer. That alone would be a powerful feature. It learns which prompts models to adjust what works which approaches worked etc
 
-For detailed setup instructions, see [`p2engine/README.md`](p2engine/README.md).
+Once that’s in place, we could look at turning the project into an MVP for an agent marketplace, introducing more learning, and testing different collective intelligence hypotheses.
 
----
+But the most exciting and quickest win right now is experimenting with completing the learning loop and trying out different approaches to learning, starting with system prompt optimization (or approach optimization), which ties directly
+into this idea I’ve outlined here:
 
-## Contributing
+- A tweet by Karpathy on System Prompt Learning, https://x.com/karpathy/status/1921368644069765486,
+- [Against RL: The Case for System 2 Learning](https://blog.elicit.com/system-2-learning /)
+- [Part 4: Improving agent reasoning, By Erik](https://www.arnovich.com/writings/state_machines_for_multi_agent_part_4/]
+  - [More Thoughts on Agents](https://www.arnovich.com/writings/more_on_agents/).
 
-We welcome contributions! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+All three sources advocate for lifting LLM adaptation and reasoning above mere parameter updates. Karpathy calls out a “System Prompt Learning” paradigm where models learn explicit, note‑like strategies in their system prompts rather than just by changing weights
 
-## License
+But we will se im currently working on owl (link), learnings and perspectives will i take and adjust our new inspiration when we come back to P2Engine
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Section 7
 
-## Support
+### OUDAU
 
-For questions and support, please open an issue or contact us at [support@p2engine.com](mailto:support@p2engine.com).
+What you could do here is like just 1 sentence, in a new section at the end. Like during the development of p2engine, its research and one idea evolved around introducing a market participant for the market place, to use that to do x y z, interested, see here.
