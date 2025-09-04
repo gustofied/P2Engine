@@ -143,21 +143,21 @@ instructions and a full overview of the framework.</strong></p>
 <table>
 <tr>
 <td align="center" width="50%">
-  <img src="p2engine/docs/architecture/execution-sequence_transparent.png" alt="F1 Real-time Analytics" width="400" loading="lazy" decoding="async"><br>
+  <img src="p2engine/docs/architecture/execution-sequence.png" alt="F1 Real-time Analytics" width="400" loading="lazy" decoding="async"><br>
   <strong>F1 — Real-time Analytics</strong>
 </td>
 <td align="center" width="50%">
-  <img src="p2engine/docs/architecture/observability-events_transparent.png" alt="F2 Custom Integrations" width="400" loading="lazy" decoding="async"><br>
+  <img src="p2engine/docs/architecture/transaction_flow_whitefill.png" alt="F2 Custom Integrations" width="400" loading="lazy" decoding="async"><br>
   <strong>F2 — Custom Integrations</strong>
 </td>
 </tr>
 <tr>
 <td align="center" width="50%">
-  <img src="p2engine/docs/architecture/orchestration-fsm_transparent.png" alt="F3 Enterprise Security" width="400" loading="lazy" decoding="async"><br>
+  <img src="p2engine/docs/architecture/orchestration-fsm_whitefill.png" alt="F3 Enterprise Security" width="400" loading="lazy" decoding="async"><br>
   <strong>F3 — Enterprise Security</strong>
 </td>
 <td align="center" width="50%">
-  <img src="p2engine/docs/architecture/transaction_flow_transparent.png" alt="F4 Global Deployment" width="400" loading="lazy" decoding="async"><br>
+  <img src="p2engine/docs/architecture/observability-events.png" alt="F4 Global Deployment" width="400" loading="lazy" decoding="async"><br>
   <strong>F4 — Global Deployment</strong>
 </td>
 </tr>
