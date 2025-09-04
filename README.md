@@ -8,7 +8,7 @@ The framework is located in the `p2engine/` directory, with setup instructions a
 
 I wrote an article. Read the [full backstory, vision, and technical deep-dive](https://www.adamsioud.com/projects/p2engine.html) to understand the motivation and design philosophy behind P2Engine.
 
-[Section 1](#section-1) • [Section 2](#section-2) • [Section 3](#section-3) • [Section 4](#section-4) • [Section 5](#section-5) • [Section 6](#section-6) • [Section 7](#section-7)
+[Section 1](#section-1) • [Section 2](#section-2) • [Section 3](#section-3) • [Section 4](#section-4) • [Section 5](#section-5) • [Section 6](#section-6)
 
 ---
 
@@ -81,6 +81,8 @@ In addition to all these great stuff, With Eriks ideas we have something that, a
 ---
 
 ## Section 5
+
+lets go some diagrams to get some intution, this is not like the core but yeh
 
 ### Architecture Diagrams
 
@@ -176,9 +178,5 @@ into this idea I’ve outlined here:
 All three sources advocate for lifting LLM adaptation and reasoning above mere parameter updates. Karpathy calls out a “System Prompt Learning” paradigm where models learn explicit, note‑like strategies in their system prompts rather than just by changing weights
 
 But we will se im currently working on owl (link), learnings and perspectives will i take and adjust our new inspiration when we come back to P2Engine
-
-## Section 7
-
-### OUDAU
 
 What you could do here is like just 1 sentence, in a new section at the end. Like during the development of p2engine, its research and one idea evolved around introducing a market participant for the market place, to use that to do x y z, interested, see here.
