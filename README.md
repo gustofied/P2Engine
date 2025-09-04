@@ -6,11 +6,13 @@
 
 The framework is located in the `p2engine/` directory, with setup instructions and full documentation in `p2engine/README.md`.
 
-Read the [full backstory, vision, and technical deep-dive](https://www.adamsioud.com/projects/p2engine.html) to understand the motivation and design philosophy behind P2Engine.
+I wrote an article. Read the [full backstory, vision, and technical deep-dive](https://www.adamsioud.com/projects/p2engine.html) to understand the motivation and design philosophy behind P2Engine.
 
 [Section 1](#section-1) • [Section 2](#section-2) • [Section 3](#section-3) • [Section 4](#section-4)
 
 ---
+
+## Section 1
 
 _Click any demo below for a full video demonstration_
 
@@ -32,7 +34,17 @@ _Click any demo below for a full video demonstration_
 
 ---
 
-## Rollout
+## Section 2
+
+At its core, P2Engine runs LLM-agents in discrete steps. Each step produces artifacts, and a separate and async evaluator scores them. You can think of it like this: the agent thinks, acts, and creates something; the evaluator observes, scores, then which is not yet implemented the root/router or evaluator takes the feedback then decides the next tool, step, or configuration.
+
+So To ramble, P2Engine, gives us agent interfaces, tool registry, templates/personas, runtime policies. A pushdown automata esque, it is a finite state machine with an interaction stack. It has branching, rewind, artifacts and an artifacts bus, Redis-backed session/state. Judge prompts, metrics, branch scoring, rollout experimentation. Chat, artifacts inspect/diff, rollouts, ledger ops, conversation watch. Rich logs; optional with rerun views and real-time monitors. And the ledger (Canton/DAML) integration gives us balances, transfers, and audit trails.
+
+---
+
+## Section 3
+
+### Rollouts
 
 ### Global Rollout Strategy
 
@@ -53,27 +65,6 @@ _Click any demo below for a full video demonstration_
 _Rerun Showcase — click to open full viewer_
 
 ---
-
-## Functionalities
-
-### Core Platform Features
-
-**Multi-Agent Orchestration** — Coordinate complex workflows across multiple AI agents with dynamic task allocation and load balancing for real-time agent communication and collaboration.
-
-**Observable Operations** — Comprehensive monitoring dashboards provide real-time performance metrics and debugging capabilities to trace agent decision paths.
-
-**Adaptive Learning** — Continuous improvement through feedback loops, performance optimization algorithms, and automated model fine-tuning.
-
-**Audit & Compliance** — Complete transaction logging with Canton Network integration for financial transparency and regulatory compliance reporting.
-
-### Key Features
-
-- **Real-time Monitoring** — Live agent performance tracking
-- **Dynamic Scaling** — Auto-adjustment based on workload
-- **Cross-Platform Support** — Works across all major platforms
-- **Plugin Architecture** — Extensible agent development framework
-- **Smart Contracts** — Automated payment and incentive systems
-- **Enterprise Ready** — Production-grade security and reliability
 
 ---
 
