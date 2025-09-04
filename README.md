@@ -21,11 +21,10 @@ instructions and a full overview of the framework.</strong></p>
 ---
 
 <div align="center">
-
 <table>
 <tr>
 <td align="center" width="50%" valign="top">
-  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e1" target="_blank" rel="noopener">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e1">
     <img
       src="demos/1_delegation_sub_agent_demo_4x_short.gif"
       alt="E1 — Agent Delegation (click for full viewer)"
@@ -34,7 +33,7 @@ instructions and a full overview of the framework.</strong></p>
   <strong>E1 — Agent Delegation</strong>
 </td>
 <td align="center" width="50%" valign="top">
-  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e2" target="_blank" rel="noopener">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e2">
     <img
       src="demos/2_rewind_branches_demo_4x_short.gif"
       alt="E2 — Branch Rewind (click for full viewer)"
@@ -45,7 +44,7 @@ instructions and a full overview of the framework.</strong></p>
 </tr>
 <tr>
 <td align="center" width="50%" valign="top">
-  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e3">
     <img
       src="demos/3_rollout_with_rerun_demo_4x_short.gif"
       alt="E3 — Rollout with Rerun (click for full viewer)"
@@ -54,7 +53,7 @@ instructions and a full overview of the framework.</strong></p>
   <strong>E3 — Rollout with Rerun</strong>
 </td>
 <td align="center" width="50%" valign="top">
-  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e4" target="_blank" rel="noopener">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e4">
     <img
       src="demos/4_ledger_demo_4x.gif"
       alt="E4 — Ledger Operations (click for full viewer)"
@@ -64,7 +63,6 @@ instructions and a full overview of the framework.</strong></p>
 </td>
 </tr>
 </table>
-
 </div>
 
 <div align="center">
@@ -102,11 +100,11 @@ instructions and a full overview of the framework.</strong></p>
 
 </td>
 <td width="50%" align="center">
-  <a href="https://www.adamsioud.com/projects/p2engine.html?v=e3" target="_blank" rel="noopener">
+  <a href="https://www.adamsioud.com/projects/p2engine.html?v=hero">
     <img
       src="demos/rollout_rerun_showcase_4x_short.gif"
       alt="Rerun Showcase — click for full viewer"
-      width="320" height="180" loading="lazy" decoding="async">
+      width="320" loading="lazy" decoding="async">
   </a>
   <br><em>Rerun Showcase — click to open full viewer</em>
 </td>
@@ -160,21 +158,21 @@ instructions and a full overview of the framework.</strong></p>
 <table>
 <tr>
 <td align="center" width="50%">
-  <img src="p2engine/docs/architecture/execution-sequence.png" alt="F1 Real-time Analytics" width="400" height="300"><br>
+  <img src="p2engine/docs/architecture/execution-sequence.png" alt="F1 Real-time Analytics" width="400" loading="lazy" decoding="async"><br>
   <strong>F1 — Real-time Analytics</strong>
 </td>
 <td align="center" width="50%">
-  <img src="p2engine/docs/architecture/observability-events.png" alt="F2 Custom Integrations" width="400" height="300"><br>
+  <img src="p2engine/docs/architecture/observability-events.png" alt="F2 Custom Integrations" width="400" loading="lazy" decoding="async"><br>
   <strong>F2 — Custom Integrations</strong>
 </td>
 </tr>
 <tr>
 <td align="center" width="50%">
-  <img src="p2engine/docs/architecture/orchestration-fsm.png" alt="F3 Enterprise Security" width="400" height="300"><br>
+  <img src="p2engine/docs/architecture/orchestration-fsm.png" alt="F3 Enterprise Security" width="400" loading="lazy" decoding="async"><br>
   <strong>F3 — Enterprise Security</strong>
 </td>
 <td align="center" width="50%">
-  <img src="p2engine/docs/architecture/transaction_flow.png" alt="F4 Global Deployment" width="400" height="300"><br>
+  <img src="p2engine/docs/architecture/transaction_flow.png" alt="F4 Global Deployment" width="400" loading="lazy" decoding="async"><br>
   <strong>F4 — Global Deployment</strong>
 </td>
 </tr>
@@ -210,107 +208,4 @@ instructions and a full overview of the framework.</strong></p>
 <li><strong>Container Orchestration</strong> — Kubernetes-based deployment</li>
 <li><strong>API-First Design</strong> — RESTful and GraphQL endpoints</li>
 <li><strong>Event-Driven Architecture</strong> — Real-time event processing</li>
-<li><strong>Security by Design</strong> — Built-in security at every layer</li>
-<li><strong>Cloud Native</strong> — Optimized for modern cloud platforms</li>
-</ul>
-
-</td>
-</tr>
-</table>
-
-</div>
-
----
-
-<h2 align="center" id="hello">Hello</h2>
-
-<div align="center">
-
-<table width="100%">
-<tr>
-<td width="50%" valign="middle">
-
-<h3>What P2Engine Does</h3>
-
-<p>P2Engine represents a new paradigm in multi-agent orchestration, combining the power of distributed AI systems with the transparency and auditability of blockchain technology.</p>
-
-<p>Built for researchers, developers, and enterprises who need to coordinate complex AI workflows while maintaining full visibility into agent interactions, decision-making processes, and resource allocation.</p>
-
-<p><strong>Observable Workflows</strong> — Real-time monitoring and debugging of agent interactions with complete visibility into decision-making processes.</p>
-
-<p><strong>Adaptive Evaluation</strong> — Continuous learning and optimization loops that improve system performance over time.</p>
-
-<p><strong>Auditable Trail</strong> — Complete transaction history with Canton Network integration for transparency and compliance.</p>
-
-</td>
-<td width="50%" align="center">
-
-<ul>
-<li><strong>Research-Grade Precision</strong> — Built for academic and industrial research</li>
-<li><strong>Developer-Friendly</strong> — Intuitive APIs and comprehensive documentation</li>
-<li><strong>Enterprise Security</strong> — SOC2 compliant with advanced encryption</li>
-<li><strong>Scalable Architecture</strong> — From prototype to production-ready deployments</li>
-<li><strong>Real-time Analytics</strong> — Live performance monitoring and insights</li>
-<li><strong>Global Community</strong> — Supported by researchers and developers worldwide</li>
-</ul>
-
-</td>
-</tr>
-</table>
-
-</div>
-
----
-
-<h2 align="center" id="future">Future</h2>
-
-<div align="center">
-
-<table width="100%">
-<tr>
-<td width="50%" valign="middle">
-
-<h3>Roadmap & Vision</h3>
-
-<p>P2Engine is evolving toward a comprehensive ecosystem for autonomous agent collaboration. Our upcoming developments focus on enhanced interoperability, advanced reasoning capabilities, and seamless integration with existing enterprise systems.</p>
-
-<p><strong>Advanced Reasoning Modules</strong> — Next-generation AI capabilities with multi-modal agent support and enhanced decision-making frameworks.</p>
-
-<p><strong>Enhanced Canton Network Integration</strong> — Smart contract templates and improved blockchain integration for seamless financial operations.</p>
-
-<p><strong>Enterprise-Grade Security</strong> — Advanced compliance frameworks and security features designed for mission-critical applications.</p>
-
-<p><em>Join us in shaping the future of multi-agent systems.</em></p>
-
-</td>
-<td width="50%" align="center">
-
-<ul>
-<li><a href="#quick-start">Quick Start</a></li>
-<li><a href="#what-run_projectsh-does">What <code>run_project.sh</code> does</a></li>
-<li><a href="#basic-usage">Basic Usage</a></li>
-<li><a href="#rollouts">Rollouts</a></li>
-<li><a href="#evals">Evals</a></li>
-<li><a href="#agents-configagentsyml">Agents</a></li>
-<li><a href="#tools">Tools</a></li>
-<li><a href="#ledger-operations">Ledger Operations</a></li>
-<li><a href="#branching">Branching</a></li>
-<li><a href="#configuration-overrides">Configuration Overrides</a></li>
-<li><a href="#logs-checks-health-of-the-system">Logs, Checks, Health of The System</a></li>
-<li><a href="#core-modules">Core Modules</a></li>
-</ul>
-
-</td>
-</tr>
-</table>
-
-</div>
-
----
-
-<div align="center">
-
-<strong>Ready to get started?</strong><br><br>
-<a href="docs/">Documentation</a> • <a href="api/">API Reference</a> • <a href="community/">Community</a> • <a href="support/">Support</a>
-
-</div>
+<li><strong>Securit
