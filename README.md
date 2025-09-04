@@ -68,7 +68,7 @@ instructions and a full overview of the framework.</strong></p>
 
 <table width="100%">
 <tr>
-<td width="58%" valign="middle">
+<td width="50%" valign="middle">
 
 <p><strong>Experience seamless deployment across multiple environments with our comprehensive rollout strategy—from local development to enterprise-scale production.</strong></p>
 
@@ -83,15 +83,16 @@ instructions and a full overview of the framework.</strong></p>
 <p><a href="#deployment"><strong>Learn More About Deployment →</strong></a></p>
 
 </td>
-<td width="42%" align="center" valign="middle">
+<td width="50%" align="center">
   <a href="https://www.adamsioud.com/projects/p2engine.html?v=hero">
     <img
       src="demos/rollout_rerun_showcase_4x_short.gif"
       alt="Rerun Showcase — click for full viewer"
-      width="420" height="293" loading="lazy" decoding="async">
+      width="320" loading="lazy" decoding="async">
   </a>
   <br><em>Rerun Showcase — click to open full viewer</em>
 </td>
+
 </tr>
 </table>
 
