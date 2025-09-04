@@ -66,32 +66,72 @@ Rollouts set the stage for adaptation methods. The rollout system provides A/B t
 
 ### Architecture Diagrams
 
-|                         **F1 — Real-time Analytics**                         |                          **F2 — Custom Integrations**                          |
-| :--------------------------------------------------------------------------: | :----------------------------------------------------------------------------: |
-| ![F1 Real-time Analytics](p2engine/docs/architecture/execution-sequence.png) | ![F2 Custom Integrations](p2engine/docs/architecture/observability-events.png) |
+#### Figure 5.3.1 — Execution Sequence
 
-|                        **F3 — Enterprise Security**                         |                        **F4 — Global Deployment**                        |
-| :-------------------------------------------------------------------------: | :----------------------------------------------------------------------: |
-| ![F3 Enterprise Security](p2engine/docs/architecture/orchestration-fsm.png) | ![F4 Global Deployment](p2engine/docs/architecture/transaction_flow.png) |
+<p align="center">
+  <img src="p2engine/docs/architecture/execution-sequence.png" alt="Execution Sequence" width="820">
+  <br>
+  <em>Figure 5.3.1: Execution Flow</em>
+</p>
 
-### System Architecture Overview
+The system execution follows the sequence shown in Figure 5.3.1, demonstrating end-to-end integration across all architectural layers. The execution unfolds through six integrated stages:
 
-**Distributed Computing Layer** — Microservices-based architecture with container orchestration using Kubernetes for auto-scaling and load distribution.
+- **Agent Processing** — Consumes conversation states and produces responses or tool invocations.
+- **Tool Execution** — Runs asynchronously, publishing results back into the conversation streams.
+- **State Progression** — Captures every activity as state transitions flowing through the orchestration layer.
+- **Event Publication** — Automatically pushes those state changes to the observability layer for real-time monitoring and analysis.
+- **Evaluation Triggering** — Fires upon conversation completion or significant milestones, invoking automated quality assessments.
+- **Adaptation Feedback** — Uses evaluation results to refine future agent configurations via the adaptation layer.
 
-**AI Agent Framework** — Plugin-based agent development with multi-modal agent support and cross-platform compatibility for maximum flexibility.
+---
 
-**Blockchain Integration** — Canton Network integration for financial operations, smart contract templates, and decentralized identity management.
+#### Observability Events — Unified Event Stream
 
-**Data & Analytics** — Real-time data processing with advanced analytics, reporting capabilities, and machine learning pipeline integration.
+<p align="center">
+  <img src="p2engine/docs/architecture/observability-events.png" alt="Observability Events" width="820">
+  <br>
+  <em>Unified observability: every interaction captured for full traceability</em>
+</p>
 
-### Technical Stack
+The observability architecture is built around four core mechanisms:
 
-- **Microservices Architecture** — Scalable and maintainable design
-- **Container Orchestration** — Kubernetes-based deployment
-- **API-First Design** — RESTful and GraphQL endpoints
-- **Event-Driven Architecture** — Real-time event processing
-- **Security by Design** — End-to-end encryption and authentication
-- **Cloud Native** — Built for modern cloud infrastructure
+- **Universal Event Streaming** — Ensures that every system activity flows through a central event stream, making agent decision-making and system-wide behavior patterns fully transparent in real time.
+- **Complete Traceability** — Records both metadata and payload in each event, preserving causal links across all agent interactions for a holistic understanding.
+- **Real-time Transparency** — Leverages live event streams to power operational monitoring and debugging interfaces, keeping the system observable during execution.
+- **Event Logs** — Captures events exhaustively for post-hoc examination of agent behaviors and system performance.
+
+---
+
+#### Figure 5.2.2 — Orchestration FSM
+
+<p align="center">
+  <img src="p2engine/docs/architecture/orchestration-fsm.png" alt="Orchestration FSM" width="820">
+  <br>
+  <em>Figure 5.2.2: Finite State Machine Flow</em>
+</p>
+
+The purpose of the orchestration layer is to enable dynamic agent coordination where the system itself decides task distribution and agent deployment through emergent, configurable behavior. The orchestration layer implements finite state machine orchestration, ensuring coherent state progression while enabling dynamic routing decisions and handling non-deterministic outputs from agents.
+
+The design rests on four interlocking ideas, fully inspired by Erik’s work (Erik 2025a; Erik 2025b; Erik 2025c; Erik 2025d):
+
+- **Emergent Coordination** — Empowers the system to decide at runtime how many agents to deploy and how to assign tasks, moving beyond rigid sequential workflows to truly configurable behavior.
+- **Finite State Machine Control** — Governs state transitions with explicit rules and handlers, ensuring deterministic progression while allowing dynamic routing based on agent outputs.
+- **Conversation Branching** — Allows interaction histories to fork at any point, supporting experimental workflows and comparative analyses of different coordination strategies.
+- **Dynamic Agent Delegation** — Enables agents to spawn sub-agents and sub-conversations, creating a hierarchical task decomposition that emerges from actual system needs rather than a predetermined plan.
+
+---
+
+#### Figure 6.3.7 — Transaction Flow
+
+<p align="center">
+  <img src="p2engine/docs/architecture/transaction_flow.png" alt="Transaction Flow" width="820">
+  <br>
+  <em>Figure 6.3.7: From initiation to ledger confirmation</em>
+</p>
+
+The transaction flow ensures that all financial operations follow a consistent pattern with proper validation, execution, and recording. Figure 6.3.7 illustrates the complete flow from initiation to ledger confirmation.
+
+**Audit & money movement context.** The flow is anchored by an audit layer: every balance change and transfer (Canton/DAML) is appended to an immutable trail with the relevant metadata. This supports post-hoc inspection, compliance reporting, and reconciliation, while keeping operational paths simple and verifiable.
 
 ---
 
