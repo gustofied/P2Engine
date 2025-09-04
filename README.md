@@ -8,7 +8,7 @@ The framework is located in the `p2engine/` directory, with setup instructions a
 
 I wrote an article. Read the [full backstory, vision, and technical deep-dive](https://www.adamsioud.com/projects/p2engine.html) to understand the motivation and design philosophy behind P2Engine.
 
-[Section 1](#section-1) • [Section 2](#section-2) • [Section 3](#section-3) • [Section 4](#section-4) \*[Section 5](#section-5) • [Section 5](#section-5)
+[Section 1](#section-1) • [Section 2](#section-2) • [Section 3](#section-3) • [Section 4](#section-4) • [Section 5](#section-5) • [Section 6](#section-6) • [Section 7](#section-7)
 
 ---
 
@@ -35,6 +35,8 @@ _Click any demo below for a full video demonstration_
 ---
 
 ## Section 2
+
+P2Engine’s orchestration is fundamentally built on finite state machine (FSM) principles, where each agent conversation progresses through well-defined states with explicit transition rules (Erik 2025a). This approach provides predictable behavior while enabling complex multi-agent interactions.
 
 At its core, P2Engine runs LLM-agents in discrete steps. Each step produces artifacts, and a separate and async evaluator scores them. You can think of it like this: the agent thinks, acts, and creates something; the evaluator observes, scores, then which is not yet implemented the root/router or evaluator takes the feedback then decides the next tool, step, or configuration.
 
