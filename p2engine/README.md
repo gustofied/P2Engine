@@ -1,5 +1,7 @@
 ### P2Engine
 
+> _This setup + docs should get you going, but there’s still much more to write on P2Engine features and configurations, I don't want it to be hidden, I’m on it!_
+
 - [Quick Start](#quick-start)
 - [Basic Usage](#basic-usage)
 - [Rollouts](#rollouts)
@@ -25,6 +27,8 @@ First let's make sure we have these:
 - OpenAI API key
 
 _I run things on my Mac, you might/will need to do some tiny tweaks if you're on a different setup!_
+
+_The following setup is and suebseqeunt documnation should suffice but there is still ålenty to be written on here, going to work on that_
 
 ##### Installation
 
