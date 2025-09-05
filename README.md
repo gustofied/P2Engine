@@ -32,9 +32,9 @@ _Click any demo below for a full video demonstration_
 
 **Agent Delegation** — Agents can delegate tasks to sub-agents, and conversation state is tracked.
 
-**Branch Rewind** — Rewind a conversation to x state, branch identifiers preseve causality, and bracnhes could be checked in&out from
+**Branch Rewind** — Rewind a conversation to x state, branch identifiers preseve causality, and bracnhes could be checked in&out from. Branch / Rewind — Fork a trajectory at step k; branch IDs preserve causality for comparison.
 
-**Rollout with Rerun Logging & visualization** — Use rollouts, with rollouts you can configure rubrics, agent teams, and variants, and then test them across different scenarios and tools. Coupled with rerun visualization get a full observablity and track it all.
+**Rollout with Rerun Logging & visualization** — Use rollouts, with rollouts you can configure rubrics, agent teams, and variants, and then test them across different scenarios and tools. Coupled with rerun visualization get a full observablity and track it all. Rerun (viewer) logging & visualization.
 
 **Ledger Operations** — [maybe dont want the word ledger operations] Agents maintain wallets on Canton Network, perform autonomous transfers, and all transactions are immutably recorded.
 
@@ -72,6 +72,10 @@ But that dosent mean the plumbing is not support rollouts, becuase that is what 
 
 What rollouts are they set the stage for the proper learning loop p2eninge is base for. the missing part in true, is the fedeback to root. [let's make this a tad better but i like the hook into and explination here]
 
+Define team, variant, rubric/judge, metrics. Link to rollout_joke.yml.
+Rollout — An experiment spec (YAML) that defines a team, variants, rubrics, and metrics to run in parallel.
+Evaluator status: “Evaluator scores are produced today; automatic prompt/routing updates based on rewards are planned.”
+Rollouts: “Designed for controlled experiments; great for A/B variants of prompts, tools, or models.”
 [help me out here chat..]
 
 ---
@@ -92,6 +96,11 @@ the comment about that erik ideas we don nede that here]
 
 Why canton? needs to be better, but just say some clean stuf 1 , 2 sentences. Canton Network, The network of networks as they say, currently in our framework here it serves as a great enable to test out working with a ledger for some basic stuff. It gives us and it has the functions which something like P2Engine in the future will happen to like to explore such as, more on this and why -> artilce [this is oki to say but maybe as like a middle or last pargrpah or in start but yeh]
 
+Ledger: “Optional, permissioned ledger integration (Canton/Daml) for accountability and incentive experiments.”
+
+ledger operations -> on-ledger actions
+
+on the Canton ledger.
 <br>
 
 ---
@@ -172,26 +181,22 @@ The transaction flow ensures that all financial operations follow a consistent p
 
 So what is next for P2Engine?
 
-Feel like we should shorten this all, but what is written here and the lingo is nice..
+I think a big and first win, would be to **close the learning loop.** Use the stored trajectories and evaluator rewards to optimize prompts, routing, tools, and model choices.. And I do think the type of learning which fits for P2Engine to try out first, is the "System Prompt Learning".
 
-Next, completing a minimal learning loop (prompt/RL-style) that tunes prompts/tools(what they could use)using stored trajectories.
+This means first go into the rollout module, the evalutaor and rewards, fix up on some internals, and we are basically good to go, to experiment with this.
 
-So what’s in store for P2Engine? I think it makes sense to focus on one core functionality and make it great. To start, that means improving rollouts and completing the feedback loop so rewards can feed back into the system and drive adjustments.
+The "system-prompt learning" loop will be to have our root agent, decide by feedback what prompt to use/adjust on his sub agents as they go at there tasks, so let's say he gives all the same tasks to them, he sees who is doing well what system prompt it has, it then goes and adjusts the others, added on to it could even be adjusting which models, temprature, which tools it could use, and this feedback adn adjustemnt would be at each step, checkpoints or at at end of trijectory. It learns which prompts models to adjust what works which approaches worked etc. So as Karapthy says its about figuring out which approach for an agent is the best, and that is often steered by the system prompt itself not the weights.
 
-A good first step is for the root/router agent to change parameters, models, or the system prompt, essentially acting as an approach optimizer. That alone would be a powerful feature. It learns which prompts models to adjust what works which approaches worked etc
+[my description here needs to make sense and reflect the three sources and what I really think..]
 
-Once that’s in place, we could look at turning the project into an MVP for an agent marketplace, introducing more learning, and testing different collective intelligence hypotheses.
+This idea will adopt, reflect and build upon the thinking of:
 
-But the most exciting and quickest win right now is experimenting with completing the learning loop and trying out different approaches to learning, starting with system prompt optimization (or approach optimization), which ties directly
-into this idea I’ve outlined here:
+- [A tweet by Karpathy on System Prompt Learning](https://x.com/karpathy/status/1921368644069765486)
+- [Against RL: The Case for System 2 Learning](https://blog.elicit.com/system-2-learning)
+- [Part 4: Improving agent reasoning](https://www.arnovich.com/writings/state_machines_for_multi_agent_part_4/), and [More Thoughts on Agents](https://www.arnovich.com/writings/more_on_agents/).
 
-- A tweet by Karpathy on System Prompt Learning, https://x.com/karpathy/status/1921368644069765486,
-- [Against RL: The Case for System 2 Learning](https://blog.elicit.com/system-2-learning /)
-- [Part 4: Improving agent reasoning, By Erik](https://www.arnovich.com/writings/state_machines_for_multi_agent_part_4/]
-  - [More Thoughts on Agents](https://www.arnovich.com/writings/more_on_agents/).
+So as we cann see three sources advocate for lifting LLM adaptation and reasoning above mere parameter updates. Karpathy calls out a “System Prompt Learning” paradigm where models learn explicit, note‑like strategies in their system prompts rather than just by changing weights
 
-All three sources advocate for lifting LLM adaptation and reasoning above mere parameter updates. Karpathy calls out a “System Prompt Learning” paradigm where models learn explicit, note‑like strategies in their system prompts rather than just by changing weights
+[maybe i dont need this sentence above anymore]
 
-But we will se im currently working on owl (link), learnings and perspectives will i take and adjust our new inspiration when we come back to P2Engine
-
-What you could do here is like just 1 sentence, in a new section at the end. Like during the development of p2engine, its research and one idea evolved around introducing a market participant for the market place, to use that to do x y z, interested, see here.
+Once that’s in place, who knows where P2Engine goes next!
