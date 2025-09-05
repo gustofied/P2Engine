@@ -14,9 +14,11 @@ The full framework lives inside the [`p2engine/`](p2engine/) directory, with set
 
 I’ve also written an article on P2Engine, the research , the ideas, tech, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
 
+[Showcase](#showcase) • [Section 2](#section-2) • [Section 3](#section-3) • [Section 4](#section-4) • [Section 5](#section-5) • [Section 6](#sectoin-6)
+
 ---
 
-## Section 1
+## Showcase
 
 _Click any demo below for a full video demonstration_
 
