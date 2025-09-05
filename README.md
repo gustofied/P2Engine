@@ -26,17 +26,17 @@ _Click any demo below for a full video demonstration_
 | :-------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: |
 | [![Agent Delegation](demos/thumbs/e1_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e1) | [![Branch Rewind](demos/thumbs/e2_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e2) |
 
-|                                           **Rollout with Rerun**                                            |                                           **Ledger Operations**                                            |
-| :---------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------: |
-| [![Rollout with Rerun](demos/thumbs/e3_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e3) | [![Ledger Operations](demos/thumbs/e4_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e4) |
+|                                           **Rollout with Rerun Logging & Visualizing**                                            |                                           **Ledger Operations**                                            |
+| :-------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------: |
+| [![Rollout with Rerun Logging & Visualizing](demos/thumbs/e3_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e3) | [![Ledger Operations](demos/thumbs/e4_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e4) |
 
-**Agent Delegation** — Agents are orchestrated via FSMs, delegate subtasks to specialists, and track conversation state through branching.
+**Agent Delegation** — Agents can delegate tasks to sub-agents, and conversation state is tracked.
 
-**Branch Rewind** — Every agent action and tool invocation is captured in real time, with session and branch identifiers preserving causality.
+**Branch Rewind** — Rewind a conversation to x state, branch identifiers preseve causality, and bracnhes could be checked in&out from
 
-**Rollout with Rerun** — You can configure rubrics, agent teams, and variants, and then test them across different scenarios and tools.
+**Rollout with Rerun Logging & visualization** — Use rollouts, with rollouts you can configure rubrics, agent teams, and variants, and then test them across different scenarios and tools. Coupled with rerun visualization get a full observablity and track it all.
 
-**Ledger Operations** — Agents maintain wallets on Canton Network, perform autonomous transfers, and all transactions are immutably recorded.
+**Ledger Operations** — [maybe dont want the word ledger operations] Agents maintain wallets on Canton Network, perform autonomous transfers, and all transactions are immutably recorded.
 
 ---
 
