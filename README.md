@@ -47,7 +47,7 @@ I’ve also written an article on P2Engine, the research , the ideas, tech, and 
       </td>
       <td align="center" width="420">
         <a href="https://www.adamsioud.com/projects/p2engine.html?v=e4">
-          <img src="demos/thumbs/e4_320x180.gif" alt="Ledger Operations">
+          <img src="demos/thumbs/e4_320x180.gif" alt="Ledger">
         </a><br>
         <sub><b>Ledger</b></sub>
       </td>
@@ -56,15 +56,13 @@ I’ve also written an article on P2Engine, the research , the ideas, tech, and 
 <p><em>Click any demo for a full video demonstration</em></p>
 </div>
 
-**Agent Delegation** — Agents delegate to sub-agents; conversation state is tracked. [better please?]
+**Agent Delegation** — Agents delegate tasks to sub-agents. Conversation context is preserved across all agent interactions.
 
-**Branch Rewind** — Rewind a conversation to step k, branches can be checked in/out. [This needs to be a tad bit better]
+**Branch Rewind** — Rewind conversations to any point and explore alternative paths. Switch between different conversation branches.
 
-**Rollouts** — Run Rollouts, A/B configs; stream logs and visualize in Rerun. [Here too]
+**Rollouts** — Run multiple agent configurations simultaneously, A/B testing. Compare performance metrics and visualize results in real-time.
 
-**Ledger** — Canton wallets, transfers, and immutable audit trails [here too, also we are not descrbiing either the functions of ledger in our P2Engine here..]
-
----oki
+**Ledger** — Agents have wallets and can transfer funds. All transactions are recorded with complete audit trails.
 
 ## Core
 
