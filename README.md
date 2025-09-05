@@ -14,7 +14,7 @@ The full framework lives inside the [`p2engine/`](p2engine/) directory, with set
 
 I’ve also written an article on P2Engine, the research , the ideas, tech, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
 
-[Showcase](#showcase) • [P2Engine](#p2engine) • [Rollouts](#rollouts) • [Ledger](#ledger) • [Section 5](#section-5) • [Section 6](#sectoin-6)
+[Showcase](#showcase) • [P2Engine](#p2engine) • [Rollouts](#rollouts) • [Ledger](#ledger) • [Architecture Diagrams](#architecture-diagrams) • [Future](#future)
 
 ---
 
@@ -80,33 +80,36 @@ What rollouts are they set the stage for the proper learning loop p2eninge is ba
 
 [is it leger that will call it? this is like the question im asking myself ledger, ledger operations]
 
-Canton Network, The network of networks as they say, currently in our framework here it serves as a great enable to test out working with a ledger for some basic stuff. It gives us and it has the functions which something like P2Engine in the future will happen to like to explore such as, more on this and why -> artilce
+In addition to all these great stuff, With Eriks ideas we have something that, and it made it simple to extend it with canton network for us. Here we do.. We extend P2Engine with the integration of distributed-ledger technology to provide immutable audit trails, privacy-aware operations, and verifiable accountability for all agent actions and financial transactions. This ensures that the system maintains a permanent, tamper-evident record of all significant operations, supporting both regulatory compliance and its own system verification.
 
-<br>
-
-In addition to all these great stuff, With Eriks ideas we have something that, and it made it simple to extend it with canton network for us. Here we do.. We extend P2Engine with the integration of distributed-ledger technology to provide immutable audit trails, privacy-aware operations, and verifiable accountability for all agent actions and financial transactions. This pillar ensures that the system maintains a permanent, tamper-evident record of all significant operations, supporting both regulatory compliance and its own system verification.
+[This sounds very yappy]
+[ i dont like all this yapp we need ajort imrpovemnt
+the comment about that erik ideas we don nede that here]
 
 - Canton Network/DAML integration: Ledger operations implemented in services/canton_ledger_service.py.
 - Financial accountability: Agent wallets, transfers, and transaction history logged on-chain.
 - Complete audit trails: Every interaction and side-effect routed through ledger hooks in infra/ledger_hooks.py.
 
+Why canton? needs to be better, but just say some clean stuf 1 , 2 sentences. Canton Network, The network of networks as they say, currently in our framework here it serves as a great enable to test out working with a ledger for some basic stuff. It gives us and it has the functions which something like P2Engine in the future will happen to like to explore such as, more on this and why -> artilce [this is oki to say but maybe as like a middle or last pargrpah or in start but yeh]
+
+<br>
+
 ---
 
-## Section 5
+## Architecture Diagrams
 
 lets go some diagrams to get some intution, this is not like the core but yeh
+[i like to have commenct like this and also ofc better tilte than archtirue diagrams but yup]
 
-### Architecture Diagrams
-
-#### Figure 5.3.1 — Execution Sequence
+#### Execution Sequence
 
 <p align="center">
   <img src="p2engine/docs/architecture/execution-sequence.png" alt="Execution Sequence" width="820">
   <br>
-  <em>Figure 5.3.1: Execution Flow</em>
+  <em>Execution Sequence Flow</em>
 </p>
 
-The system execution follows the sequence shown in Figure 5.3.1, demonstrating end-to-end integration across all architectural layers. The execution unfolds through six integrated stages:
+The system execution follows the sequence shown in our figure here [figure maybe wrong word], demonstrating end-to-end integration across all architectural layers. The execution unfolds through six integrated stages:
 
 - **Agent Processing** — Consumes conversation states and produces responses or tool invocations.
 - **Tool Execution** — Runs asynchronously, publishing results back into the conversation streams.
@@ -117,12 +120,12 @@ The system execution follows the sequence shown in Figure 5.3.1, demonstrating e
 
 ---
 
-#### Observability Events — Unified Event Stream
+#### Unified Event Stream
 
 <p align="center">
   <img src="p2engine/docs/architecture/observability-events.png" alt="Observability Events" width="820">
   <br>
-  <em>Unified observability: every interaction captured for full traceability</em>
+  <em>Every interaction captured for full traceability</em>
 </p>
 
 The observability architecture is built around four core mechanisms:
@@ -134,17 +137,17 @@ The observability architecture is built around four core mechanisms:
 
 ---
 
-#### Figure 5.2.2 — Orchestration FSM
+#### FSM
 
 <p align="center">
   <img src="p2engine/docs/architecture/orchestration-fsm.png" alt="Orchestration FSM" width="820">
   <br>
-  <em>Figure 5.2.2: Finite State Machine Flow</em>
+  <em>Finite State Machine Flow</em>
 </p>
 
-The purpose of the orchestration layer is to enable dynamic agent coordination where the system itself decides task distribution and agent deployment through emergent, configurable behavior. The orchestration layer implements finite state machine orchestration, ensuring coherent state progression while enabling dynamic routing decisions and handling non-deterministic outputs from agents.
+P2Engine implements finite state machine orchestration, ensuring coherent state progression while enabling dynamic routing decisions and handling non-deterministic outputs from agents.
 
-The design rests on four interlocking ideas, fully inspired by Erik’s work (Erik 2025a; Erik 2025b; Erik 2025c; Erik 2025d):
+The design rests on four interlocking ideas, fully inspired by Erik’s work.
 
 - **Emergent Coordination** — Empowers the system to decide at runtime how many agents to deploy and how to assign tasks, moving beyond rigid sequential workflows to truly configurable behavior.
 - **Finite State Machine Control** — Governs state transitions with explicit rules and handlers, ensuring deterministic progression while allowing dynamic routing based on agent outputs.
@@ -153,23 +156,23 @@ The design rests on four interlocking ideas, fully inspired by Erik’s work (Er
 
 ---
 
-#### Figure 6.3.7 — Transaction Flow
+#### Transaction Flow
 
 <p align="center">
   <img src="p2engine/docs/architecture/transaction_flow.png" alt="Transaction Flow" width="820">
   <br>
-  <em>Figure 6.3.7: From initiation to ledger confirmation</em>
+  <em>It shows the From initiation to ledger confirmation</em>
 </p>
 
-The transaction flow ensures that all financial operations follow a consistent pattern with proper validation, execution, and recording. Figure 6.3.7 illustrates the complete flow from initiation to ledger confirmation.
-
-**Audit & money movement context.** The flow is anchored by an audit layer: every balance change and transfer (Canton/DAML) is appended to an immutable trail with the relevant metadata. This supports post-hoc inspection, compliance reporting, and reconciliation, while keeping operational paths simple and verifiable.
+The transaction flow ensures that all financial operations follow a consistent pattern with proper validation, execution, and recording. Our image illustrates the complete flow from initiation to ledger confirmation. And this it how it goes, every balance change and transfer (Canton/DAML) is appended to an immutable trail with the relevant metadata. This supports post-hoc inspection, compliance reporting, and reconciliation, while keeping operational paths simple and verifiable. [could we have a sentence like this or no no?]
 
 ---
 
-## Sectoin 6
+## Future
 
-### Future
+So what is next for P2Engine?
+
+Feel like we should shorten this all, but what is written here and the lingo is nice..
 
 Next, completing a minimal learning loop (prompt/RL-style) that tunes prompts/tools(what they could use)using stored trajectories.
 
