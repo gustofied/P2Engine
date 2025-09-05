@@ -14,7 +14,7 @@ The full framework lives inside the [`p2engine/`](p2engine/) directory, with set
 
 I’ve also written an article on P2Engine, the research , the ideas, tech, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
 
-[Showcase](#showcase) • [P2Engine](#p2engine) • [Section 3](#section-3) • [Section 4](#section-4) • [Section 5](#section-5) • [Section 6](#sectoin-6)
+[Showcase](#showcase) • [P2Engine](#p2engine) • [Rollouts](#rollouts) • [Section 4](#section-4) • [Section 5](#section-5) • [Section 6](#sectoin-6)
 
 ---
 
@@ -56,16 +56,14 @@ So To ramble, and quickly summaries what P2Engine has, it gives us agent interfa
 
 ---
 
-## Section 3
-
-### Rollouts
+## Rollouts
 
 <p align="center">
   <a href="https://www.adamsioud.com/projects/p2engine.html?v=hero">
-    <img src="demos/rollout_rerun_showcase_4x_short.gif" alt="Rerun Showcase" width="560">
+    <img src="demos/rollout_rerun_showcase_4x_short.gif" alt="Rerun Showcase" width="450">
   </a>
   <br>
-  <em>Rerun Showcase — click to open full viewer</em>
+  <em>Click for a full video demonstration</em>
 </p>
 
 With P2Engine you can build systems however you like. And rollouts is the place we do this now, they are kind of our , Simulations are executed via rollouts ([runtime/rollout/cli.py](p2engine/runtime/rollout/cli.py)) with configuration files (e.g., [config/rollout_ledger_demo.yml](p2engine/config/rollout_ledger_demo.yml)) defining reproducible scenarios. These demonstrate that p2engine effectively enables coordination across diverse agent roles, ensures traceability through ledger-backed records, manages payments seamlessly, and supports judgment with automated evaluation tools. Results (metrics, visualizations) presented in the thesis empirically validate the system's feasibility and provide foundation for future research directions.
