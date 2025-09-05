@@ -1,7 +1,10 @@
-# P2Engine: A Multi-Agent System Framework
-
-**A framework + runtime to build, run, and evaluate multi-agent systems. Extended with the Canton Network to enable monetary incentives, payments, and audits.**
-
+<div align="center">
+<h1> P2Engine: A Multi-Agent System Framework</h1>
+</div>
+<div align="center">
+<b> A framework + runtime to build, run, and evaluate multi-agent systems. Extended with the Canton Network to enable monetary incentives, payments, and audits. </b> 
+</div>
+<br>
 <div align="center">
 "Coordinate agents, evaluate each step, store trajectories, replay & observe"
 </div>
