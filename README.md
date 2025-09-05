@@ -20,8 +20,6 @@ I’ve also written an article on P2Engine, the research , the ideas, tech, and 
 
 ## Showcase
 
-_Click any demo below for a full video demonstration_
-
 <!-- Centered 2×2 demo gallery that works on GitHub -->
 <div align="center">
 
@@ -51,20 +49,20 @@ _Click any demo below for a full video demonstration_
         <a href="https://www.adamsioud.com/projects/p2engine.html?v=e4">
           <img src="demos/thumbs/e4_320x180.gif" alt="Ledger Operations">
         </a><br>
-        <sub><b>Ledger Operations</b></sub>
+        <sub><b>Ledger</b></sub>
       </td>
     </tr>
   </table>
 <p><em>Click any demo for a full video demonstration</em></p>
 </div>
 
-**Agent Delegation** — Agents can delegate tasks to sub-agents, and conversation state is tracked.
+**Agent Delegation** — Agents delegate to sub-agents; conversation state is tracked. [better please?]
 
-**Branch Rewind** — Rewind a conversation to x state, branch identifiers preserve causality, and branches; branches can be checked in/out. Branch / Rewind — Fork a trajectory at step k; branch IDs preserve causality for comparison.
+**Branch Rewind** — Rewind a conversation to step k, branches can be checked in/out. [This needs to be a tad bit better]
 
-**Rollouts** — Use rollouts, with rollouts you can configure rubrics, agent teams, and variants, and then test them across different scenarios and tools. Coupled with rerun visualization get a full observability and track it all. Rerun (viewer) logging & visualization.
+**Rollouts** — Run Rollouts, A/B configs; stream logs and visualize in Rerun. [Here too]
 
-**Ledger Operations** — [maybe dont want the word ledger operations] Agents maintain wallets on Canton Network, perform autonomous transfers, and all transactions are immutably recorded.
+**Ledger** — Canton wallets, transfers, and immutable audit trails [here too, also we are not descrbiing either the functions of ledger in our P2Engine here..]
 
 ---
 
