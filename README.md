@@ -45,9 +45,9 @@ _Click any demo below for a full video demonstration_
     <tr>
       <td align="center" width="420">
         <a href="https://www.adamsioud.com/projects/p2engine.html?v=e3">
-          <img src="demos/thumbs/e3_320x180.gif" alt="Rollout with Rerun Logging & Visualizing">
+          <img src="demos/thumbs/e3_320x180.gif" alt="Rollouts">
         </a><br>
-        <sub><b>Rollout with Rerun Logging & Visualizing</b></sub>
+        <sub><b>Rollouts</b></sub>
       </td>
       <td align="center" width="420">
         <a href="https://www.adamsioud.com/projects/p2engine.html?v=e4">
@@ -64,7 +64,7 @@ _Click any demo below for a full video demonstration_
 
 **Branch Rewind** — Rewind a conversation to x state, branch identifiers preseve causality, and bracnhes could be checked in&out from. Branch / Rewind — Fork a trajectory at step k; branch IDs preserve causality for comparison.
 
-**Rollout with Rerun Logging & visualization** — Use rollouts, with rollouts you can configure rubrics, agent teams, and variants, and then test them across different scenarios and tools. Coupled with rerun visualization get a full observablity and track it all. Rerun (viewer) logging & visualization.
+**Rollouts** — Use rollouts, with rollouts you can configure rubrics, agent teams, and variants, and then test them across different scenarios and tools. Coupled with rerun visualization get a full observablity and track it all. Rerun (viewer) logging & visualization.
 
 **Ledger Operations** — [maybe dont want the word ledger operations] Agents maintain wallets on Canton Network, perform autonomous transfers, and all transactions are immutably recorded.
 
