@@ -1,14 +1,15 @@
 # P2Engine: A Multi-Agent System Framework
 
-**A framework + runtime to build, run, and evaluate multi-agent systems. Extended with the Canton Network to enable monetary incentives, payments, and audits.**
+A framework + runtime to build, run, and evaluate multi-agent systems. Extended with the Canton Network to enable monetary incentives, payments, and audits.
 
-**Coordinate agents, evaluate each step, store trajectories, replay & observe.**
+<div align="center">
+<sub>"Coordinate agents, evaluate each step, store trajectories, replay & observe"</sub>
+</div>
+<br>
 
-The framework is located in the `p2engine/` directory, with setup instructions and full documentation in `p2engine/README.md`.
+The full framework lives inside the [`p2engine/`](p2engine/) directory, with setup instructions and detailed documentation in [`p2engine/README.md`](p2engine/README.md).
 
-I wrote an article. Read the [full backstory, vision, and technical deep-dive](https://www.adamsioud.com/projects/p2engine.html) to understand the motivation and design philosophy behind P2Engine.
-
-[Section 1](#section-1) • [Section 2](#section-2) • [Section 3](#section-3) • [Section 4](#section-4) • [Section 5](#section-5) • [Section 6](#section-6)
+I’ve also written an article on P2Engine, the research , the ideas, tech, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
 
 ---
 
