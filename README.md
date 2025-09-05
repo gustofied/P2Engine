@@ -179,22 +179,18 @@ The transaction flow ensures that all financial operations follow a consistent p
 
 ## Future
 
-So what is next for P2Engine?
+So, what’s next for P2Engine?
 
-I think a big and first win, would be to **close the learning loop.** Use the stored trajectories and evaluator rewards to optimize system prompts, routing, tools, and model choices. And I do think the type of learning which fits for P2Engine to try out first, is the "System Prompt Learning". So the goal is to start by improving the “program around the model” (prompts, tool availability, temperatures, routing) instead of retraining weights.
+A first big win is to **close the learning loop.** Use the stored trajectories and evaluator rewards to optimize system prompts, routing, tools, and model choices. The iniial focus will be "System Prompt Learning" where the goal will be to improve the “program around the model” (prompts, tool availability, temperatures, routing) instead of retraining weights. And I do think this type of learning that fits nicely with P2Engine, and is not a long way away to achieve. We need to first firm up the rollout module, evaluator, and rewards, fix a few internals, then already we can start experimenting with this learning loop.
 
-This means first go into the rollout module, the evalutaor and rewards, fix up on some internals, and we are basically good to go, to experiment with this.
+In the system prompt learning loop, the router/root agent gives several sub-agents the same task with different configs, scores their steps/outputs, and propagates the best strategy (prompt text, tool allowlist, model, temperature) to weaker variants. Updates can be applied per-step, at checkpoints, or at the end of the trajectory. We treat each system prompt as a configuration to optimize. It learns which of the prompts models to adjust what works which approaches worked etc. So as Karpathy says its about figuring out which approach for an agent is the best, and that is often steered by the system prompt itself not the weights.
 
-The "system-prompt learning" loop will be to have our root agent, decide by feedback what prompt to use/adjust on his sub agents as they go at there tasks, so let's say he gives all the same tasks to them, he sees who is doing well what system prompt it has, it then goes and adjusts the others, added on to it could even be adjusting which models, temprature, which tools it could use, and this feedback adn adjustemnt would be at each step, checkpoints or at at end of trijectory. Wetreat each agent’s system prompt as a configuration to optimize. It learns which of the prompts models to adjust what works which approaches worked etc. So as Karapthy says its about figuring out which approach for an agent is the best, and that is often steered by the system prompt itself not the weights.
-
-Heavy ramble but yes so in all:
-
-Treat each system prompt as a living program the root/router edits based on evaluator feedback. During a rollout, the router compares sibling agents (same task, different configs), propagates the best-performing strategies (prompt text, tool choices, temperature), and normalizes around them.
+So again, treat each system prompt as a living program the root/router edits based on evaluator feedback. During a rollout, the router compares sibling agents (same task, different configs), propagates the best-performing strategies (prompt text, tool choices, temperature), and normalizes around them.
 
 This idea adopts, reflects and builds upon the thinking of:
 
 - [A tweet by Karpathy on System Prompt Learning](https://x.com/karpathy/status/1921368644069765486)
 - [Against RL: The Case for System 2 Learning](https://blog.elicit.com/system-2-learning)
-- [Part 4: Improving agent reasoning](https://www.arnovich.com/writings/state_machines_for_multi_agent_part_4/), and [More Thoughts on Agents](https://www.arnovich.com/writings/more_on_agents/).
+- [Part 4: Improving agent reasoning](https://www.arnovich.com/writings/state_machines_for_multi_agent_part_4/), and [More Thoughts on Agents](https://www.arnovich.com/writings/more_on_agents/)
 
 Once that’s in place, who knows where P2Engine goes next!
