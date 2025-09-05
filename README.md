@@ -8,7 +8,8 @@
 <div align="center">
 "Coordinate agents, evaluate each step, store trajectories, replay & observe"
 </div>
-<br>
+
+---
 
 The full framework lives inside the [`p2engine/`](p2engine/) directory, with setup instructions and detailed documentation in [`p2engine/README.md`](p2engine/README.md).
 
@@ -24,8 +25,6 @@ _Click any demo below for a full video demonstration_
 
 <!-- Centered 2×2 demo gallery that works on GitHub -->
 <div align="center">
-
-  <p><em>Click any demo for a full video demonstration</em></p>
 
   <table align="center">
     <tr>
@@ -57,7 +56,7 @@ _Click any demo below for a full video demonstration_
       </td>
     </tr>
   </table>
-
+<p><em>Click any demo for a full video demonstration</em></p>
 </div>
 
 **Agent Delegation** — Agents can delegate tasks to sub-agents, and conversation state is tracked.
