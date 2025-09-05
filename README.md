@@ -60,9 +60,9 @@ _Click any demo below for a full video demonstration_
 
 **Agent Delegation** — Agents can delegate tasks to sub-agents, and conversation state is tracked.
 
-**Branch Rewind** — Rewind a conversation to x state, branch identifiers preseve causality, and bracnhes could be checked in&out from. Branch / Rewind — Fork a trajectory at step k; branch IDs preserve causality for comparison.
+**Branch Rewind** — Rewind a conversation to x state, branch identifiers preserve causality, and branches; branches can be checked in/out. Branch / Rewind — Fork a trajectory at step k; branch IDs preserve causality for comparison.
 
-**Rollouts** — Use rollouts, with rollouts you can configure rubrics, agent teams, and variants, and then test them across different scenarios and tools. Coupled with rerun visualization get a full observablity and track it all. Rerun (viewer) logging & visualization.
+**Rollouts** — Use rollouts, with rollouts you can configure rubrics, agent teams, and variants, and then test them across different scenarios and tools. Coupled with rerun visualization get a full observability and track it all. Rerun (viewer) logging & visualization.
 
 **Ledger Operations** — [maybe dont want the word ledger operations] Agents maintain wallets on Canton Network, perform autonomous transfers, and all transactions are immutably recorded.
 
@@ -94,9 +94,9 @@ So To ramble, and quickly summaries what P2Engine has, it gives us agent interfa
   <em>Click for a full video demonstration</em>
 </p>
 
-To test how P2Engine was working I used a combination of chat and rollouts. Rollouts became the primary way to sort of simulate stuff and see interactions, logs, and transactions on the ledger. This means in it's current form it's a bit sided to facilitate more of experimental cases and where the current configuration files (e.g., [p2engine/config/rollout_joke.yml](p2engine/config/rollout_joke.yml)) are more examples of simulations rather than true A/B testing.
+To test how P2Engine was working I used a combination of chat and rollouts. Rollouts became the primary way to sort of simulate stuff and see interactions, logs, and transactions on the ledger. This means in its current form, it's a bit sided to facilitate more of experimental cases and where the current configuration files (e.g., [p2engine/config/rollout_joke.yml](p2engine/config/rollout_joke.yml)) are more examples of simulations rather than true A/B testing.
 
-But that dosent mean the plumbing is not support rollouts, becuase that is what it is. It is set up such that the rollout system provides A/B testing capabilities for systematically comparing different agent configurations, tool combinations, and behavioral parameters. Implemented in the [runtime/rollout/](p2engine/runtime/rollout/) module, and it works nice with the Celery task system so we get distributed execution, enabling parallel evaluation of multiple configuration variants. And as stated, the rollout system uses YAML configuration files to define rollout experiments, specifying teams, base settings, variants, and evaluation criteria. From a rollout we get metrics, visualizations, through P2Engine shell, logs, and rerun. We get to audit and see the transactions that happen during, and we get to replay, inspect and x. [maybe we need to talk about hooked into a eval in this and rewards emtrics?]
+But that doesn’t mean the plumbing is not support rollouts, because that is what it is. It is set up such that the rollout system provides A/B testing capabilities for systematically comparing different agent configurations, tool combinations, and behavioral parameters. Implemented in the [runtime/rollout/](p2engine/runtime/rollout/) module, and it works nice with the Celery task system so we get distributed execution, enabling parallel evaluation of multiple configuration variants. And as stated, the rollout system uses YAML configuration files to define rollout experiments, specifying teams, base settings, variants, and evaluation criteria. From a rollout we get metrics, visualizations, through P2Engine shell, logs, and rerun. We get to audit and see the transactions that happen during, and we get to replay, inspect and x. [maybe we need to talk about hooked into a eval in this and rewards emtrics?]
 
 What rollouts are they set the stage for the proper learning loop p2eninge is base for. the missing part in true, is the fedeback to root. [let's make this a tad better but i like the hook into and explination here]
 
@@ -110,7 +110,7 @@ Rollouts: “Designed for controlled experiments; great for A/B variants of prom
 
 ## Ledger
 
-[is it leger that will call it? this is like the question im asking myself ledger, ledger operations]
+[is it ledger that will call it? this is like the question im asking myself ledger, ledger operations]
 
 In addition to all these great stuff, With Eriks ideas we have something that, and it made it simple to extend it with canton network for us. Here we do.. We extend P2Engine with the integration of distributed-ledger technology to provide immutable audit trails, privacy-aware operations, and verifiable accountability for all agent actions and financial transactions. This ensures that the system maintains a permanent, tamper-evident record of all significant operations, supporting both regulatory compliance and its own system verification.
 
@@ -211,7 +211,7 @@ The transaction flow ensures that all financial operations follow a consistent p
 
 So, what’s next for P2Engine?
 
-A first big win is to **close the learning loop.** Use the stored trajectories and evaluator rewards to optimize system prompts, routing, tools, and model choices. The iniial focus will be "System Prompt Learning" where the goal will be to improve the “program around the model” (prompts, tool availability, temperatures, routing) instead of retraining weights. And I do think this type of learning that fits nicely with P2Engine, and is not a long way away to achieve. We need to first firm up the rollout module, evaluator, and rewards, fix a few internals, then already we can start experimenting with this learning loop.
+A first big win is to **close the learning loop.** Use the stored trajectories and evaluator rewards to optimize system prompts, routing, tools, and model choices. The initial focus will be "System Prompt Learning" where the goal will be to improve the “program around the model” (prompts, tool availability, temperatures, routing) instead of retraining weights. And I do think this type of learning that fits nicely with P2Engine, and is not a long way away to achieve. We need to first firm up the rollout module, evaluator, and rewards, fix a few internals, then already we can start experimenting with this learning loop.
 
 In the system prompt learning loop, the router/root agent gives several sub-agents the same task with different configs, scores their steps/outputs, and propagates the best strategy (prompt text, tool allowlist, model, temperature) to weaker variants. Updates can be applied per-step, at checkpoints, or at the end of the trajectory. We treat each system prompt as a configuration to optimize. It learns which of the prompts models to adjust what works which approaches worked etc. So as Karpathy says its about figuring out which approach for an agent is the best, and that is often steered by the system prompt itself not the weights.
 
