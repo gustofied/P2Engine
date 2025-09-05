@@ -14,7 +14,7 @@ The full framework lives inside the [`p2engine/`](p2engine/) directory, with set
 
 I’ve also written an article on P2Engine, the research , the ideas, tech, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
 
-[Showcase](#showcase) • [P2Engine](#p2engine) • [Rollouts](#rollouts) • [Section 4](#section-4) • [Section 5](#section-5) • [Section 6](#sectoin-6)
+[Showcase](#showcase) • [P2Engine](#p2engine) • [Rollouts](#rollouts) • [Ledger](#ledger) • [Section 5](#section-5) • [Section 6](#sectoin-6)
 
 ---
 
@@ -66,15 +66,17 @@ So To ramble, and quickly summaries what P2Engine has, it gives us agent interfa
   <em>Click for a full video demonstration</em>
 </p>
 
-With P2Engine you can build systems however you like. And rollouts is the place we do this now, they are kind of our , Simulations are executed via rollouts ([runtime/rollout/cli.py](p2engine/runtime/rollout/cli.py)) with configuration files (e.g., [config/rollout_ledger_demo.yml](p2engine/config/rollout_ledger_demo.yml)) defining reproducible scenarios. These demonstrate that p2engine effectively enables coordination across diverse agent roles, ensures traceability through ledger-backed records, manages payments seamlessly, and supports judgment with automated evaluation tools. Results (metrics, visualizations) presented in the thesis empirically validate the system's feasibility and provide foundation for future research directions.
+To test how P2Engine was working I used a combination of chat and rollouts. Rollouts became the primary way to sort of simulate stuff and see interactions, logs, and transactions on the ledger. This means in it's current form it's a bit sided to facilitate more of experimental cases and where the current configuration files (e.g., [p2engine/config/rollout_joke.yml](p2engine/config/rollout_joke.yml)) are more examples of simulations rather than true A/B testing.
 
-Rollouts set the stage for adaptation methods. The rollout system provides A/B testing capabilities for systematically comparing different agent configurations, tool combinations, and behavioral parameters. Implemented in the [runtime/rollout/](p2engine/runtime/rollout/) module, it integrates seamlessly with the Celery task system for distributed execution, enabling parallel evaluation of multiple configuration variants. The system uses YAML configuration files to define rollout experiments, specifying teams, base settings, variants, and evaluation criteria.
+But that dosent mean the plumbing is not support rollouts, becuase that is what it is. It is set up such that the rollout system provides A/B testing capabilities for systematically comparing different agent configurations, tool combinations, and behavioral parameters. Implemented in the [runtime/rollout/](p2engine/runtime/rollout/) module, and it works nice with the Celery task system so we get distributed execution, enabling parallel evaluation of multiple configuration variants. And as stated, the rollout system uses YAML configuration files to define rollout experiments, specifying teams, base settings, variants, and evaluation criteria. From a rollout we get metrics, visualizations, through P2Engine shell, logs, and rerun. We get to audit and see the transactions that happen during, and we get to replay, inspect and x. [maybe we need to talk about hooked into a eval in this and rewards emtrics?]
+
+What rollouts are they set the stage for the proper learning loop p2eninge is base for. the missing part in true, is the fedeback to root. [let's make this a tad better but i like the hook into and explination here]
+
+[help me out here chat..]
 
 ---
 
-## Section 4
-
-### Ledger
+## Ledger
 
 [is it leger that will call it? this is like the question im asking myself ledger, ledger operations]
 
