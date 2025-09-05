@@ -14,7 +14,7 @@ The full framework lives inside the [`p2engine/`](p2engine/) directory, with set
 
 I’ve also written an article on P2Engine, the research , the ideas, tech, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
 
-[Showcase](#showcase) • [P2Engine](#p2engine) • [Rollouts](#rollouts) • [Ledger](#ledger) • [Architecture Diagrams](#architecture-diagrams) • [Future](#future)
+[Showcase](#showcase) • [Core](#core) • [Rollouts](#rollouts) • [Ledger](#ledger) • [Diagrams](#diagrams) • [Future](#future)
 
 ---
 
@@ -64,9 +64,9 @@ I’ve also written an article on P2Engine, the research , the ideas, tech, and 
 
 **Ledger** — Canton wallets, transfers, and immutable audit trails [here too, also we are not descrbiing either the functions of ledger in our P2Engine here..]
 
----
+---oki
 
-## P2Engine
+## Core
 
 [we need a better title to say here, like we are describing p2engine in full yes, hmm]
 
@@ -133,10 +133,9 @@ need a tad bit more homage or lead towards using canton or? maybe not
 
 ---
 
-## Architecture Diagrams
+## Diagrams
 
-lets go some diagrams to get some intution, this is not like the core but yeh
-[i like to have commenct like this and also ofc better tilte than archtirue diagrams but yup]
+Here are four diagrams presenting key aspects of P2Engine's implementation.
 
 #### Execution Sequence
 
