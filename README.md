@@ -5,8 +5,7 @@
 <b> A framework + runtime to build, run, and evaluate multi-agent systems. Extended with the Canton Network to enable monetary incentives, payments, and audits. </b> 
 </div>
 <br>
-<div align="center">
-"Coordinate agents, evaluate each step, store trajectories, replay & observe"
+<div align="center"> orchestrate agents • evaluate each step • branch & rewind • trajectories & artifacts • replay & observe
 </div>
 
 ---
@@ -130,6 +129,8 @@ Ledger: “Optional, permissioned ledger integration (Canton/Daml) for accountab
 ledger operations -> on-ledger actions
 
 on the Canton ledger.
+
+need a tad bit more homage or lead towards using canton or? maybe not
 <br>
 
 ---
