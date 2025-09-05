@@ -22,13 +22,43 @@ I’ve also written an article on P2Engine, the research , the ideas, tech, and 
 
 _Click any demo below for a full video demonstration_
 
-|                                           **Agent Delegation**                                            |                                           **Branch Rewind**                                            |
-| :-------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: |
-| [![Agent Delegation](demos/thumbs/e1_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e1) | [![Branch Rewind](demos/thumbs/e2_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e2) |
+<!-- Centered 2×2 demo gallery that works on GitHub -->
+<div align="center">
 
-|                                           **Rollout with Rerun Logging & Visualizing**                                            |                                           **Ledger Operations**                                            |
-| :-------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------: |
-| [![Rollout with Rerun Logging & Visualizing](demos/thumbs/e3_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e3) | [![Ledger Operations](demos/thumbs/e4_320x180.gif)](https://www.adamsioud.com/projects/p2engine.html?v=e4) |
+  <p><em>Click any demo for a full video demonstration</em></p>
+
+  <table align="center">
+    <tr>
+      <td align="center" width="420">
+        <a href="https://www.adamsioud.com/projects/p2engine.html?v=e1">
+          <img src="demos/thumbs/e1_320x180.gif" alt="Agent Delegation">
+        </a><br>
+        <sub><b>Agent Delegation</b></sub>
+      </td>
+      <td align="center" width="420">
+        <a href="https://www.adamsioud.com/projects/p2engine.html?v=e2">
+          <img src="demos/thumbs/e2_320x180.gif" alt="Branch Rewind">
+        </a><br>
+        <sub><b>Branch Rewind</b></sub>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" width="420">
+        <a href="https://www.adamsioud.com/projects/p2engine.html?v=e3">
+          <img src="demos/thumbs/e3_320x180.gif" alt="Rollout with Rerun Logging & Visualizing">
+        </a><br>
+        <sub><b>Rollout with Rerun Logging & Visualizing</b></sub>
+      </td>
+      <td align="center" width="420">
+        <a href="https://www.adamsioud.com/projects/p2engine.html?v=e4">
+          <img src="demos/thumbs/e4_320x180.gif" alt="Ledger Operations">
+        </a><br>
+        <sub><b>Ledger Operations</b></sub>
+      </td>
+    </tr>
+  </table>
+
+</div>
 
 **Agent Delegation** — Agents can delegate tasks to sub-agents, and conversation state is tracked.
 
