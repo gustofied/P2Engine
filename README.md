@@ -14,7 +14,7 @@ The full framework lives inside the [`p2engine/`](p2engine/) directory, with set
 
 I’ve also written an article on P2Engine, the research , the ideas, tech, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
 
-[Showcase](#showcase) • [Section 2](#section-2) • [Section 3](#section-3) • [Section 4](#section-4) • [Section 5](#section-5) • [Section 6](#sectoin-6)
+[Showcase](#showcase) • [P2Engine](#p2engine) • [Section 3](#section-3) • [Section 4](#section-4) • [Section 5](#section-5) • [Section 6](#sectoin-6)
 
 ---
 
@@ -40,13 +40,19 @@ _Click any demo below for a full video demonstration_
 
 ---
 
-## Section 2
+## P2Engine
 
-P2Engine’s orchestration is fundamentally built on finite state machine (FSM) principles, where each agent conversation progresses through well-defined states with explicit transition rules (Erik 2025a). This approach provides predictable behavior while enabling complex multi-agent interactions.
+[we need a better title to say here, like we are describing p2engine in full yes, hmm]
 
-At its core, P2Engine runs LLM-agents in discrete steps. Each step produces artifacts, and a separate and async evaluator scores them. You can think of it like this: the agent thinks, acts, and creates something; the evaluator observes, scores, then which is not yet implemented the root/router or evaluator takes the feedback then decides the next tool, step, or configuration.
+P2Engine's architecture and internals are inspired by a beautiful and well-thought-out blueprint laid down by [Erik](https://eriksfunhouse.com). His architecture proposal and taste for systems, agents, tools, prompt templates, etc. have guided P2Engine to what it is today. A total recommendation: check out his series, here is [Part 1](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_1/), and then continue to [Part 2](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_2/), [Part 3](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_3/), and [Part 4](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_4/).
 
-So To ramble, P2Engine, gives us agent interfaces, tool registry, templates/personas, runtime policies. A pushdown automata esque, it is a finite state machine with an interaction stack. It has branching, rewind, artifacts and an artifacts bus, Redis-backed session/state. Judge prompts, metrics, branch scoring, rollout experimentation. Chat, artifacts inspect/diff, rollouts, ledger ops, conversation watch. Rich logs; optional with rerun views and real-time monitors. And the ledger (Canton/DAML) integration gives us balances, transfers, and audit trails.
+P2Engine’s orchestration is fundamentally built on finite state machine (FSM) principles, where each agent conversation progresses through well-defined states with explicit transition rules. This approach provides predictable behavior while enabling complex multi-agent interactions.
+
+At its core, P2Engine runs LLM-agents in discrete steps. Each step produces artifacts, and a separate and async evaluator scores them. You can think of it like this: the agent thinks, acts, and creates something; the evaluator observes, scores, then which is not yet implemented the root/router or evaluator takes the feedback then decides the next tool, step, or configuration. [hmm this needs to be clearer written kinda, and also is a tad bit negative no?]
+
+[before the ramble which i like, aybe we are missing one or two paragrpahs to explain p2engine here? hmm]
+
+So To ramble, and quickly summaries what P2Engine has, it gives us agent interfaces, tool registry, templates/personas, runtime policies. A pushdown automata esque, it is a finite state machine with an interaction stack. It has branching, rewind, artifacts and an artifacts bus, Redis-backed session/state. Judge prompts, metrics, branch scoring, rollout experimentation. Chat, artifacts inspect/diff, rollouts, ledger ops, conversation watch. Rich logs; optional with rerun views and real-time log print outs. And the ledger (Canton/DAML) integration gives us balances, transfers, and audit trails.
 
 ---
 
@@ -64,8 +70,6 @@ So To ramble, P2Engine, gives us agent interfaces, tool registry, templates/pers
 
 With P2Engine you can build systems however you like. And rollouts is the place we do this now, they are kind of our , Simulations are executed via rollouts ([runtime/rollout/cli.py](p2engine/runtime/rollout/cli.py)) with configuration files (e.g., [config/rollout_ledger_demo.yml](p2engine/config/rollout_ledger_demo.yml)) defining reproducible scenarios. These demonstrate that p2engine effectively enables coordination across diverse agent roles, ensures traceability through ledger-backed records, manages payments seamlessly, and supports judgment with automated evaluation tools. Results (metrics, visualizations) presented in the thesis empirically validate the system's feasibility and provide foundation for future research directions.
 
-<br>
-
 Rollouts set the stage for adaptation methods. The rollout system provides A/B testing capabilities for systematically comparing different agent configurations, tool combinations, and behavioral parameters. Implemented in the [runtime/rollout/](p2engine/runtime/rollout/) module, it integrates seamlessly with the Celery task system for distributed execution, enabling parallel evaluation of multiple configuration variants. The system uses YAML configuration files to define rollout experiments, specifying teams, base settings, variants, and evaluation criteria.
 
 ---
@@ -73,6 +77,8 @@ Rollouts set the stage for adaptation methods. The rollout system provides A/B t
 ## Section 4
 
 ### Ledger
+
+[is it leger that will call it? this is like the question im asking myself ledger, ledger operations]
 
 Canton Network, The network of networks as they say, currently in our framework here it serves as a great enable to test out working with a ledger for some basic stuff. It gives us and it has the functions which something like P2Engine in the future will happen to like to explore such as, more on this and why -> artilce
 
