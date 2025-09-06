@@ -172,7 +172,7 @@ The execution process follows the interactions shown in the Sequence Diagram, il
 - **Event Publication** — Broadcasts state-change events so they can be logged, traced, or visualized in real time.
 - **Evaluation Triggering** — Runs automated evaluation when a conversation completes or a "configured" step is
   reached.
-- **Reward Settlement** - Converts evaluation results into payments recorded on the ledger.
+- **Reward Settlement** — Converts evaluation results into payments recorded on the ledger.
 
 ---
 
@@ -181,15 +181,17 @@ The execution process follows the interactions shown in the Sequence Diagram, il
 <p align="center">
   <img src="p2engine/docs/architecture/observability-events.png" alt="Observability Events" width="820">
   <br>
-  <em>Every interaction captured for full traceability</em>
+  <em>All system events flow through a single stream</em>
 </p>
 
-The observability architecture is built around four core mechanisms:
+The unified event stream powers monitoring, debugging, and analysis by capturing every significant system event. It is built around four key principles:
 
-- **Universal Event Streaming** — Ensures that every system activity flows through a central event stream, making agent decision-making and system-wide behavior patterns fully transparent in real time.
-- **Complete Traceability** — Records both metadata and payload in each event, preserving causal links across all agent interactions for a holistic understanding.
-- **Real-time Transparency** — Leverages live event streams to power operational monitoring and debugging interfaces, keeping the system observable during execution.
-- **Event Logs** — Captures events exhaustively for post-hoc examination of agent behaviors and system performance.
+- **Universal Event Streaming** — Routes all agent, tool, and system events into a single, consistent stream.
+
+- **Complete Traceability** — Captures both metadata and payload for every event, preserving causal links across the system.
+- **Real-time Transparency** — Powers live monitoring and debugging tools with immediate event updates, viewable in Rerun and through the P2Engine CLI output.
+
+- **Event Logs** — Stores a full history of events for replay, inspection, and post-mortem analysis.
 
 ---
 
@@ -201,14 +203,14 @@ The observability architecture is built around four core mechanisms:
   <em>Finite State Machine Flow</em>
 </p>
 
-P2Engine implements finite state machine orchestration, ensuring coherent state progression while enabling dynamic routing decisions and handling non-deterministic outputs from agents.
+P2Engine’s execution is built on finite state machine (FSM) principles, where each agent conversation moves through well-defined states with explicit transition rules. This makes the system deterministic, debuggable, and flexible enough to handle dynamic routing decisions and asynchronous operations.
 
-The design rests on four interlocking ideas, fully inspired by Erik’s work.
+The FSM design is guided by four key ideas:
 
-- **Emergent Coordination** — Empowers the system to decide at runtime how many agents to deploy and how to assign tasks, moving beyond rigid sequential workflows to truly configurable behavior.
-- **Finite State Machine Control** — Governs state transitions with explicit rules and handlers, ensuring deterministic progression while allowing dynamic routing based on agent outputs.
-- **Conversation Branching** — Allows interaction histories to fork at any point, supporting experimental workflows and comparative analyses of different coordination strategies.
-- **Dynamic Agent Delegation** — Enables agents to spawn sub-agents and sub-conversations, creating a hierarchical task decomposition that emerges from actual system needs rather than a predetermined plan.
+- **Emergent Coordination** — Decides at runtime how many agents to deploy and how to assign tasks, moving beyond rigid, pre-planned workflows.
+- **Explicit State Transitions** — Governs every step with clear transition rules and handlers, ensuring reliable progression while allowing dynamic routing based on agent outputs.
+- **Conversation Branching** — Allows interaction histories to fork at any point, enabling experimental workflows and comparative analyses of different strategies.
+- **Dynamic Agent Delegation** — Lets agents spawn sub-agents and sub-conversations, building a hierarchical task decomposition that adapts to real system needs.
 
 ---
 
@@ -217,10 +219,10 @@ The design rests on four interlocking ideas, fully inspired by Erik’s work.
 <p align="center">
   <img src="p2engine/docs/architecture/transaction_flow.png" alt="Transaction Flow" width="820">
   <br>
-  <em>It shows the From initiation to ledger confirmation</em>
+  <em>From request initiation to ledger confirmation</em>
 </p>
 
-The transaction flow ensures that all financial operations follow a consistent pattern with proper validation, execution, and recording. Our image illustrates the complete flow from initiation to ledger confirmation. And this it how it goes, every balance change and transfer (Canton/DAML) is appended to an immutable trail with the relevant metadata. This supports post-hoc inspection, compliance reporting, and reconciliation, while keeping operational paths simple and verifiable. [could we have a sentence like this or no no?]
+The transaction flow ensures that every financial operation follows a consistent pattern with proper validation, execution, and recording. The diagram shows the full lifecycle: a request is validated (agent exists, balance is sufficient, amount is valid), submitted to Canton for smart contract execution and consensus, and finally committed to update balances and create an immutable audit record. Each transaction result, success or failure, is returned with its ID, allowing for traceability and post-hoc inspection. This design supports compliance reporting and reconciliation while keeping the operational path simple and verifiable.
 
 ---
 
