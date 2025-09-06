@@ -122,7 +122,7 @@ We can watch rollouts unfold through the P2Engine CLI with live progress tables,
 
 **The Foundation for Learning**
 
-Rollouts is the key infrastructure to enable P2Engine's future learning loop. Currently, evaluators score agent outputs automatically, so the next step is to close the loop and use these scores to automatically propagate successful configurations to underperforming variants, creating a system that improves itself through experimentation. Something like that, there are many ways here, and we will talk about that in the [Future](#future) section.
+Rollouts is the key infrastructure to enable P2Engine's future learning loop. Currently, evaluators score agent outputs automatically, so the next step is to close the loop and use these scores to automatically propagate successful configurations to underperforming variants, creating a system that improves itself through experimentation. Something like that, there are many ways here, and I will talk about that in the [Future](#future) section.
 
 ---
 
@@ -241,6 +241,6 @@ This idea adopts, reflects and builds upon the thinking of:
 - [Against RL: The Case for System 2 Learning](https://blog.elicit.com/system-2-learning)
 - [Part 4: Improving agent reasoning](https://www.arnovich.com/writings/state_machines_for_multi_agent_part_4/), and [More Thoughts on Agents](https://www.arnovich.com/writings/more_on_agents/)
 
-and the idea will evolve as we get to work on this.
+and the idea will evolve as I get to work on this.
 
 Once that’s in place, who knows where P2Engine goes next!
