@@ -128,11 +128,11 @@ Rollouts is the key infrastructure to enable P2Engine's future learning loop. Cu
 
 ## Ledger
 
-The idea behind the ledger is to introduce monetary incentives, payments, and audits into multi-agent systems and P2Engine does this by integrating Canton/DAML. Agents have wallets, can transfer funds, and earn rewards based on performance. All transactions recorded in immutable audit trails.
+The idea behind the ledger is to introduce monetary incentives, payments, and audits into multi-agent systems. P2Engine does this by integrating Canton/DAML technology, building toward the vision of the Canton Network while currently running on a local development instance. Agents have wallets, can transfer funds, and earn rewards based on performance. All transactions are recorded in immutable audit trails. The ledger is optional when running P2Engine.
 
 **Agent Wallets & Transfers**
 
-Each agent gets a wallet managed by DAML smart contracts that enforce validation rules. Agents can transfer funds to each other, with automatic overdraft protection and complete transaction history.
+Each agent gets a wallet managed by DAML smart contracts that enforce validation rules. Agents can transfer funds to each other, with automatic overdraft protection and complete transaction history. Currently implemented as a local Canton instance with test tokens for experimentation and development.
 
 **Tools**
 
@@ -140,15 +140,15 @@ Agents use standard tools like transfer_funds, check_balance, and reward_agent, 
 
 **Incentive Alignment**
 
-Through the evaluators in P2Engine, agents earn rewards for quality work during a rollout.
+Through the evaluators in P2Engine, agents earn rewards/payments for quality work during rollouts. The current implementation includes basic reward mechanisms based on evaluation scores, providing a foundation for more sophisticated economic coordination research.
 
 **Audit Trails**
 
-Every transaction flows through the artifact bus, creating permanent records. Rollouts capture before/after ledger snapshots, enabling cool experiments.
+Every transaction flows through the artifact bus, creating permanent records. Rollouts capture before/after ledger snapshots, enabling experiments with agent economic behavior and resource allocation strategies.
 
 **Why Canton**
 
-Canton provides smart contract validation, privacy-preserving operations, and the robust infrastructure needed for financial accountability in production multi-agent systems.
+Canton provides smart contract validation, privacy-preserving operations, and the robust infrastructure needed for financial accountability. P2Engine's current local Canton setup serves as a development environment and research platform, with the architecture designed to potentially connect to the broader Canton Network ecosystem as it evolves.
 
 <br>
 
