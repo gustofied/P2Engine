@@ -156,14 +156,13 @@ Canton provides smart contract validation, privacy-preserving operations, and th
 
 ## How It Works (Diagrams)
 
-Here are four diagrams presenting key aspects of P2Engine's implementation.
+Let's do How It Works again, but this time with four diagrams to better learn about P2Engine.
 
 #### Execution Sequence
 
 <p align="center">
   <img src="p2engine/docs/architecture/execution-sequence.png" alt="Execution Sequence" width="820">
-  <br>
-  <em>Execution Sequence Flow</em>
+  <em>Sequence Flow</em>
 </p>
 
 The system execution follows the sequence shown in our figure here [figure maybe wrong word], demonstrating end-to-end integration across all architectural layers. The execution unfolds through six integrated stages:
