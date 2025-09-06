@@ -114,7 +114,7 @@ The rollout system provides A/B testing capabilities for systematically comparin
 
 **How It Works**
 
-Create YAML configuration files that specify teams, base settings, and variants. The system expands these into individual experiments, runs them in parallel using Celery workers, and collects the metrics such as they are conversation artifacts, rewards, token usage, costs, ledger transactions, speed.
+Create YAML configuration files that specify teams, base settings, and variants. The system expands these into individual experiments, runs them in parallel using Celery workers, and collects the metrics. Metrics are conversation artifacts, rewards, token usage, costs, ledger transactions, speed.
 
 **Real-time Monitoring**
 
