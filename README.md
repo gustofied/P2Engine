@@ -229,9 +229,9 @@ The transaction flow ensures that all financial operations follow a consistent p
 
 So, what’s next for P2Engine?
 
-A first big win is to **close the learning loop.** Use the stored trajectories and evaluator rewards to optimize system prompts, routing, tools, and model choices. The initial focus will be "System Prompt Learning" where the goal will be to improve the “program around the model” (prompts, tool availability, temperatures, routing) instead of retraining weights. And I do think this type of learning that fits nicely with P2Engine, and is not a long way away to achieve. We need to first firm up the rollout module, evaluator, and rewards, fix a few internals, then already we can start experimenting with this learning loop.
+A first big win is to **close the learning loop.** Use the stored trajectories and evaluator rewards to optimize system prompts, routing, tools, and model choices. The initial focus will be **"System Prompt Learning"** where the goal will be to improve the “program around the model” (prompts, tool availability, temperatures, routing) instead of retraining weights. _What I'm describing here in truth is more configuration learning, but yeh I think solely focus on system prompts then we can go into the full "program arountdthe model" learning over time_. Either way I do think this type of learning that fits nicely with P2Engine, and is not far from being achievable. We need to first firm up the rollout module, evaluator, and rewards, fix a few internals, then already we can start experimenting with this learning loop.
 
-In the system prompt learning loop, the router/root agent gives several sub-agents the same task with different configs, scores their steps/outputs, and propagates the best strategy (prompt text, tool allowlist, model, temperature) to weaker variants. Updates can be applied per-step, at checkpoints, or at the end of the trajectory. We treat each system prompt as a configuration to optimize. It learns which of the prompts models to adjust what works which approaches worked etc. So as Karpathy says its about figuring out which approach for an agent is the best, and that is often steered by the system prompt itself not the weights.
+In the system prompt learning loop, the router/root agent gives several sub-agents the same task with different configs, scores their steps/outputs, and propagates the best strategy (prompt text, tool allowlist, model, temperature) to weaker variants. Updates can be applied per-step, at x steps, or at the end of the trajectory. We treat each system prompt as a configuration to optimize. It learns which of the prompts models to adjust what works which approaches worked etc. So as Karpathy says its about figuring out which approach for an agent is the best, and that is often steered by the system prompt itself not the weights.
 
 So again, treat each system prompt as a living program the root/router edits based on evaluator feedback. During a rollout, the router compares sibling agents (same task, different configs), propagates the best-performing strategies (prompt text, tool choices, temperature), and normalizes around them.
 
@@ -240,5 +240,7 @@ This idea adopts, reflects and builds upon the thinking of:
 - [A tweet by Karpathy on System Prompt Learning](https://x.com/karpathy/status/1921368644069765486)
 - [Against RL: The Case for System 2 Learning](https://blog.elicit.com/system-2-learning)
 - [Part 4: Improving agent reasoning](https://www.arnovich.com/writings/state_machines_for_multi_agent_part_4/), and [More Thoughts on Agents](https://www.arnovich.com/writings/more_on_agents/)
+
+and the idea will evolve as we get to work on this.
 
 Once that’s in place, who knows where P2Engine goes next!
