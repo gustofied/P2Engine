@@ -92,7 +92,7 @@ Every agent action produces artifacts that evaluators score automatically.
 
 **Ledger**
 
-Canton Network Ledger integration provides agent wallets, automated payments, and immutable audit trails. Agents can earn rewards for the quality of work they do.
+Canton/DAML ledger integration provides agent wallets, automated payments, and immutable audit trails. Agents can earn rewards for the quality of work they do, with all transactions recorded in immutable audit trails.
 
 ---
 
