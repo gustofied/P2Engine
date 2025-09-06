@@ -114,7 +114,7 @@ The rollout system provides A/B testing capabilities for systematically comparin
 
 **How It Works**
 
-Create YAML configuration files that specify teams, base settings, and variants. The system expands these into individual experiments, runs them in parallel using Celery workers, and collects the metrics, they are conversation artifacts, token usage, costs, and ledger transactions.
+Create YAML configuration files that specify teams, base settings, and variants. The system expands these into individual experiments, runs them in parallel using Celery workers, and collects the metrics such as they are conversation artifacts, rewards, token usage, costs, ledger transactions, speed.
 
 **Real-time Monitoring**
 
@@ -122,7 +122,7 @@ We can watch experiments unfold through the P2Engine CLI with live progress tabl
 
 **The Foundation for Learning**
 
-Rollouts is the key infrastructure to enable P2Engine's future learning loop. Currently, evaluators score agent outputs automatically, so the next step is to close the feedback cycle and use these scores to automatically propagate successful configurations to underperforming variants, creating a system that improves itself through experimentation. Something like that, there are many ways here.
+Rollouts is the key infrastructure to enable P2Engine's future learning loop. Currently, evaluators score agent outputs automatically, so the next step is to close the loop and use these scores to automatically propagate successful configurations to underperforming variants, creating a system that improves itself through experimentation. Something like that, there are many ways here, and we will talk about that in the [Future](#future) section.
 
 ---
 
