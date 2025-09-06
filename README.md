@@ -14,7 +14,7 @@ The full framework lives inside the [`p2engine/`](p2engine/) directory, with set
 
 I’ve also written an article on P2Engine, the research , the ideas, tech, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
 
-[Showcase](#showcase) • [Core](#core) • [Rollouts](#rollouts) • [Ledger](#ledger) • [Diagrams](#diagrams) • [Future](#future)
+[Showcase](#showcase) • [How It Works](#core) • [Rollouts](#rollouts) • [Ledger](#ledger) • [Diagrams](#diagrams) • [Future](#future)
 
 ---
 
@@ -64,17 +64,33 @@ I’ve also written an article on P2Engine, the research , the ideas, tech, and 
 
 **Ledger** — Agents have wallets and can transfer funds. All transactions are recorded with complete audit trails.
 
-## Core
-
-[we need a better title to say here, like we are describing p2engine in full yes, hmm]
+## How It Works
 
 P2Engine's architecture and internals are inspired by a beautiful and well-thought-out blueprint laid down by [Erik](https://eriksfunhouse.com). His architecture proposal and taste for systems, agents, tools, prompt templates, etc. have guided P2Engine to what it is today. A total recommendation: check out his series, here is [Part 1](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_1/), and then continue to [Part 2](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_2/), [Part 3](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_3/), and [Part 4](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_4/).
 
-P2Engine’s orchestration is fundamentally built on finite state machine (FSM) principles, where each agent conversation progresses through well-defined states with explicit transition rules. This approach provides predictable behavior while enabling complex multi-agent interactions.
+P2Engine’s orchestration is fundamentally built on finite state machine (FSM) principles, where each agent conversation progresses through well-defined states with explicit transition rules.
 
-At its core, P2Engine runs LLM-agents in discrete steps. Each step produces artifacts, and a separate and async evaluator scores them. You can think of it like this: the agent thinks, acts, and creates something; the evaluator observes, scores, then which is not yet implemented the root/router or evaluator takes the feedback then decides the next tool, step, or configuration. [hmm this needs to be clearer written kinda, and also is a tad bit negative no?]
+**Finite State Machine**
 
-[before the ramble which i like, aybe we are missing one or two paragrpahs to explain p2engine here? hmm]
+Each agent conversation moves through well-defined states: UserMessage → AssistantMessage or ToolCall → ToolResult → AssistantMessage, with WaitingState managing async operations. Agent delegation adds AgentCall/AgentResult states, and conversations end with FinishedState.. This explicit state management makes it easier to create reliable coordination and to debug the systems.
+
+**Interaction Stack**
+
+Every agent maintains a stack storing complete interaction history. This enables conversation rewinding, branch creation for alternative paths, and preserved context across agent handoffs.
+
+**Effect-Based Execution**
+
+Agent decisions generate "effects" (tool calls, payments, delegations) that execute asynchronously via Celery workers.
+
+**Artifact Evaluation**
+
+Every agent action produces artifacts that evaluators score automatically.
+
+**Ledger**
+
+Canton Network provides agent wallets, automated payments, and immutable audit trails. Agents can earn rewards for quality work, creating the world for more natural incentive alignment akin to our world.
+
+P2Engine runs LLM-agents in discrete steps. Each step produces artifacts, and a separate and async evaluator scores them. You can think of it like this: the agent thinks, acts, and creates something; the evaluator observes, scores.
 
 So To ramble, and quickly summaries what P2Engine has, it gives us agent interfaces, tool registry, templates/personas, runtime policies. A pushdown automata esque, it is a finite state machine with an interaction stack. It has branching, rewind, artifacts and an artifacts bus, Redis-backed session/state. Judge prompts, metrics, branch scoring, rollout experimentation. Chat, artifacts inspect/diff, rollouts, ledger ops, conversation watch. Rich logs; optional with rerun views and real-time log print outs. And the ledger (Canton/DAML) integration gives us balances, transfers, and audit trails.
 
