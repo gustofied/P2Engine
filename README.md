@@ -118,7 +118,7 @@ Create YAML configuration files that specify teams, base settings, and variants.
 
 **Real-time Monitoring**
 
-We can watch experiments unfold through the P2Engine CLI with live progress tables, and stream to Rerun viewer for more visual monitoring. Rerun can also be used to replay, rewind and inspect our rollouts. Each variant gets automatic evaluation scores, and the system aggregates results for easy comparison of what works best.
+We can watch rollouts unfold through the P2Engine CLI with live progress tables, and stream to Rerun viewer for more visual monitoring. Rerun can also be used to replay, rewind and inspect our rollouts. Each variant gets automatic evaluation scores, and the system aggregates results for easy comparison of what works best.
 
 **The Foundation for Learning**
 
@@ -128,7 +128,7 @@ Rollouts is the key infrastructure to enable P2Engine's future learning loop. Cu
 
 ## Ledger
 
-The idea behind the ledger is to introduce financial accountability into multi-agent systems and P2Engine does this by integrating Canton/DAML. Agents have wallets, can transfer funds, and earn rewards based on performance. All transactions recorded in immutable audit trails.
+The idea behind the ledger is to introduce monetary incentives, payments, and audits into multi-agent systems and P2Engine does this by integrating Canton/DAML. Agents have wallets, can transfer funds, and earn rewards based on performance. All transactions recorded in immutable audit trails.
 
 **Agent Wallets & Transfers**
 
