@@ -14,7 +14,7 @@ The full framework lives inside the [`p2engine/`](p2engine/) directory, with set
 
 I’ve also written an article on P2Engine, the research , the ideas, tech, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
 
-[Showcase](#showcase) • [How It Works](#core) • [Rollouts](#rollouts) • [Ledger](#ledger) • [Diagrams](#diagrams) • [Future](#future)
+[Showcase](#showcase) • [How It Works](#core) • [Rollouts](#rollouts) • [Ledger](#ledger) • [How It Works (Diagrams)](#how-it-works-diagrams) • [Future](#future)
 
 ---
 
@@ -106,48 +106,55 @@ Canton/DAML ledger integration provides agent wallets, automated payments, and i
   <em>Click for a full video demonstration</em>
 </p>
 
-To test how P2Engine was working I used a combination of chat and rollouts. Rollouts became the primary way to sort of simulate stuff and see interactions, logs, and transactions on the ledger. This means in its current form, it's a bit sided to facilitate more of experimental cases and where the current configuration files (e.g., [p2engine/config/rollout_joke.yml](p2engine/config/rollout_joke.yml)) are more examples of simulations rather than true A/B testing.
+_To test how P2Engine was working I used a combination of chat and rollouts. Rollouts became the primary way to sort of simulate stuff and see interactions, logs, and transactions on the ledger. This means in its current form, it's a bit sided to facilitate more of experimental cases and this is reflected in the current configuration files (e.g., [rollout_joke.yml](p2engine/config/rollout_joke.yml)). They are more examples of simulations rather than true A/B tests._
 
-But that doesn’t mean the plumbing is not support rollouts, because that is what it is. It is set up such that the rollout system provides A/B testing capabilities for systematically comparing different agent configurations, tool combinations, and behavioral parameters. Implemented in the [runtime/rollout/](p2engine/runtime/rollout/) module, and it works nice with the Celery task system so we get distributed execution, enabling parallel evaluation of multiple configuration variants. And as stated, the rollout system uses YAML configuration files to define rollout experiments, specifying teams, base settings, variants, and evaluation criteria. From a rollout we get metrics, visualizations, through P2Engine shell, logs, and rerun. We get to audit and see the transactions that happen during, and we get to replay, inspect and x. [maybe we need to talk about hooked into a eval in this and rewards emtrics?]
+**But the infrastructure does supports proper rollouts**
 
-What rollouts are they set the stage for the proper learning loop p2eninge is base for. the missing part in true, is the fedeback to root. [let's make this a tad better but i like the hook into and explination here]
+The rollout system provides A/B testing capabilities for systematically comparing agent configurations, tool combinations, and parameters. Built in the [runtime/rollout/](p2engine/runtime/rollout/) module with Celery integration, it enables a simple distributed execution and parallel evaluation of multiple variants.
 
-Define team, variant, rubric/judge, metrics. Link to rollout_joke.yml.
-Rollout — An experiment spec (YAML) that defines a team, variants, rubrics, and metrics to run in parallel.
-Evaluator status: “Evaluator scores are produced today; automatic prompt/routing updates based on rewards are planned.”
-Rollouts: “Designed for controlled experiments; great for A/B variants of prompts, tools, or models.”
-[help me out here chat..]
+**How It Works**
+
+Create YAML configuration files that specify teams, base settings, and variants. The system expands these into individual experiments, runs them in parallel using Celery workers, and collects the metrics, they are conversation artifacts, token usage, costs, and ledger transactions.
+
+**Real-time Monitoring**
+
+We can watch experiments unfold through the P2Engine CLI with live progress tables, and stream to Rerun viewer for more visual monitoring. Rerun can also be used to replay, rewind and inspect our rollouts. Each variant gets automatic evaluation scores, and the system aggregates results for easy comparison of what works best.
+
+**The Foundation for Learning**
+
+Rollouts is the key infrastructure to enable P2Engine's future learning loop. Currently, evaluators score agent outputs automatically, so the next step is to close the feedback cycle and use these scores to automatically propagate successful configurations to underperforming variants, creating a system that improves itself through experimentation. Something like that, there are many ways here.
 
 ---
 
 ## Ledger
 
-[is it ledger that will call it? this is like the question im asking myself ledger, ledger operations]
+The idea behind the ledger is to introduce financial accountability into multi-agent systems and P2Engine does this by integrating Canton/DAML. Agents have wallets, can transfer funds, and earn rewards based on performance. All transactions recorded in immutable audit trails.
 
-In addition to all these great stuff, With Eriks ideas we have something that, and it made it simple to extend it with canton network for us. Here we do.. We extend P2Engine with the integration of distributed-ledger technology to provide immutable audit trails, privacy-aware operations, and verifiable accountability for all agent actions and financial transactions. This ensures that the system maintains a permanent, tamper-evident record of all significant operations, supporting both regulatory compliance and its own system verification.
+**Agent Wallets & Transfers**
 
-[This sounds very yappy]
-[ i dont like all this yapp we need ajort imrpovemnt
-the comment about that erik ideas we don nede that here]
+Each agent gets a wallet managed by DAML smart contracts that enforce validation rules. Agents can transfer funds to each other, with automatic overdraft protection and complete transaction history.
 
-- Canton Network/DAML integration: Ledger operations implemented in services/canton_ledger_service.py.
-- Financial accountability: Agent wallets, transfers, and transaction history logged on-chain.
-- Complete audit trails: Every interaction and side-effect routed through ledger hooks in infra/ledger_hooks.py.
+**Tools**
 
-Why canton? needs to be better, but just say some clean stuf 1 , 2 sentences. Canton Network, The network of networks as they say, currently in our framework here it serves as a great enable to test out working with a ledger for some basic stuff. It gives us and it has the functions which something like P2Engine in the future will happen to like to explore such as, more on this and why -> artilce [this is oki to say but maybe as like a middle or last pargrpah or in start but yeh]
+Agents use standard tools like transfer_funds, check_balance, and reward_agent. The system automatically tracks all financial activity during conversations and rollouts.
 
-Ledger: “Optional, permissioned ledger integration (Canton/Daml) for accountability and incentive experiments.”
+**Incentive Alignment**
 
-ledger operations -> on-ledger actions
+Through the evaluators in P2Engine, Agents earn rewards for quality work during a rollout.
 
-on the Canton ledger.
+**Audit Trails**
 
-need a tad bit more homage or lead towards using canton or? maybe not
+Every transaction flows through the artifact bus, creating permanent records. Rollouts capture before/after ledger snapshots, enabling cool experiments.
+
+**Why Canton**
+
+Canton provides smart contract validation, privacy-preserving operations, and the robust infrastructure needed for financial accountability in production multi-agent systems.
+
 <br>
 
 ---
 
-## Diagrams
+## How It Works (Diagrams)
 
 Here are four diagrams presenting key aspects of P2Engine's implementation.
 
