@@ -12,9 +12,9 @@
 
 The full framework lives inside the [`p2engine/`](p2engine/) directory, with setup instructions and detailed documentation in [`p2engine/README.md`](p2engine/README.md).
 
-I’ve also written an article on P2Engine, the research , the ideas, tech, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
+I’ve also written an article on P2Engine, the research, the ideas, visions, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
 
-[Showcase](#showcase) • [How It Works](#core) • [Rollouts](#rollouts) • [Ledger](#ledger) • [How It Works (Diagrams)](#how-it-works-diagrams) • [Future](#future)
+[Showcase](#showcase) • [How It Works](#how-it-works) • [Rollouts](#rollouts) • [Ledger](#ledger) • [How It Works (Diagrams)](#how-it-works-diagrams) • [Future](#future)
 
 ---
 
@@ -60,7 +60,7 @@ I’ve also written an article on P2Engine, the research , the ideas, tech, and 
 
 **Branch Rewind** — Rewind conversations to any point and explore alternative paths. Switch between different conversation branches.
 
-**Rollouts** — Run multiple agent configurations simultaneously, A/B testing. Compare performance metrics and visualize results in real-time.
+**Rollouts** — Run multiple agent configurations simultaneously, A/B testing. Compare performance metrics (artifacts, reward, token usage, costs, ledger transactions, speed, and more) and visualize results in real-time.
 
 **Ledger** — Agents have wallets and can transfer funds. All transactions are recorded with complete audit trails.
 
