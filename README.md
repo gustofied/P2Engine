@@ -64,13 +64,15 @@ I’ve also written an article on P2Engine, the research , the ideas, tech, and 
 
 **Ledger** — Agents have wallets and can transfer funds. All transactions are recorded with complete audit trails.
 
+---
+
 ## How It Works
 
 P2Engine's architecture and internals are inspired by a beautiful and well-thought-out blueprint laid down by [Erik](https://eriksfunhouse.com). His architecture proposal and taste for systems, agents, tools, prompt templates, etc. have guided P2Engine to what it is today. A total recommendation: check out his series, here is [Part 1](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_1/), and then continue to [Part 2](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_2/), [Part 3](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_3/), and [Part 4](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_4/).
 
 P2Engine’s orchestration is fundamentally built on finite state machine (FSM) principles, where each agent conversation progresses through well-defined states with explicit transition rules.
 
----
+It runs LLM-agents in discrete steps. Each step produces artifacts, and a separate and async evaluator scores them. You can think of it like this: the agent thinks, acts, and creates something; the evaluator observes, scores.
 
 **Finite State Machine**
 
@@ -90,13 +92,7 @@ Every agent action produces artifacts that evaluators score automatically.
 
 **Ledger**
 
-Canton Network provides agent wallets, automated payments, and immutable audit trails. Agents can earn rewards for quality work, creating the world for more natural incentive alignment akin to our world.
-
----
-
-P2Engine runs LLM-agents in discrete steps. Each step produces artifacts, and a separate and async evaluator scores them. You can think of it like this: the agent thinks, acts, and creates something; the evaluator observes, scores.
-
-So To ramble, and quickly summaries what P2Engine has, it gives us agent interfaces, tool registry, templates/personas, runtime policies. A pushdown automata esque, it is a finite state machine with an interaction stack. It has branching, rewind, artifacts and an artifacts bus, Redis-backed session/state. Judge prompts, metrics, branch scoring, rollout experimentation. Chat, artifacts inspect/diff, rollouts, ledger ops, conversation watch. Rich logs; optional with rerun views and real-time log print outs. And the ledger (Canton/DAML) integration gives us balances, transfers, and audit trails.
+Canton Network Ledger integration provides agent wallets, automated payments, and immutable audit trails. Agents can earn rewards for the quality of work they do.
 
 ---
 
