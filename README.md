@@ -68,7 +68,7 @@ I’ve also written an article on P2Engine, the research, the ideas, visions, an
 
 ## How It Works
 
-P2Engine's architecture and internals are inspired by a beautiful and well-thought-out blueprint laid down by [Erik](https://eriksfunhouse.com). His architecture proposal and taste for systems, agents, tools, prompt templates, etc. have guided P2Engine to what it is today. A total recommendation: check out his series, here is [Part 1](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_1/), and then continue to [Part 2](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_2/), [Part 3](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_3/), and [Part 4](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_4/).
+P2Engine's architecture and internals are inspired by a beautiful and well-thought-out blueprint laid down by [Erik](https://eriksfunhouse.com). His architecture proposal and taste for systems, what is an agent, tools, prompt templates, reasoning etc. have guided P2Engine to what it is today. A big recommendation: check out his series, here is [Part 1](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_1/), and then continue to [Part 2](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_2/), [Part 3](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_3/), and [Part 4](https://eriksfunhouse.com/writings/state_machines_for_multi_agent_part_4/).
 
 P2Engine’s orchestration is fundamentally built on finite state machine (FSM) principles, where each agent conversation progresses through well-defined states with explicit transition rules.
 
@@ -76,7 +76,7 @@ It runs LLM-agents in discrete steps. Each step produces artifacts, and a separa
 
 **Finite State Machine**
 
-Each agent conversation moves through well-defined states: UserMessage → AssistantMessage or ToolCall → ToolResult → AssistantMessage, with WaitingState managing async operations. Agent delegation adds AgentCall/AgentResult states, and conversations end with FinishedState.. This explicit state management makes it easier to create reliable coordination and to debug the systems.
+Each agent conversation moves through well-defined states: UserMessage → AssistantMessage or ToolCall → ToolResult → AssistantMessage, with WaitingState managing async operations. Agent delegation adds AgentCall/AgentResult states, and conversations end with FinishedState. This explicit state management makes it easier to create reliable coordination and to debug the systems.
 
 **Interaction Stack**
 
