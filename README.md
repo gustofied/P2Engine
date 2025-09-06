@@ -162,17 +162,17 @@ Let's do How It Works again, but this time with four diagrams to better learn ab
 
 <p align="center">
   <img src="p2engine/docs/architecture/execution-sequence.png" alt="Execution Sequence" width="820">
-  <em>Sequence Flow</em>
+  <em>Sequence Diagram</em>
 </p>
 
-The system execution follows the sequence shown in our figure here [figure maybe wrong word], demonstrating end-to-end integration across all architectural layers. The execution unfolds through six integrated stages:
+The execution process follows the interactions shown in the Sequence Diagram, illustrating how P2Engine operates end-to-end.
 
 - **Agent Processing** — Consumes conversation states and produces responses or tool invocations.
 - **Tool Execution** — Runs asynchronously, publishing results back into the conversation streams.
-- **State Progression** — Captures every activity as state transitions flowing through the orchestration layer.
-- **Event Publication** — Automatically pushes those state changes to the observability layer for real-time monitoring and analysis.
-- **Evaluation Triggering** — Fires upon conversation completion or significant milestones, invoking automated quality assessments.
-- **Adaptation Feedback** — Uses evaluation results to refine future agent configurations via the adaptation layer.
+- **Event Publication** — Broadcasts state-change events so they can be logged, traced, or visualized in real time.
+- **Evaluation Triggering** — Runs automated evaluation when a conversation completes or a "configured" step is
+  reached.
+- **Reward Settlement** - Converts evaluation results into payments recorded on the ledger.
 
 ---
 
