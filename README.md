@@ -136,11 +136,11 @@ Each agent gets a wallet managed by DAML smart contracts that enforce validation
 
 **Tools**
 
-Agents use standard tools like transfer_funds, check_balance, and reward_agent. The system automatically tracks all financial activity during conversations and rollouts.
+Agents use standard tools like transfer_funds, check_balance, and reward_agent, see [ledger_tools.py](p2engine/tools/ledger_tools.py). The system automatically tracks all financial activity during conversations and rollouts.
 
 **Incentive Alignment**
 
-Through the evaluators in P2Engine, Agents earn rewards for quality work during a rollout.
+Through the evaluators in P2Engine, agents earn rewards for quality work during a rollout.
 
 **Audit Trails**
 
