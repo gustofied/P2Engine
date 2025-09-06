@@ -106,7 +106,7 @@ Canton/DAML ledger integration provides agent wallets, automated payments, and i
   <em>Click for a full video demonstration</em>
 </p>
 
-_To test how P2Engine was working I used a combination of chat and rollouts. Rollouts became the primary way to sort of simulate stuff and see interactions, logs, and transactions on the ledger. This means in its current form, it's a bit sided to facilitate more of experimental cases and this is reflected in the current configuration files (e.g., [rollout_joke.yml](p2engine/config/rollout_joke.yml)). They are more examples of simulations rather than true A/B tests._
+_To test how P2Engine was working I used a combination of chat and rollouts. Rollouts became the primary way to sort of simulate stuff and see the interactions, debug/inspect the logs, and inspect the transactions happening on the ledger. This means in its current form, it's a bit sided to facilitate more of experimental cases and this is reflected in the current configuration files (e.g., [rollout_joke.yml](p2engine/config/rollout_joke.yml)). They are more examples of simulations rather than true A/B tests._
 
 **But the infrastructure does supports proper rollouts**
 

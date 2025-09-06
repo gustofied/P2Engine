@@ -37,14 +37,12 @@ async def capture_ledger_snapshot(label: str, agent_ids: List[str], wait_for_set
 
         ledger = await get_ledger_service()
 
-        # Clear the wallet cache to ensure fresh data
         ledger._wallet_cache.clear()
 
         metrics = await ledger.get_system_metrics()
         wallets = []
         for agent_id in agent_ids:
             try:
-                # Force fresh balance read with use_cache=False
                 balance = await ledger.get_agent_balance(agent_id, use_cache=False)
                 history = await ledger.get_transaction_history(agent_id, limit=10000)
                 wallets.append(
@@ -91,8 +89,7 @@ def run_rollout(
     rollout_id = f"multi:{time.time_ns()}"
     RolloutStore(_rds).create(rollout_id, total_variants)
     
-    # NEW: Initialize Rerun logging for this rollout
-# NEW: Initialize Rerun logging for this rollout
+
     from infra.observability.rerun_rollout import log_rollout_start, log_ledger_snapshot
     log_rollout_start(
         rollout_id=rollout_id,
@@ -110,7 +107,6 @@ def run_rollout(
         before_snapshot = run_async(capture_ledger_snapshot("before_rollout", list(all_agent_ids)))
         _rds.set(f"rollout:{rollout_id}:snapshot:before", json.dumps(before_snapshot), ex=86400)
         
-        # NEW: Log to Rerun
         log_ledger_snapshot(rollout_id, "before", before_snapshot)
         
         logger.info(f"Captured before snapshot for rollout {rollout_id}")

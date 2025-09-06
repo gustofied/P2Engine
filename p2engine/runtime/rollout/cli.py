@@ -21,8 +21,6 @@ from runtime.rollout.spec import MultiRolloutSpec
 from runtime.rollout.store import RolloutStore
 from runtime.rollout.expander import expand_variants
 from services.services import ServiceContainer
-
-# Rerun viz helpers
 from infra.observability import rerun_rollout as rr_viz
 from infra.observability import rerun_obs as rr_obs
 from infra.observability.realtime_monitor import RealtimeStackMonitor
@@ -35,7 +33,6 @@ _RDS = _CONTAINER.get_redis_client()
 _STREAM = "stream:rollout_results"
 _STYLES = {"header": "bold cyan", "value": "white", "increase": "bold green", "decrease": "bold red"}
 
-# --------------------------- Rerun init ------------------------------------ #
 def _init_rerun_for_cli(rollout_id: str, *, spawn: bool = True) -> bool:
     try:
         spawn_effective = spawn and (os.getenv("RERUN_SPAWNED", "0") != "1")
@@ -49,7 +46,7 @@ def _init_rerun_for_cli(rollout_id: str, *, spawn: bool = True) -> bool:
         logger.warning("Failed to prepare Rerun for rollout %s: %s", rollout_id, e)
         return False
 
-# -------------------------------- Utilities -------------------------------- #
+
 def _flatten(d: Dict, prefix: str = "") -> Dict[str, str]:
     out: Dict[str, str] = {}
     for k, v in d.items():
@@ -182,7 +179,7 @@ def _parse_fields(fields: Dict[str, str]) -> Dict[str, Any]:
         except Exception: out[k] = v
     return out
 
-# --------------------------- Markov aggregator ------------------------------ #
+
 class _MarkovAgg:
     """
     Aggregates message kinds across all teams/variants to build a Markov-style
@@ -241,7 +238,6 @@ class _MarkovAgg:
         kinds = list(self._positions.keys())
         idx = {k: i for i, k in enumerate(kinds)}
         positions = [self._positions[k] for k in kinds]
-        # Use `variant=k` so each kind has a stable distinct color
         node_meta = [{"team": "world", "variant": k, "kind": k, "latency": str(self._node_radius_scale(k))} for k in kinds]
         edges: List[tuple[int, int]] = []
         for (ka, kb), _cnt in self.edge_counts.items():
@@ -250,14 +246,9 @@ class _MarkovAgg:
         return positions, node_meta, edges
 
     def _node_radius_scale(self, kind: str) -> float:
-        # Normalize counts to [0, 1.4] (because log_graph_static multiplies by 10 & caps)
         cmax = max(self.node_counts.values()) if self.node_counts else 1
         return 1.4 * (self.node_counts.get(kind, 0) / cmax)
 
-
-# -----------------------------------------------------------------------------
-# Streaming collector with REAL-TIME monitoring
-# -----------------------------------------------------------------------------
 def _collect_rows(
    team_id: Optional[str],
    rollout_id: str,
@@ -275,7 +266,6 @@ def _collect_rows(
    seen: set[str] = set()
    last_id = "0-0"
 
-   # Initialize real-time monitor if Rerun is enabled
    monitor = None
    if to_rerun and realtime:
        monitor = RealtimeStackMonitor(
@@ -285,13 +275,11 @@ def _collect_rows(
            refresh_rate=0.5,
            step_sec=step_sec
        )
-       # Initialize Markov aggregator and set it on monitor
        markov = _MarkovAgg()
        monitor.set_markov(markov)
        monitor.start()
        logger.info("Started real-time stack monitoring for rollout %s", rollout_id)
 
-   # Fallback for non-realtime mode
    team_docs: Dict[str, List[str]] = {t: [f"# {t}\n"] for t in (teams_for_tabs or [])}
    markov_fallback = _MarkovAgg() if not monitor else None
    last_line_idx: Dict[tuple[str, str], int] = {}
@@ -315,14 +303,12 @@ def _collect_rows(
                    seen.add(var_id)
                    rows.append(data)
 
-                   # Register conversation with monitor
                    if monitor:
                        cid = data.get("conversation_id")
                        if cid:
                            team = str(data.get("team_id", "?"))
                            monitor.register_conversation(cid, team, var_id)
                    
-                   # Fallback processing if not using realtime monitor
                    elif to_rerun:
                        try:
                            team = str(data.get("team_id", "?"))
@@ -330,7 +316,6 @@ def _collect_rows(
                            lines = stack_view(_CONTAINER, cid, n=50) if cid else None
 
                            if lines:
-                               # Stream team logs
                                key = (team, var_id)
                                last_seen = last_line_idx.get(key, -1)
                                new_lines = [ln for ln in lines if ln.idx > last_seen]
@@ -349,14 +334,12 @@ def _collect_rows(
                                if new_lines:
                                    last_line_idx[key] = max(ln.idx for ln in new_lines)
 
-                               # Update team doc
                                team_docs.setdefault(team, [f"# {team}\n"])
                                team_docs[team].append(f"\n## {var_id}\n")
                                preview = lines[-15:]
                                team_docs[team].append(_flow_markdown(team, var_id, preview))
                                rr_viz.log_team_stack_doc(rollout_id, team, "".join(team_docs[team]))
 
-                               # Update Markov graph
                                if markov_fallback:
                                    markov_fallback.add_lines(lines)
                                    positions, meta, edges = markov_fallback.to_graph()
@@ -378,12 +361,10 @@ def _collect_rows(
 
            live.update(_rows_to_table(rows))
 
-   # Stop the monitor
    if monitor:
        monitor.stop()
        logger.info("Stopped real-time stack monitoring")
 
-   # Drain late messages
    resp = _RDS.xread({_STREAM: last_id}, block=10, count=50)
    for _stream, msgs in resp:
        for _sid, fields in msgs:
@@ -397,7 +378,6 @@ def _collect_rows(
                rows.append(data)
                seen.add(var_id)
                
-               # Final update for late arrivals (non-realtime mode)
                if to_rerun and not monitor:
                    try:
                        team = str(data.get("team_id", "?"))
@@ -448,7 +428,6 @@ def _collect_rows(
 
    return rows
 
-# --------------------------------- Command --------------------------------- #
 @app.command("start")
 def start(
    spec_path: Path = typer.Argument(..., exists=True, readable=True),
@@ -468,7 +447,6 @@ def start(
        console.print(multi_spec.model_dump_json(indent=2))
        raise typer.Exit()
 
-   # Prepare data for views
    variants_for_tabs: list[tuple[str, str]] = []
    teams_for_tabs: list[str] = []
    for team_id, team_spec in multi_spec.teams.items():
@@ -480,7 +458,6 @@ def start(
    console.print(f"[{_STYLES['header']}]▶ Launching roll-out with {len(multi_spec.teams)} teams…[/{_STYLES['header']}]")
    rollout_id = run_rollout(multi_spec, parallel_hint=parallel, strict_tools=strict_tools)
 
-   # Optional Rerun visualization
    to_rerun = False
    if rerun:
        to_rerun = _init_rerun_for_cli(rollout_id, spawn=True)
@@ -525,7 +502,6 @@ def start(
                progress.update(task, total=max(total, 1), completed=new_completed)
                time.sleep(refresh)
        
-       # Use realtime monitoring even in non-follow mode if rerun is enabled
        rows = _collect_rows(
            None,
            rollout_id,
@@ -538,7 +514,6 @@ def start(
            realtime=realtime and to_rerun,
        )
 
-   # After run completes, mirror the table in Rerun
    if to_rerun:
        try:
            metrics_text = _render_table_text(_rows_to_table(rows))
@@ -546,14 +521,12 @@ def start(
        except Exception:
            pass
 
-   # READ ONLY snapshots as before
    bj = _RDS.get(f"rollout:{rollout_id}:snapshot:before")
    aj = _RDS.get(f"rollout:{rollout_id}:snapshot:after")
    before_snapshot = json.loads(bj) if bj else None
    after_snapshot = json.loads(aj) if aj else None
    del before_snapshot, after_snapshot
 
-   # Console output
    console.rule("[bold]Roll-out Metrics (per variant)")
    console.print(_rows_to_table(rows))
 

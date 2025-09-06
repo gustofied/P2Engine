@@ -22,23 +22,15 @@ from typing import Any, Dict, Optional, Tuple, Sequence, List
 
 logger = logging.getLogger(__name__)
 
-# -----------------------------------------------------------------------------
-# Configuration from environment
-# -----------------------------------------------------------------------------
+
 _ENABLED = os.getenv("OBS_ENABLED", "true").lower() == "true"
 _RUN_ID = os.getenv("RUN_ID", f"run_{int(time.time())}")
 _BACKEND = os.getenv("OBS_BACKEND", "rerun")
 _SAMPLE_RATE = float(os.getenv("OBS_SAMPLE", "1.0"))
-# default: do NOT spawn viewer (workers will import this)
 _SPAWN_DEFAULT = os.getenv("OBS_SPAWN", "0") == "1"
-
-# Internal backend handle: ("rerun", rerun_module) or None
 _backend: Optional[Tuple[str, Any]] = None
 
 
-# -----------------------------------------------------------------------------
-# Initialization (idempotent, opt-in)
-# -----------------------------------------------------------------------------
 def init_if_needed(spawn: Optional[bool] = None, run_id: Optional[str] = None) -> bool:
     """
     Initialize the Rerun backend on-demand (idempotent).
@@ -54,7 +46,7 @@ def init_if_needed(spawn: Optional[bool] = None, run_id: Optional[str] = None) -
         return False
 
     try:
-        import rerun as rr  # type: ignore
+        import rerun as rr  
     except Exception as e:
         logger.debug("Rerun SDK import failed; observability disabled: %s", e)
         return False
@@ -94,7 +86,7 @@ def start_recording(run_id: str, *, spawn: Optional[bool] = None) -> bool:
     try:
         target = f"p2engine:{run_id}"
         if hasattr(rr, "new_recording"):
-            rr.new_recording(target)  # Rerun ≥ 0.14
+            rr.new_recording(target) 
         else:
             if hasattr(rr, "disconnect"):
                 rr.disconnect()
@@ -115,9 +107,6 @@ def current_run_id() -> str:
     return _RUN_ID
 
 
-# -----------------------------------------------------------------------------
-# Path helpers — keep blueprints & logging in sync
-# -----------------------------------------------------------------------------
 def _path(p: str) -> str:
     p = p.strip("/")
     if p.startswith("runs/"):
@@ -129,9 +118,6 @@ def abs_path(p: str) -> str:
     return _path(p)
 
 
-# -----------------------------------------------------------------------------
-# Time helpers — safe no-ops if backend isn't initialized
-# -----------------------------------------------------------------------------
 def set_time_seconds(timeline: str, t: float) -> None:
     """Set the current time on a named timeline (wall/epoch-like)."""
     if not _backend:
@@ -165,9 +151,6 @@ def set_time_frame(frame: int | float) -> None:
         rr.set_time("frame", sequence=int(frame))
 
 
-# -----------------------------------------------------------------------------
-# Logging helpers — safe no-ops if backend isn't initialized
-# -----------------------------------------------------------------------------
 def scalar(path: str, value: float, **attrs: Any) -> None:
     if not _backend:
         return
@@ -226,15 +209,14 @@ def text_log(path: str, text: str) -> None:
         rr.log(_path(path), rr.TextLog(text))
 
 
-# ---------- Graph primitives (2D) ----------
 def points2d(
     path: str,
     positions: Sequence[Sequence[float]],
     *,
     radii: Optional[Sequence[float]] = None,
-    colors: Optional[Sequence[Sequence[int]]] = None,  # RGBA 0..255
+    colors: Optional[Sequence[Sequence[int]]] = None, 
     labels: Optional[Sequence[str]] = None,
-    timeless: bool = False,  # accepted but ignored by rr.log
+    timeless: bool = False, 
 ) -> None:
     """Log 2D points with optional radii/colors/labels."""
     if not _backend:
@@ -248,8 +230,8 @@ def line_strips2d(
     path: str,
     strips: Sequence[Sequence[Sequence[float]]],
     *,
-    colors: Optional[Sequence[Sequence[int]]] = None,  # one color per strip
-    timeless: bool = False,  # accepted but ignored by rr.log
+    colors: Optional[Sequence[Sequence[int]]] = None, 
+    timeless: bool = False,  
 ) -> None:
     """
     Log 2D line strips; each strip is a list of [x,y] points.
@@ -262,13 +244,12 @@ def line_strips2d(
         rr.log(_path(path), rr.LineStrips2D(strips, colors=colors))
 
 
-# ---------- Graph (nodes/edges) ----------
 def graph(
     origin: str,
     *,
     nodes: Sequence[str],
     labels: Optional[Sequence[str]] = None,
-    colors: Optional[Sequence[Sequence[int]]] = None,  # RGBA
+    colors: Optional[Sequence[Sequence[int]]] = None,  
     radii: Optional[Sequence[float]] = None,
     edges: Sequence[Tuple[str, str]] = (),
     directed: bool = True,

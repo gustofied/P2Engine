@@ -13,6 +13,8 @@ TODO, remove runtime.py from infra
 TODO, fix readme in orchestrator
 TODO, look into protcols from agents, and that registers file in orchestrator
 
+TODO, comments are removed, re review with llm and re add but with your idea of things, then properly adjust everything, this will
+be a full go through.
 
 
 --- VISUAL
@@ -26,3 +28,4 @@ maybe it is rollouts we are in most interest to showcase get rerun on, add rollo
 - Review of cli
 - Review of infra 
 - Review of orchestrator
+

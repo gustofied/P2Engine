@@ -260,7 +260,6 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
         "overrides": overrides,
     }
 
-    # Ledger metrics collection (existing code)
     if os.getenv("LEDGER_ENABLED", "true") == "true":
         try:
             async def _get_ledger_metrics():
@@ -299,12 +298,10 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
         except Exception as exc:
             logger.warning(f"Failed to collect ledger metrics: {exc}")
 
-    # NEW: Log to Rerun
     from infra.observability.rerun_rollout import (
         log_variant_metrics, log_pareto_point, log_variant_config
     )
     
-    # Log variant metrics
     log_variant_metrics(
         rollout_id=rollout_id or "unknown",
         team_id=team_id,
@@ -318,7 +315,6 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
         transaction_count=summary_raw.get("transaction_count", 0)
     )
     
-    # Log for Pareto visualization
     log_pareto_point(
         rollout_id=rollout_id or "unknown",
         team_id=team_id,
@@ -328,7 +324,6 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
         tokens=tokens
     )
     
-    # Log variant configuration
     log_variant_config(
         rollout_id=rollout_id or "unknown",
         team_id=team_id,
@@ -336,7 +331,6 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
         config=overrides
     )
 
-    # Write to Redis stream (existing code)
     try:
         bus.redis.xadd(
             "stream:rollout_results",
@@ -354,7 +348,6 @@ def finalise_rollout(run_info: Dict[str, Any]) -> Dict[str, Any]:
         if completed >= total:
             store.mark_done(rollout_id)
             
-            # NEW: Log final ledger snapshot when rollout is done
             if os.getenv("LEDGER_ENABLED", "true") == "true" and completed >= total:
                 agent_ids_json = r.get(f"rollout:{rollout_id}:agents")
                 if agent_ids_json:
