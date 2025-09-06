@@ -228,6 +228,8 @@ The transaction flow ensures that every financial operation follows a consistent
 
 ## Future
 
+[maybe here or elsewhere but add that one liner about it feels 90% done, needs that final push]
+
 So, what’s next for P2Engine?
 
 A first big win is to **close the learning loop.** Use the stored trajectories and evaluator rewards to optimize system prompts, routing, tools, and model choices. The initial focus will be **"System Prompt Learning"** where the goal will be to improve the “program around the model” (prompts, tool availability, temperatures, routing) instead of retraining weights. _What I'm describing here in truth is more configuration learning, but yeh I think solely focus on system prompts then we can go into the full "program arountdthe model" learning over time_. Either way I do think this type of learning that fits nicely with P2Engine, and is not far from being achievable. We need to first firm up the rollout module, evaluator, and rewards, fix a few internals, then already we can start experimenting with this learning loop.
