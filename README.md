@@ -70,6 +70,8 @@ P2Engine's architecture and internals are inspired by a beautiful and well-thoug
 
 P2Engine’s orchestration is fundamentally built on finite state machine (FSM) principles, where each agent conversation progresses through well-defined states with explicit transition rules.
 
+---
+
 **Finite State Machine**
 
 Each agent conversation moves through well-defined states: UserMessage → AssistantMessage or ToolCall → ToolResult → AssistantMessage, with WaitingState managing async operations. Agent delegation adds AgentCall/AgentResult states, and conversations end with FinishedState.. This explicit state management makes it easier to create reliable coordination and to debug the systems.
@@ -89,6 +91,8 @@ Every agent action produces artifacts that evaluators score automatically.
 **Ledger**
 
 Canton Network provides agent wallets, automated payments, and immutable audit trails. Agents can earn rewards for quality work, creating the world for more natural incentive alignment akin to our world.
+
+---
 
 P2Engine runs LLM-agents in discrete steps. Each step produces artifacts, and a separate and async evaluator scores them. You can think of it like this: the agent thinks, acts, and creates something; the evaluator observes, scores.
 
