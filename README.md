@@ -12,6 +12,8 @@
 
 The full framework lives inside the [`p2engine/`](p2engine/) directory, with setup instructions and detailed documentation in [`p2engine/README.md`](p2engine/README.md).
 
+You can read the thesis here [`thesis/`](thesis/)
+
 I’ve also written an article on P2Engine, the research, the ideas, visions, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
 
 [Showcase](#showcase) • [How It Works](#how-it-works) • [Rollouts](#rollouts) • [Ledger](#ledger) • [How It Works (Diagrams)](#how-it-works-diagrams) • [Future](#future)
