@@ -12,7 +12,7 @@
 
 The full framework lives inside the [`p2engine/`](p2engine/) directory, with setup instructions and detailed documentation in [`p2engine/README.md`](p2engine/README.md).
 
-You can read the thesis here [`thesis`](thesis/p2engine_thesis_adam_sioud_ntnu.pdf) which goes more into the idea of autonomus systems..
+You can read the master's thesis here [`thesis`](thesis/p2engine_thesis_adam_sioud_ntnu.pdf) which goes more into the idea of autonomus systems..
 
 I’ve also written an article on P2Engine, the research, the ideas, visions, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
 
