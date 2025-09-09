@@ -260,4 +260,3 @@ Once that’s in place, who knows where P2Engine goes next!
 _Adam Dybwad Sioud_  
 _Supervisor: Surya Kathayat_  
 _NTNU – Norwegian University of Science and Technology, Department of Computer Science_
-2025
