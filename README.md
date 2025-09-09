@@ -16,7 +16,7 @@ P2Engine is the artifact of my master’s thesis. You can read it here [`thesis`
 
 I’ve also written an article on P2Engine, more of a dabble into all the research, the ideas, visions, tangents, and everything around P2Engine and the thesis. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
 
-[Showcase](#showcase) • [How It Works](#how-it-works) • [Rollouts](#rollouts) • [Ledger](#ledger) • [How It Works (Diagrams)](#how-it-works-diagrams) • [Future](#future)
+[Showcase](#showcase) • [How It Works](#how-it-works) • [Rollouts](#rollouts) • [Ledger](#ledger) • [How It Works (Diagrams)](#how-it-works-diagrams) • [Future](#future) • [Contact](#contact)
 
 ---
 
@@ -249,3 +249,13 @@ This idea adopts, reflects and builds upon the thinking of:
 and the idea will evolve as I get to work on this.
 
 Once that’s in place, who knows where P2Engine goes next!
+
+---
+
+*adam.sioud@protonmail.com*  
+*surya.b.kathayat@ntnu.no*
+
+_Adam Dybwad Sioud_  
+_Supervisor: Surya Kathayat_  
+_NTNU – Norges teknisk-naturvitenskapelige universitet, Department of Computer Science_
+© 2025
