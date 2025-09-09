@@ -5,7 +5,7 @@
 <b> A framework + runtime to build, run, and evaluate multi-agent systems. Extended with the Canton Network to enable monetary incentives, payments, and audits. </b> 
 </div>
 <br>
-<div align="center"> orchestrate agents • evaluate each step • branch & rewind • trajectories & artifacts • replay & observe
+<div align="center"> orchestrate agents • evaluate each step • branch & rewind • traces & artifacts • replay & observe
 </div>
 
 ---
