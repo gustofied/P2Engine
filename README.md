@@ -12,9 +12,9 @@
 
 The full framework lives inside the [`p2engine/`](p2engine/) directory, with setup instructions and detailed documentation in [`p2engine/README.md`](p2engine/README.md).
 
-You can read the master's thesis here [`thesis`](thesis/p2engine_thesis_adam_sioud_ntnu.pdf) which goes more into the idea of autonomus systems..
+P2Engine is the artifact of my master’s thesis, You can read it here [`thesis`](thesis/p2engine_thesis_adam_sioud_ntnu.pdf), where I explore and define what makes a system autonomous.
 
-I’ve also written an article on P2Engine, the research, the ideas, visions, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
+I’ve also written an article on P2Engine, more of a dablle into all the research, the ideas, visions, tangents, and more.. [Read it here →](https://www.adamsioud.com/projects/p2engine.html)
 
 [Showcase](#showcase) • [How It Works](#how-it-works) • [Rollouts](#rollouts) • [Ledger](#ledger) • [How It Works (Diagrams)](#how-it-works-diagrams) • [Future](#future)
 
