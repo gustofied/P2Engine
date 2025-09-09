@@ -252,10 +252,12 @@ Once that’s in place, who knows where P2Engine goes next!
 
 ---
 
+## Contact
+
 *adam.sioud@protonmail.com*  
 *surya.b.kathayat@ntnu.no*
 
 _Adam Dybwad Sioud_  
 _Supervisor: Surya Kathayat_  
-_NTNU – Norges teknisk-naturvitenskapelige universitet, Department of Computer Science_
-© 2025
+_NTNU – Norwegian University of Science and Technology, Department of Computer Science_
+2025
