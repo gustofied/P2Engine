@@ -102,7 +102,7 @@ ARTIFACT_DRIVER=fs
 # LEDGER_DEV_MODE=true       # Auto-set for development
 
 # Rerun
-OBS_ENABLED=true OBS_BACKEND=rerun ./scripts/run_project.sh
+OBS_ENABLED=true OBS_BACKEND=rerun
 
 ```
 
