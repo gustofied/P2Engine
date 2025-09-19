@@ -28,7 +28,7 @@ First let's make sure we have these:
 
 _I run things on my Mac, you might/will need to do some tiny tweaks if you're on a different setup!_
 
-_The following setup is and suebseqeunt documnation should suffice but there is still ålenty to be written on here, going to work on that_
+_The following setup is and suebseqeunt documnation should suffice but there is still plenty to be written on here, going to work on that_
 
 ##### Installation
 
